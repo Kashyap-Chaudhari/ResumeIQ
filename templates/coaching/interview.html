@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Interview Coach | ResumeIQ{% endblock %}
+{% block header_title %}AI Mock Technical & Behavioral Interview Coach{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <!-- Session Controls & Recent History -->
+  <div class="col-lg-4">
+    <div class="saas-card mb-4">
+      <h6 class="fw-bold mb-3"><i class="bi bi-play-circle text-primary me-2"></i> Start New Mock Session</h6>
+
+      <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="start_session">
+
+        <div class="mb-3">
+          <label class="form-label text-muted small fw-bold">Target Role</label>
+          <input type="text" name="target_role" class="form-control form-control-saas" value="{{ user_profile.target_role }}" required>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label text-muted small fw-bold">Company Context (Optional)</label>
+          <input type="text" name="company_name" class="form-control form-control-saas" placeholder="e.g. Stripe / Amazon">
+        </div>
+
+        <button type="submit" class="btn btn-saas-primary w-100 py-2">
+          <i class="bi bi-robot me-1"></i> Generate AI Questions
+        </button>
+      </form>
+    </div>
+
+    <!-- Past Sessions -->
+    <div class="saas-card">
+      <h6 class="fw-bold mb-3"><i class="bi bi-clock-history text-muted me-2"></i> Previous Mock Sessions</h6>
+      <div class="list-group list-group-flush bg-transparent">
+        {% for sess in recent_sessions %}
+          <a href="?session_id={{ sess.id }}" class="list-group-item bg-transparent text-white border-secondary py-2 px-0 d-flex justify-content-between align-items-center {% if sess == current_session %}fw-bold text-primary{% endif %}">
+            <div>
+              <div class="small">{{ sess.target_role }}</div>
+              <small class="text-muted" style="font-size:0.7rem;">{{ sess.created_at|date:"M d" }}</small>
+            </div>
+            <i class="bi bi-chevron-right text-muted"></i>
+          </a>
+        {% empty %}
+          <small class="text-muted">No past interview sessions.</small>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Questions & Answer Evaluation Room -->
+  <div class="col-lg-8">
+    {% if current_session %}
+      <div class="saas-card mb-4">
+        <div class="saas-card-header">
+          <h5 class="saas-card-title"><i class="bi bi-chat-square-quote-fill text-indigo"></i> Interview Room: {{ current_session.target_role }}</h5>
+          <span class="badge bg-primary">{{ current_session.questions_data|length }} Questions</span>
+        </div>
+
+        <div class="accordion accordion-flush" id="questionsAccordion">
+          {% for q in current_session.questions_data %}
+            <div class="accordion-item bg-transparent border-secondary text-white mb-3 rounded-3 overflow-hidden" style="border: 1px solid var(--border-color) !important;">
+              <h2 class="accordion-header" id="heading{{ q.id }}">
+                <button class="accordion-button collapsed bg-transparent text-white fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ q.id }}">
+                  <span class="badge bg-secondary me-2">{{ q.category }}</span>
+                  Q{{ forloop.counter }}: {{ q.question }}
+                  {% if q.score %}
+                    <span class="badge bg-{% if q.score >= 75 %}success{% else %}warning{% endif %} ms-auto me-3">{{ q.score }}/100</span>
+                  {% endif %}
+                </button>
+              </h2>
+              <div id="collapse{{ q.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#questionsAccordion">
+                <div class="accordion-body" style="background: var(--bg-input);">
+                  {% if q.score %}
+                    <div class="p-3 mb-3 rounded-3" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3);">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold text-emerald"><i class="bi bi-check-circle-fill me-1"></i> AI Feedback Score: {{ q.score }}/100</span>
+                      </div>
+                      <p class="small text-muted mb-0">{{ q.feedback }}</p>
+                    </div>
+                  {% endif %}
+
+                  <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="submit_answer">
+                    <input type="hidden" name="session_id" value="{{ current_session.id }}">
+                    <input type="hidden" name="question_id" value="{{ q.id }}">
+
+                    <div class="mb-3">
+                      <label class="form-label text-muted small fw-bold">Your Response (Type or speak response)</label>
+                      <textarea name="user_answer" class="form-control form-control-saas" rows="4" placeholder="Explain your thought process, STAR framework steps, and technical implementation..." required>{{ q.user_answer|default:'' }}</textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                      <button type="button" class="btn btn-link text-muted btn-sm p-0 text-decoration-none" data-bs-toggle="collapse" data-bs-target="#sample{{ q.id }}">
+                        <i class="bi bi-eye me-1"></i> View Model Answer
+                      </button>
+                      <button type="submit" class="btn btn-saas-primary btn-sm"><i class="bi bi-send me-1"></i> Submit for AI Scoring</button>
+                    </div>
+
+                    <div class="collapse mt-3" id="sample{{ q.id }}">
+                      <div class="p-3 rounded-3 text-muted small" style="background: var(--bg-card);">
+                        <strong class="text-white d-block mb-1">Model Answer Key:</strong>
+                        {{ q.sample_answer }}
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="saas-card text-center py-5">
+        <i class="bi bi-chat-left-dots fs-1 text-muted mb-3 d-block"></i>
+        <h5>No Active Mock Interview Session</h5>
+        <p class="text-muted small">Select or start a new AI mock interview session on the left to practice questions tailored to your resume and target role.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

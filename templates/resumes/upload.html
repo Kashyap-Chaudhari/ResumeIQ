@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Resume | ResumeIQ{% endblock %}
+{% block header_title %}Upload PDF Resume for AI Analysis{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="saas-card text-center p-4">
+      <div class="mb-3">
+        <i class="bi bi-cloud-arrow-up text-primary" style="font-size: 3rem;"></i>
+        <h4 class="fw-bold mt-2">Upload Your PDF Resume</h4>
+        <p class="text-muted small">pdfplumber will extract skills, sections, and calculate your 0-100 ATS Score.</p>
+      </div>
+
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="mb-3 text-start">
+          <label class="form-label text-muted fw-bold">Resume Title</label>
+          <input type="text" name="title" class="form-control form-control-saas" placeholder="e.g. Senior Software Engineer Resume v1" required>
+        </div>
+
+        <div class="upload-drop-zone p-4 border border-dashed border-secondary rounded-4 mb-3" style="background: rgba(255,255,255,0.02); cursor: pointer;" onclick="document.getElementById('resumeFileInput').click();">
+          <i class="bi bi-file-earmark-pdf text-cyan fs-2 mb-2 d-block"></i>
+          <span class="fw-bold d-block mb-1">Click to browse or drop PDF resume here</span>
+          <small class="text-muted">Only .pdf files supported (Max 10MB)</small>
+          <input type="file" name="resume_file" id="resumeFileInput" class="d-none" accept=".pdf" required onchange="document.getElementById('fileNameLabel').innerText = this.files[0].name;">
+          <div class="mt-2 text-primary fw-bold" id="fileNameLabel"></div>
+        </div>
+
+        <button type="submit" class="btn btn-saas-primary w-100 py-2 text-uppercase fw-bold letter-spacing-1">
+          <i class="bi bi-cpu-fill me-2"></i> Run AI Resume Parser & ATS Audit
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

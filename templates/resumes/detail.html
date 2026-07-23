@@ -1,0 +1,339 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ resume.title }} - AI Dashboard | ResumeIQ{% endblock %}
+{% block header_title %}AI Resume Analysis Dashboard: {{ resume.title }}{% endblock %}
+
+{% block content %}
+<!-- Include html2pdf & Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="d-flex justify-content-end mb-4">
+    <button onclick="downloadPDF()" class="btn btn-saas-primary">
+        <i class="bi bi-file-earmark-pdf-fill me-2"></i> Download AI Report
+    </button>
+</div>
+
+<div id="ai-dashboard-content" class="pb-4">
+    <!-- Header info in PDF -->
+    <div class="d-none d-print-block mb-4 text-center">
+        <h2>ResumeIQ - Resume Analysis</h2>
+        <p class="text-muted">Report for: {{ resume.title }}</p>
+    </div>
+
+    <!-- 1. Scores (ATS & Overall) -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="saas-card h-100 text-center glass-card">
+                <h5 class="saas-card-title mb-4">ATS Compatibility Score</h5>
+                <div class="score-circle mx-auto" style="--score: {{ resume.ats_score }}%; width: 150px; height: 150px; border-radius: 50%; background: conic-gradient(var(--accent-indigo) var(--score), rgba(255,255,255,0.08) 0); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-glow);">
+                    <div style="width: 120px; height: 120px; border-radius: 50%; background: var(--bg-card); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <span class="display-5 fw-extrabold" style="line-height:1;">{{ resume.ats_score }}</span>
+                        <small class="text-muted">OUT OF 100</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="saas-card h-100 text-center glass-card">
+                <h5 class="saas-card-title mb-4">Overall Resume Score</h5>
+                <div class="score-circle mx-auto" style="--score: {{ resume.ai_analysis.overall_score|default:0 }}%; width: 150px; height: 150px; border-radius: 50%; background: conic-gradient(var(--accent-emerald) var(--score), rgba(255,255,255,0.08) 0); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(16, 185, 129, 0.15);">
+                    <div style="width: 120px; height: 120px; border-radius: 50%; background: var(--bg-card); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <span class="display-5 fw-extrabold" style="line-height:1;">{{ resume.ai_analysis.overall_score|default:0 }}</span>
+                        <small class="text-muted">OUT OF 100</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3 & 4. Strengths & Drawbacks -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="saas-card h-100 glass-card border-success border-opacity-25" style="border: 1px solid rgba(16,185,129,0.2);">
+                <h5 class="saas-card-title text-success"><i class="bi bi-shield-check me-2"></i> Resume Strengths</h5>
+                <ul class="list-unstyled mb-0">
+                    {% for item in resume.ai_analysis.strengths %}
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> {{ item }}</li>
+                    {% empty %}
+                        <li class="text-muted">No specific strengths identified.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="saas-card h-100 glass-card border-danger border-opacity-25" style="border: 1px solid rgba(239,68,68,0.2);">
+                <h5 class="saas-card-title text-danger"><i class="bi bi-exclamation-triangle me-2"></i> Drawbacks / Weaknesses</h5>
+                <ul class="list-unstyled mb-0">
+                    {% for item in resume.ai_analysis.drawbacks %}
+                        <li class="mb-2"><i class="bi bi-x-circle-fill text-danger me-2"></i> {{ item }}</li>
+                    {% empty %}
+                        <li class="text-muted">No specific weaknesses identified.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5 & 6. Keyword & Skills Analysis -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="saas-card h-100 glass-card">
+                <h5 class="saas-card-title"><i class="bi bi-key text-warning me-2"></i> ATS Keyword Analysis</h5>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="fw-bold">Match Percentage:</span>
+                    <span class="badge bg-primary fs-6">{{ resume.ai_analysis.keyword_analysis.match_percentage|default:0 }}%</span>
+                </div>
+                
+                <h6 class="text-success mt-3 small fw-bold">Found Keywords</h6>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    {% for kw in resume.ai_analysis.keyword_analysis.found %}
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-50 px-2 py-1">{{ kw }}</span>
+                    {% endfor %}
+                </div>
+                
+                <h6 class="text-danger small fw-bold">Missing Keywords</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for kw in resume.ai_analysis.keyword_analysis.missing %}
+                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-50 px-2 py-1">{{ kw }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="saas-card h-100 glass-card">
+                <h5 class="saas-card-title"><i class="bi bi-tools text-indigo me-2"></i> Skills Breakdown</h5>
+                <div style="height: 220px; position: relative;">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+                <div class="mt-3">
+                    <h6 class="text-info small fw-bold mt-2">Suggested Skills to Learn</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for skill in resume.ai_analysis.skills_analysis.suggested %}
+                            <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-50 px-2 py-1">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7 & 8. Project Analysis & Resume Sections -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-5">
+            <div class="saas-card h-100 glass-card">
+                <h5 class="saas-card-title"><i class="bi bi-folder-check text-cyan me-2"></i> Project Analysis</h5>
+                <div class="mb-3">
+                    <h6 class="text-muted small mb-1">Best Project</h6>
+                    <p class="fw-bold fs-5 mb-0 text-primary">{{ resume.ai_analysis.project_analysis.best_project|default:"None" }}</p>
+                </div>
+                <div class="mb-3">
+                    <h6 class="text-muted small mb-1">Impact Score</h6>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="progress flex-grow-1" style="height: 8px; background: rgba(255,255,255,0.08);">
+                            <div class="progress-bar bg-cyan" style="--w: {% widthratio resume.ai_analysis.project_analysis.score|default:0 10 100 %}%; width: var(--w);"></div>
+                        </div>
+                        <span class="fw-bold">{{ resume.ai_analysis.project_analysis.score|default:0 }}/10</span>
+                    </div>
+                </div>
+                <div>
+                    <h6 class="text-muted small mb-1">Quality Feedback</h6>
+                    <p class="mb-0 text-secondary fs-sm" style="font-size: 0.9rem;">{{ resume.ai_analysis.project_analysis.feedback }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="saas-card h-100 glass-card">
+                <h5 class="saas-card-title"><i class="bi bi-ui-checks-grid text-emerald me-2"></i> Resume Sections Check</h5>
+                <div class="row g-3">
+                    {% for section, status in resume.ai_analysis.section_checks.items %}
+                    <div class="col-md-4 col-6">
+                        <div class="p-2 rounded d-flex align-items-center gap-2" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);">
+                            {% if status %}
+                                <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                            {% else %}
+                                <i class="bi bi-x-circle-fill text-danger fs-5"></i>
+                            {% endif %}
+                            <span class="text-capitalize small fw-semibold">{{ section }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 9 & 10. Role Prediction & Interview Readiness -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="saas-card h-100 glass-card">
+                <h5 class="saas-card-title"><i class="bi bi-crosshair text-primary me-2"></i> Career Role Prediction</h5>
+                {% for role in resume.ai_analysis.role_predictions %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="fw-semibold">{{ role.role }}</span>
+                        <span class="fw-bold text-primary">{{ role.confidence }}%</span>
+                    </div>
+                    <div class="progress" style="height: 8px; background: rgba(255,255,255,0.08);">
+                        <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" style="--w: {{ role.confidence }}%; width: var(--w);"></div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted">No roles predicted.</p>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="saas-card h-100 glass-card">
+                <h5 class="saas-card-title"><i class="bi bi-mic text-warning me-2"></i> Interview Readiness Score</h5>
+                {% with tech=resume.ai_analysis.interview_readiness.technical|default:0 proj=resume.ai_analysis.interview_readiness.projects|default:0 rq=resume.ai_analysis.interview_readiness.resume_quality|default:0 comm=resume.ai_analysis.interview_readiness.communication|default:0 %}
+                <div class="row g-3">
+                    <div class="col-6">
+                        <p class="mb-1 small fw-semibold text-muted">Technical Skills</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="progress flex-grow-1" style="height: 6px; background: rgba(255,255,255,0.08);">
+                                <div class="progress-bar bg-info" style="--w: {{ tech }}%; width: var(--w);"></div>
+                            </div>
+                            <span class="small">{{ tech }}%</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <p class="mb-1 small fw-semibold text-muted">Projects</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="progress flex-grow-1" style="height: 6px; background: rgba(255,255,255,0.08);">
+                                <div class="progress-bar bg-indigo" style="--w: {{ proj }}%; width: var(--w);"></div>
+                            </div>
+                            <span class="small">{{ proj }}%</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <p class="mb-1 small fw-semibold text-muted">Resume Quality</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="progress flex-grow-1" style="height: 6px; background: rgba(255,255,255,0.08);">
+                                <div class="progress-bar bg-success" style="--w: {{ rq }}%; width: var(--w);"></div>
+                            </div>
+                            <span class="small">{{ rq }}%</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <p class="mb-1 small fw-semibold text-muted">Communication</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="progress flex-grow-1" style="height: 6px; background: rgba(255,255,255,0.08);">
+                                <div class="progress-bar bg-warning" style="--w: {{ comm }}%; width: var(--w);"></div>
+                            </div>
+                            <span class="small">{{ comm }}%</span>
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+
+    <!-- 11 & 12. Suggestions & Roadmap -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="saas-card h-100 glass-card">
+                <h5 class="saas-card-title"><i class="bi bi-lightbulb text-warning me-2"></i> Personalized Suggestions</h5>
+                <ul class="list-group list-group-flush bg-transparent">
+                    {% for suggestion in resume.ai_analysis.improvement_suggestions %}
+                    <li class="list-group-item bg-transparent text-secondary px-0 border-secondary border-opacity-25 d-flex gap-2">
+                        <i class="bi bi-arrow-right-short text-primary fs-5 mt-n1"></i> 
+                        <span>{{ suggestion }}</span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item bg-transparent text-muted px-0 border-0">No suggestions available.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="saas-card h-100 glass-card" style="background: linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(16,185,129,0.05) 100%);">
+                <h5 class="saas-card-title"><i class="bi bi-signpost-split text-emerald me-2"></i> Career Roadmap</h5>
+                
+                <div class="mb-3">
+                    <h6 class="small text-muted fw-bold mb-2">Top Skills to Master</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for skill in resume.ai_analysis.career_roadmap.skills_to_learn %}
+                        <span class="badge bg-main border border-secondary text-primary px-2 py-1">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <h6 class="small text-muted fw-bold mb-2">Recommended Projects</h6>
+                    <ul class="list-unstyled mb-0 ms-1 small">
+                        {% for proj in resume.ai_analysis.career_roadmap.projects %}
+                        <li class="mb-1 text-secondary"><i class="bi bi-dot text-indigo"></i> {{ proj }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div>
+                    <h6 class="small text-muted fw-bold mb-2">Certifications & Tech</h6>
+                    <p class="small text-secondary mb-1"><strong>Certs:</strong> {{ resume.ai_analysis.career_roadmap.certifications|join:", " }}</p>
+                    <p class="small text-secondary mb-0"><strong>Next Tech:</strong> {{ resume.ai_analysis.career_roadmap.next_technologies|join:", " }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Skills Chart
+    const ctx = document.getElementById('skillsChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Technical', 'Soft', 'Missing'],
+                datasets: [{
+                    data: [
+                        parseInt('{{ resume.ai_analysis.skills_analysis.technical|length|default:0 }}', 10),
+                        parseInt('{{ resume.ai_analysis.skills_analysis.soft|length|default:0 }}', 10),
+                        parseInt('{{ resume.ai_analysis.skills_analysis.missing|length|default:0 }}', 10)
+                    ],
+                    backgroundColor: [
+                        '#2563EB', // Indigo
+                        '#10B981', // Emerald
+                        '#EF4444'  // Red
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#94A3B8', font: { family: 'Inter' } }
+                    }
+                },
+                cutout: '75%'
+            }
+        });
+    }
+});
+
+function downloadPDF() {
+    const element = document.getElementById('ai-dashboard-content');
+    const opt = {
+        margin:       [0.5, 0.5, 0.5, 0.5],
+        filename:     '{{ resume.title|slugify }}_AI_Analysis.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0B0F19' },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Match Analysis: {{ analysis.job_description.title }} | ResumeIQ{% endblock %}
+{% block header_title %}Job Description Match Breakdown{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+  <!-- Cosine Score Display -->
+  <div class="col-lg-4">
+    <div class="saas-card text-center h-100 d-flex flex-column justify-content-center align-items-center p-4">
+      <div class="mb-3">
+        <div style="--score: {{ analysis.match_score }}%; width: 140px; height: 140px; border-radius: 50%; background: conic-gradient(var(--accent-emerald) var(--score), rgba(255, 255, 255, 0.08) 0); display: flex; align-items: center; justify-content: center; margin: 0 auto; box-shadow: var(--shadow-glow);">
+          <div style="width: 115px; height: 115px; border-radius: 50%; background: var(--bg-card); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <span class="display-6 fw-extrabold text-emerald">{{ analysis.match_score }}%</span>
+            <small class="text-muted" style="font-size:0.7rem;">MATCH SCORE</small>
+          </div>
+        </div>
+      </div>
+
+      <h5 class="fw-bold mb-1">{{ analysis.job_description.title }}</h5>
+      <p class="text-muted small mb-3">{{ analysis.job_description.company_name|default:'Target Position' }}</p>
+
+      <form method="POST" action="{% url 'application_tracker' %}" class="w-100 mt-auto">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add">
+        <input type="hidden" name="job_title" value="{{ analysis.job_description.title }}">
+        <input type="hidden" name="company_name" value="{{ analysis.job_description.company_name|default:'Company' }}">
+        <input type="hidden" name="match_id" value="{{ analysis.id }}">
+        <button type="submit" class="btn btn-saas-primary w-100"><i class="bi bi-bookmark-plus me-1"></i> Add to Application Tracker</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Skill Matrix Comparison -->
+  <div class="col-lg-8">
+    <div class="saas-card h-100">
+      <div class="saas-card-header">
+        <h5 class="saas-card-title"><i class="bi bi-diagram-3-fill text-cyan"></i> Tech Skill Gap Matrix</h5>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <div class="p-3 rounded-3" style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2);">
+            <h6 class="fw-bold text-emerald mb-2"><i class="bi bi-check-circle-fill me-1"></i> Matched Skills ({{ analysis.matching_skills|length }})</h6>
+            {% for skill in analysis.matching_skills %}
+              <span class="skill-badge matched">{{ skill }}</span>
+            {% empty %}
+              <span class="text-muted small">No overlapping skills found.</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="p-3 rounded-3" style="background: rgba(244, 63, 94, 0.05); border: 1px solid rgba(244, 63, 94, 0.2);">
+            <h6 class="fw-bold text-rose mb-2"><i class="bi bi-exclamation-triangle-fill me-1"></i> Missing Skills ({{ analysis.missing_skills|length }})</h6>
+            {% for skill in analysis.missing_skills %}
+              <span class="skill-badge missing">{{ skill }}</span>
+            {% empty %}
+              <span class="text-emerald small"><i class="bi bi-star-fill"></i> Perfect Skill Coverage!</span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <h6 class="fw-bold mb-2"><i class="bi bi-lightbulb text-warning"></i> Recommended Optimization Steps</h6>
+      <ul class="list-unstyled mb-0">
+        {% for tip in analysis.improvement_tips %}
+          <li class="text-muted small mb-2"><i class="bi bi-arrow-right-circle-fill text-indigo me-2"></i> {{ tip }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Tailored AI Bullets -->
+  <div class="col-lg-6">
+    <div class="saas-card h-100">
+      <div class="saas-card-header">
+        <h5 class="saas-card-title"><i class="bi bi-magic text-warning"></i> AI Tailored Resume Bullet Suggestions</h5>
+      </div>
+      <div>
+        {% for bullet in analysis.ai_bullets %}
+          <div class="p-3 mb-2 rounded-3" style="background: var(--bg-input);">
+            <div class="small fw-medium">{{ bullet }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Recommended Missing Skill Learning Resources -->
+  <div class="col-lg-6">
+    <div class="saas-card h-100">
+      <div class="saas-card-header">
+        <h5 class="saas-card-title"><i class="bi bi-journal-bookmark-fill text-primary"></i> Learning Resources for Missing Skills</h5>
+        <a href="{% url 'learning_resources' %}" class="btn btn-saas-secondary btn-sm">Full Library</a>
+      </div>
+
+      <div class="list-group list-group-flush bg-transparent">
+        {% for res in suggested_resources %}
+          <a href="{{ res.url }}" target="_blank" class="list-group-item bg-transparent text-white border-secondary d-flex justify-content-between align-items-center py-3">
+            <div>
+              <div class="fw-bold small">{{ res.title }}</div>
+              <small class="text-muted">{{ res.provider }} • <span class="badge bg-secondary" style="font-size:0.65rem;">{{ res.skill_name }}</span></small>
+            </div>
+            <i class="bi bi-box-arrow-up-right text-muted"></i>
+          </a>
+        {% empty %}
+          <p class="text-muted small">All required skills matched! Check the main learning hub for advanced resources.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

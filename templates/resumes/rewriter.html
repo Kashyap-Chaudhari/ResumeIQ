@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Resume Rewriter | ResumeIQ{% endblock %}
+{% block header_title %}AI Resume Bullet Point Rewriter Generator{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="saas-card">
+      <div class="saas-card-header">
+        <h5 class="saas-card-title"><i class="bi bi-pencil-square text-indigo"></i> Bullet Points Input</h5>
+      </div>
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+          <label class="form-label text-muted fw-bold">Target Job Role</label>
+          <input type="text" name="target_role" class="form-control form-control-saas" value="{{ user_profile.target_role }}" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-muted fw-bold">Missing Keywords to Integrate (Comma separated)</label>
+          <input type="text" name="missing_skills" class="form-control form-control-saas" placeholder="e.g. Docker, Redis, CI/CD, Microservices">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label text-muted fw-bold">Current Resume Bullet Points</label>
+          <textarea name="input_bullets" class="form-control form-control-saas" rows="7" placeholder="Paste 2-4 bullet points from your resume here..." required>{{ input_bullets }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-saas-primary w-100 py-2">
+          <i class="bi bi-magic me-2"></i> Rewrite with AI (STAR Method + Metrics)
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="saas-card h-100">
+      <div class="saas-card-header">
+        <h5 class="saas-card-title"><i class="bi bi-stars text-warning"></i> AI High-Impact Rewritten Bullets</h5>
+        {% if rewritten_bullets %}
+          <button class="btn btn-saas-secondary btn-sm btn-copy-text" data-target="rewrittenOutputBox"><i class="bi bi-clipboard me-1"></i> Copy All</button>
+        {% endif %}
+      </div>
+
+      {% if rewritten_bullets %}
+        <div id="rewrittenOutputBox">
+          {% for bullet in rewritten_bullets %}
+            <div class="p-3 mb-3 rounded-3" style="background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.25);">
+              <div class="d-flex align-items-start gap-2">
+                <i class="bi bi-check-circle-fill text-success mt-1"></i>
+                <div class="fw-medium">{{ bullet }}</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-5 text-muted">
+          <i class="bi bi-robot fs-1 mb-2 d-block text-secondary"></i>
+          Paste your weak resume bullet points on the left to transform them into high-converting ATS power bullets with metrics!
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign Up - ResumeIQ{% endblock %}
+
+{% block auth_content %}
+<div class="auth-card" style="max-width: 500px;">
+    <div class="text-center mb-4">
+        <div class="brand-logo-icon mx-auto mb-3" style="width: 48px; height: 48px; font-size: 22px;">
+            <i class="bi bi-rocket-takeoff-fill"></i>
+        </div>
+        <h3 class="fw-bold mt-2" style="color: var(--text-primary); letter-spacing: -0.5px;">Create Account</h3>
+        <p class="text-secondary mb-0" style="font-size: 0.95rem;">Start accelerating your career today</p>
+    </div>
+
+    <form method="POST" action="{% url 'register' %}" id="registerForm">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger p-3 mb-4 rounded-3 d-flex gap-2 align-items-center" style="font-size: 0.9rem; border: 1px solid rgba(244,63,94,0.2); background: rgba(244,63,94,0.05); color: var(--accent-rose);">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <div>{{ form.non_field_errors|join:", " }}</div>
+        </div>
+        {% endif %}
+        
+        <div class="row gx-3">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.first_name.id_for_label }}" class="form-label d-block fw-semibold mb-1" style="color: var(--text-primary); font-size: 0.85rem;">{{ form.first_name.label }}</label>
+                {{ form.first_name }}
+                {{ form.first_name.errors }}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.last_name.id_for_label }}" class="form-label d-block fw-semibold mb-1" style="color: var(--text-primary); font-size: 0.85rem;">{{ form.last_name.label }}</label>
+                {{ form.last_name }}
+                {{ form.last_name.errors }}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.email.id_for_label }}" class="form-label d-block fw-semibold mb-1" style="color: var(--text-primary); font-size: 0.85rem;">{{ form.email.label }}</label>
+            {{ form.email }}
+            {{ form.email.errors }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.username.id_for_label }}" class="form-label d-block fw-semibold mb-1" style="color: var(--text-primary); font-size: 0.85rem;">{{ form.username.label }}</label>
+            {{ form.username }}
+            {{ form.username.errors }}
+        </div>
+
+        <!-- In Django, CustomUserCreationForm handles password fields directly but we can't easily add IDs without overriding. We will use JS to find them -->
+        <div id="passwordFieldsContainer">
+            {% for field in form %}
+                {% if 'password' in field.name|lower %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label fw-semibold mb-1" style="color: var(--text-primary); font-size: 0.85rem;">{{ field.label }}</label>
+                        <div class="password-wrapper">
+                            {{ field }}
+                            <i class="bi bi-eye-slash-fill password-toggle" title="Show password"></i>
+                        </div>
+                        
+                        {% if '1' in field.name|lower %}
+                        <!-- Strength Indicator only for first password field -->
+                        <div class="strength-meter mt-2">
+                            <div class="strength-meter-fill" id="strengthMeter"></div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-1">
+                            <small class="text-muted" style="font-size: 0.75rem;" id="strengthText">Password strength</small>
+                        </div>
+                        {% endif %}
+                        
+                        {% if field.help_text %}
+                        <div class="helptext-container mt-1">
+                            {{ field.help_text|safe }}
+                        </div>
+                        {% endif %}
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="mb-4 mt-3 form-check d-flex align-items-start gap-2">
+            {{ form.accept_terms }}
+            <label class="form-check-label text-secondary lh-sm" for="{{ form.accept_terms.id_for_label }}" style="font-size: 0.8rem; padding-top: 2px;">
+                {{ form.accept_terms.label }}
+            </label>
+            {{ form.accept_terms.errors }}
+        </div>
+        
+        <button type="submit" class="btn-saas-primary w-100 text-center py-2" id="registerBtn" style="font-size: 0.95rem; height: 44px;">
+            <span class="btn-text">Create Account</span>
+        </button>
+    </form>
+    
+    <div class="text-center mt-4">
+        <p class="text-secondary mb-0" style="font-size: 0.9rem;">Already have an account? <a href="{% url 'login' %}" style="color: var(--accent-indigo); text-decoration: none; font-weight: 600;">Log In</a></p>
+    </div>
+</div>
+
+<style>
+    .errorlist { color: var(--accent-rose, #ef4444); list-style: none; padding-left: 0; font-size: 0.8rem; margin-top: 5px; margin-bottom: 0; }
+    .helptext-container { font-size: 0.75rem; color: var(--text-muted); }
+    .helptext-container ul { padding-left: 1.2rem; margin-bottom: 0; }
+    .helptext-container ul li { margin-bottom: 2px; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password Toggles
+    const toggles = document.querySelectorAll('.password-toggle');
+    toggles.forEach(toggle => {
+        toggle.addEventListener('click', function() {
+            const input = this.previousElementSibling;
+            if (input && input.tagName === 'INPUT') {
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.classList.toggle('bi-eye-fill');
+                this.classList.toggle('bi-eye-slash-fill');
+            }
+        });
+    });
+
+    // Password Strength Indicator
+    const passwordInputs = document.querySelectorAll('input[type="password"]');
+    if (passwordInputs.length > 0) {
+        const mainPassword = passwordInputs[0]; // Assuming first is the main one
+        const meter = document.getElementById('strengthMeter');
+        const text = document.getElementById('strengthText');
+        
+        if (mainPassword && meter && text) {
+            mainPassword.addEventListener('input', function() {
+                const val = this.value;
+                let strength = 0;
+                
+                if (val.length >= 8) strength += 1;
+                if (val.match(/[a-z]/) && val.match(/[A-Z]/)) strength += 1;
+                if (val.match(/\d/) && val.match(/[^a-zA-Z\d]/)) strength += 1;
+                
+                meter.className = 'strength-meter-fill';
+                
+                if (val.length === 0) {
+                    meter.style.width = '0%';
+                    text.textContent = 'Password strength';
+                } else if (strength === 1 || val.length < 8) {
+                    meter.style.width = '33%';
+                    meter.classList.add('strength-weak');
+                    text.textContent = 'Weak';
+                } else if (strength === 2) {
+                    meter.style.width = '66%';
+                    meter.classList.add('strength-medium');
+                    text.textContent = 'Medium';
+                } else if (strength === 3) {
+                    meter.style.width = '100%';
+                    meter.classList.add('strength-strong');
+                    text.textContent = 'Strong';
+                }
+            });
+        }
+    }
+
+    // Loading State
+    const form = document.getElementById('registerForm');
+    const btn = document.getElementById('registerBtn');
+    
+    form.addEventListener('submit', function() {
+        // Simple client-side validation for passwords
+        if (passwordInputs.length >= 2) {
+            if (passwordInputs[0].value !== passwordInputs[1].value) {
+                alert("Passwords do not match!");
+                return false;
+            }
+        }
+        btn.classList.add('btn-loading');
+    });
+});
+</script>
+{% endblock %}

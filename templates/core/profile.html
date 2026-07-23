@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}Settings & Profile | ResumeIQ{% endblock %}
+{% block header_title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+  <!-- Left Column: Avatar & Summary -->
+  <div class="col-lg-4 mb-4">
+    <div class="profile-sidebar-card">
+      <div class="profile-avatar-box">
+        {% if user.first_name and user.last_name %}
+          {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+        {% else %}
+          {{ user.username|make_list|first|upper }}
+        {% endif %}
+      </div>
+      <div class="profile-name">{{ user.get_full_name|default:user.username }}</div>
+      <div class="profile-email">{{ user.email|default:"noemail@example.com" }}</div>
+
+      <div class="achievements-section">
+        <div class="achievements-title">Achievements & Badges</div>
+        <div class="d-flex justify-content-center gap-4">
+          <div class="badge-item">
+            <div class="badge-icon-box text-warning">
+              <i class="bi bi-star-fill"></i>
+            </div>
+            <div class="badge-label">Newcomer</div>
+          </div>
+          <div class="badge-item">
+            <div class="badge-icon-box" style="color: #F43F5E;">
+              <i class="bi bi-puzzle-fill"></i>
+            </div>
+            <div class="badge-label">Problem Solver</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Forms -->
+  <div class="col-lg-8">
+    
+    <!-- Card 1: Career Details -->
+    <div class="profile-form-card">
+      <div class="profile-form-card-header">
+        <i class="bi bi-mortarboard-fill"></i> Career & Personal Details
+      </div>
+      <form method="POST">
+        {% csrf_token %}
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="premium-label">First Name <span class="required">*</span></label>
+            <div class="premium-input-group">
+              <i class="bi bi-person"></i>
+              <input type="text" name="first_name" class="form-control premium-input-dark" value="{{ user.first_name }}" placeholder="First Name">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="premium-label">Last Name <span class="required">*</span></label>
+            <div class="premium-input-group">
+              <i class="bi bi-person"></i>
+              <input type="text" name="last_name" class="form-control premium-input-dark" value="{{ user.last_name }}" placeholder="Last Name">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="premium-label">Email (Cannot change)</label>
+            <div class="premium-input-group">
+              <i class="bi bi-envelope"></i>
+              <input type="email" class="form-control premium-input-dark" value="{{ user.email }}" disabled>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="premium-label">Location</label>
+            <div class="premium-input-group">
+              <i class="bi bi-geo-alt"></i>
+              <input type="text" name="location" class="form-control premium-input-dark" value="{{ profile.location }}" placeholder="e.g. San Francisco">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="premium-label">Target Role</label>
+            <div class="premium-input-group">
+              <i class="bi bi-briefcase"></i>
+              <input type="text" name="target_role" class="form-control premium-input-dark" value="{{ profile.target_role }}" placeholder="Target Job Role">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="premium-label">Experience Level</label>
+            <div class="premium-input-group">
+              <i class="bi bi-graph-up-arrow"></i>
+              <select name="experience_level" class="form-select premium-input-dark" style="padding-left: 44px;">
+                <option value="Entry" {% if profile.experience_level == 'Entry' %}selected{% endif %}>Entry Level</option>
+                <option value="Mid" {% if profile.experience_level == 'Mid' %}selected{% endif %}>Mid Level</option>
+                <option value="Senior" {% if profile.experience_level == 'Senior' %}selected{% endif %}>Senior Level</option>
+                <option value="Lead" {% if profile.experience_level == 'Lead' %}selected{% endif %}>Lead Level</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn-gradient-primary">Save Details</button>
+      </form>
+    </div>
+
+    <!-- Card 2: API & Security Settings -->
+    <div class="profile-form-card">
+      <div class="profile-form-card-header">
+        <i class="bi bi-shield-lock-fill text-warning"></i> Security & API Settings
+      </div>
+      <form method="POST">
+        {% csrf_token %}
+        <div class="row g-3 mb-4">
+          <!-- Removed API Key Field per user request -->
+          <div class="col-md-6">
+            <label class="premium-label">New Password <span class="required">*</span></label>
+            <div class="premium-input-group">
+              <i class="bi bi-lock"></i>
+              <input type="password" id="new_password" class="form-control premium-input-dark" placeholder="Min 6 characters">
+              <i class="bi bi-eye toggle-password" onclick="togglePassword(this, 'new_password')"></i>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="premium-label">Confirm New Password <span class="required">*</span></label>
+            <div class="premium-input-group">
+              <i class="bi bi-lock"></i>
+              <input type="password" id="confirm_password" class="form-control premium-input-dark" placeholder="Repeat new password">
+              <i class="bi bi-eye toggle-password" onclick="togglePassword(this, 'confirm_password')"></i>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn-gradient-primary">Update Security</button>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function togglePassword(icon, inputName) {
+    const inputs = document.getElementsByName(inputName);
+    let input = inputs.length > 0 ? inputs[0] : document.getElementById(inputName);
+    if(input) {
+      if(input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+      }
+    }
+  }
+</script>
+{% endblock %}

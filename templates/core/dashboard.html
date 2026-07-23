@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <!-- Welcome Card -->
+    <div class="col-12">
+        <div class="saas-card p-4 d-flex align-items-center justify-content-between" style="border-left: 4px solid var(--accent-indigo);">
+            <div>
+                <h3 class="fw-bold mb-1">Welcome back, {{ user.username }} 👋</h3>
+                <p class="text-secondary mb-0">Here's a summary of your career progression and application status.</p>
+            </div>
+            <a href="{% url 'resumes:upload' %}" class="btn-saas-primary d-none d-md-inline-flex gap-2 align-items-center">
+                <i class="bi bi-cloud-arrow-up-fill"></i> Upload New Resume
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- ATS Score Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="saas-card p-4 h-100 text-center">
+            <h5 class="fw-bold text-secondary mb-4">Latest ATS Score</h5>
+            {% if recent_resume %}
+            <div class="position-relative d-inline-block mx-auto mb-3" style="width: 140px; height: 140px;">
+                <canvas id="atsScoreChart"></canvas>
+                <div class="position-absolute top-50 start-50 translate-middle text-center">
+                    <h2 class="fw-bold mb-0 {% if recent_resume.ats_score >= 80 %}text-success{% elif recent_resume.ats_score >= 60 %}text-warning{% else %}text-danger{% endif %}">{{ recent_resume.ats_score }}</h2>
+                    <small class="text-secondary">/ 100</small>
+                </div>
+            </div>
+            <h6 class="fw-bold">{{ recent_resume.title }}</h6>
+            <a href="{% url 'resumes:detail' recent_resume.id %}" class="btn-saas-secondary mt-2 d-inline-block" style="font-size: 0.85rem; padding: 6px 12px;">View Analysis</a>
+            {% else %}
+            <div class="d-flex flex-column align-items-center justify-content-center h-100 pb-4">
+                <i class="bi bi-file-earmark-x text-secondary mb-2" style="font-size: 2.5rem;"></i>
+                <p class="text-secondary">No resumes analyzed yet.</p>
+                <a href="{% url 'resumes:upload' %}" class="btn-saas-primary mt-2">Analyze Resume</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Application Tracker Card -->
+    <div class="col-lg-8 col-md-6">
+        <div class="saas-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold text-secondary mb-0">Application Funnel</h5>
+                <a href="{% url 'jobs:tracker' %}" class="text-decoration-none" style="color: var(--accent-indigo); font-size: 0.9rem; font-weight: 600;">View Tracker <i class="bi bi-arrow-right"></i></a>
+            </div>
+            
+            <div class="row text-center g-3 mt-2">
+                <div class="col">
+                    <div class="p-3 rounded border" style="background: rgba(148, 163, 184, 0.05); border-color: var(--border-color) !important;">
+                        <h3 class="fw-bold mb-1 text-primary">{{ app_stats.saved }}</h3>
+                        <small class="text-secondary d-block text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px; font-weight: 600;">Saved</small>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="p-3 rounded border" style="background: rgba(99, 102, 241, 0.05); border-color: var(--border-color) !important;">
+                        <h3 class="fw-bold mb-1" style="color: var(--accent-indigo);">{{ app_stats.applied }}</h3>
+                        <small class="text-secondary d-block text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px; font-weight: 600;">Applied</small>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="p-3 rounded border" style="background: rgba(245, 158, 11, 0.05); border-color: var(--border-color) !important;">
+                        <h3 class="fw-bold mb-1 text-warning">{{ app_stats.interviewing }}</h3>
+                        <small class="text-secondary d-block text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px; font-weight: 600;">Interview</small>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="p-3 rounded border" style="background: rgba(16, 185, 129, 0.05); border-color: var(--border-color) !important;">
+                        <h3 class="fw-bold mb-1 text-success">{{ app_stats.offer }}</h3>
+                        <small class="text-secondary d-block text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px; font-weight: 600;">Offers</small>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="p-3 rounded border" style="background: rgba(244, 63, 94, 0.05); border-color: var(--border-color) !important;">
+                        <h3 class="fw-bold mb-1 text-danger">{{ app_stats.rejected }}</h3>
+                        <small class="text-secondary d-block text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px; font-weight: 600;">Rejected</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <!-- Quick Actions -->
+    <div class="col-lg-6">
+        <div class="saas-card p-4 h-100">
+            <h5 class="fw-bold text-muted mb-4">Quick Actions</h5>
+            
+            <div class="list-group">
+                <a href="{% url 'jobs:match' %}" class="list-group-item list-group-item-action bg-transparent border-secondary text-light d-flex align-items-center gap-3 py-3">
+                    <div class="rounded p-2" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
+                        <i class="bi bi-bullseye fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold">Analyze Job Match</h6>
+                        <small class="text-muted">Compare your resume against a specific job description.</small>
+                    </div>
+                </a>
+                <a href="{% url 'coaching:interview' %}" class="list-group-item list-group-item-action bg-transparent border-secondary text-light d-flex align-items-center gap-3 py-3">
+                    <div class="rounded p-2" style="background: rgba(168, 85, 247, 0.1); color: #a855f7;">
+                        <i class="bi bi-chat-left-quote-fill fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold">Practice Interview</h6>
+                        <small class="text-muted">Start an AI-guided mock interview for your target role.</small>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </div>
+    
+    <!-- Readiness -->
+    <div class="col-lg-6">
+        <div class="saas-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold text-muted mb-0">Placement Readiness</h5>
+                <a href="{% url 'coaching:readiness' %}" class="text-decoration-none" style="color: #6366f1; font-size: 0.9rem;">Full Report <i class="bi bi-arrow-right"></i></a>
+            </div>
+            
+            {% if readiness %}
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h2 class="fw-bold mb-0 text-primary">{{ readiness.overall_score }}<span class="text-secondary fs-5">/100</span></h2>
+                    <small class="text-secondary">Overall Readiness Score</small>
+                </div>
+                <div class="text-end">
+                    <h5 class="fw-bold text-success mb-0"><i class="bi bi-arrow-up-right"></i> {{ readiness.overall_score|add:"5" }}</h5>
+                    <small class="text-secondary">Proj. after Roadmap</small>
+                </div>
+            </div>
+            <!-- Progress bars for readiness -->
+            <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                    <small class="fw-bold">Technical Skills</small>
+                    <small class="text-secondary">75%</small>
+                </div>
+                <div class="progress" style="height: 8px; background: var(--border-color);">
+                    <div class="progress-bar" role="progressbar" style="width: 75%; background: var(--accent-indigo);"></div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                    <small class="fw-bold">Soft Skills & Behavioral</small>
+                    <small class="text-secondary">60%</small>
+                </div>
+                <div class="progress" style="height: 8px; background: var(--border-color);">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 60%;"></div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                    <small class="fw-bold">System Design</small>
+                    <small class="text-secondary">45%</small>
+                </div>
+                <div class="progress" style="height: 8px; background: var(--border-color);">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 45%;"></div>
+                </div>
+            </div>
+            {% else %}
+            <div class="d-flex flex-column align-items-center justify-content-center h-75 pb-2">
+                <i class="bi bi-speedometer2 text-secondary mb-3" style="font-size: 3rem;"></i>
+                <p class="text-secondary text-center px-4">Take a mock interview or analyze a job description to generate your readiness score.</p>
+                <a href="{% url 'coaching:interview' %}" class="btn-saas-secondary mt-2">Start Interview</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if recent_resume %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('atsScoreChart').getContext('2d');
+    const score = {{ recent_resume.ats_score }};
+    const remainder = 100 - score;
+    let color = '#ef4444'; // red
+    if (score >= 80) color = '#22c55e'; // green
+    else if (score >= 60) color = '#eab308'; // yellow
+    
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [score, remainder],
+                backgroundColor: [color, '#334155'],
+                borderWidth: 0,
+                cutout: '80%',
+                borderRadius: 20
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { tooltip: { enabled: false } }
+        }
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

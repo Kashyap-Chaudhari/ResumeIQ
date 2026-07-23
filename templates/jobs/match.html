@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% block title %}TF-IDF Job Matcher | ResumeIQ{% endblock %}
+{% block header_title %}TF-IDF Job Matcher{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    {% if not results %}
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="saas-card" style="padding: 40px;">
+                <h2 class="fw-bold mb-3">Compare your resume against a Job Description</h2>
+                <p class="text-secondary mb-4">Uses strict TF-IDF Cosine Similarity to calculate exact keyword matches without generative AI hallucination.</p>
+                
+                <form method="POST" enctype="multipart/form-data" id="matchForm">
+                    {% csrf_token %}
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-5 d-flex flex-column">
+                            <label class="form-label fw-bold">1. Upload Resume</label>
+                            <div class="border rounded p-4 text-center flex-grow-1 d-flex flex-column justify-content-center" style="border-style: dashed !important; background: var(--bg-main);">
+                                <i class="bi bi-cloud-upload text-primary mb-3" style="font-size: 2.5rem;"></i>
+                                <p class="mb-2">Drag and drop or click to browse</p>
+                                <small class="text-secondary d-block mb-3">PDF, DOCX, TXT</small>
+                                <input type="file" name="resume_file" class="form-control w-100 mx-auto" accept=".pdf,.docx,.txt" required>
+                            </div>
+                        </div>
+                        <div class="col-md-7 d-flex flex-column">
+                            <label class="form-label fw-bold">2. Paste Job Description</label>
+                            <textarea name="jd_text" class="form-control flex-grow-1" rows="8" placeholder="Paste the target job description here..." required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn-gradient-primary btn-lg px-5" id="analyzeBtn">
+                            <i class="bi bi-cpu-fill me-2"></i> Analyze Match
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="loadingState" class="text-center py-5 d-none">
+                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h4 class="fw-bold">Running TF-IDF Analysis...</h4>
+                    <p class="text-secondary">Generating vectors and calculating cosine similarity.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('matchForm').addEventListener('submit', function() {
+            document.getElementById('analyzeBtn').style.display = 'none';
+            document.getElementById('loadingState').classList.remove('d-none');
+        });
+    </script>
+    
+    {% else %}
+    <!-- Dashboard Results -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">Match Results Dashboard</h2>
+        <div class="d-flex gap-2">
+            <a href="{% url 'jobs:match' %}" class="btn btn-outline-secondary rounded-pill">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset
+            </a>
+            <button class="btn btn-outline-primary rounded-pill" onclick="copyResults()">
+                <i class="bi bi-clipboard"></i> Copy Results
+            </button>
+            <button class="btn btn-outline-success rounded-pill" onclick="window.print()">
+                <i class="bi bi-file-pdf"></i> Download Report
+            </button>
+        </div>
+    </div>
+    
+    <!-- Quick Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="saas-card text-center p-4">
+                <div class="mb-2 text-secondary fw-bold text-uppercase" style="font-size: 0.8rem;">Overall Match</div>
+                <div class="fw-bold" {% if results.match_score >= 90 %}style="font-size: 2.5rem; color: #10B981;"{% elif results.match_score >= 75 %}style="font-size: 2.5rem; color: #3B82F6;"{% elif results.match_score >= 50 %}style="font-size: 2.5rem; color: #F59E0B;"{% else %}style="font-size: 2.5rem; color: #EF4444;"{% endif %}>
+                    {{ results.match_score }}%
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="saas-card text-center p-4">
+                <div class="mb-2 text-secondary fw-bold text-uppercase" style="font-size: 0.8rem;">Matched Keywords</div>
+                <div class="fw-bold" style="font-size: 2.5rem; color: #10B981;">{{ results.matched_keywords|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="saas-card text-center p-4">
+                <div class="mb-2 text-secondary fw-bold text-uppercase" style="font-size: 0.8rem;">Missing Keywords</div>
+                <div class="fw-bold" style="font-size: 2.5rem; color: #EF4444;">{{ results.missing_keywords|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="saas-card text-center p-4">
+                <div class="mb-2 text-secondary fw-bold text-uppercase" style="font-size: 0.8rem;">Resume Coverage</div>
+                <div class="fw-bold" style="font-size: 2.5rem; color: #6366F1;">{{ results.coverage_percentage }}%</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <!-- Main Stats Column -->
+        <div class="col-lg-8">
+            <div class="saas-card p-4 mb-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart-fill text-primary me-2"></i>Analysis Summary</h5>
+                <p class="mb-0 text-secondary" style="font-size: 1.1rem; line-height: 1.6;" id="summaryText">{{ results.summary }}</p>
+            </div>
+            
+            <div class="saas-card p-4 mb-4">
+                <h5 class="fw-bold mb-4"><i class="bi bi-grid-3x3-gap-fill text-indigo me-2"></i>Keyword Heatmap</h5>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for item in results.skill_frequency %}
+                        {% if item.status == 'Strong Match' %}
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-2 fs-6">
+                                {{ item.keyword }} ✅
+                            </span>
+                        {% elif item.status == 'Weak Match' %}
+                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning rounded-pill px-3 py-2 fs-6">
+                                {{ item.keyword }} 🟡
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger rounded-pill px-3 py-2 fs-6">
+                                {{ item.keyword }} ❌
+                            </span>
+                        {% endif %}
+                    {% empty %}
+                        <div class="text-secondary">No specific keywords extracted.</div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="saas-card p-4">
+                <h5 class="fw-bold mb-4"><i class="bi bi-table text-primary me-2"></i>Skill Frequency Comparison (TF-IDF derived)</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Keyword</th>
+                                <th class="text-center">Job Description Count</th>
+                                <th class="text-center">Resume Count</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in results.skill_frequency %}
+                            <tr>
+                                <td class="fw-bold">{{ item.keyword|title }}</td>
+                                <td class="text-center">{{ item.jd_count }}</td>
+                                <td class="text-center">{{ item.resume_count }}</td>
+                                <td>
+                                    {% if item.status == 'Strong Match' %}
+                                        <span class="badge bg-success">Strong</span>
+                                    {% elif item.status == 'Weak Match' %}
+                                        <span class="badge bg-warning text-dark">Weak</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Missing</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar Column -->
+        <div class="col-lg-4">
+            <div class="saas-card p-4 mb-4 text-center">
+                <h5 class="fw-bold mb-3">Hiring Readiness</h5>
+                
+                <div class="d-flex justify-content-center mb-3" {% if results.match_score >= 90 %}style="--score-color: #10B981;"{% elif results.match_score >= 75 %}style="--score-color: #3B82F6;"{% elif results.match_score >= 50 %}style="--score-color: #F59E0B;"{% else %}style="--score-color: #EF4444;"{% endif %}>
+                    <div style="width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; border: 8px solid var(--score-color); color: var(--score-color); box-shadow: inset 0 0 15px rgba(0,0,0,0.05);">
+                        {{ results.match_score }}%
+                    </div>
+                </div>
+                
+                <h4 class="fw-bold" {% if results.match_score >= 90 %}style="color: #10B981;"{% elif results.match_score >= 75 %}style="color: #3B82F6;"{% elif results.match_score >= 50 %}style="color: #F59E0B;"{% else %}style="color: #EF4444;"{% endif %}>{{ results.readiness }}</h4>
+                <p class="text-secondary small">{{ results.readiness_desc }}</p>
+            </div>
+            
+            <div class="saas-card p-4 mb-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Top Missing Skills</h5>
+                <ul class="list-group list-group-flush">
+                    {% for skill in results.top_missing_skills %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent border-color px-0 py-2">
+                            <span class="fw-bold">{{ skill|title }}</span>
+                            <span class="badge bg-danger rounded-pill">Critical</span>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item bg-transparent text-success px-0">No critical missing skills!</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="saas-card p-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-lightbulb-fill text-warning me-2"></i>Improvement Suggestions</h5>
+                <ul class="text-secondary" style="padding-left: 1rem; font-size: 0.95rem;">
+                    {% for tip in results.suggestions %}
+                        <li class="mb-2">{{ tip }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function copyResults() {
+            const summary = document.getElementById('summaryText').innerText;
+            navigator.clipboard.writeText(summary).then(() => {
+                alert('Analysis Summary copied to clipboard!');
+            });
+        }
+    </script>
+    {% endif %}
+</div>
+{% endblock %}

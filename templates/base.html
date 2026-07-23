@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="{{ user_theme|default:'dark' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ResumeIQ - AI Resume Analyzer & Placement Career Coach{% endblock %}</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS & Icons CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+{% if user.is_authenticated %}
+<div class="app-wrapper">
+  <!-- Sidebar Navigation -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <div class="brand-logo-icon">
+        <i class="bi bi-rocket-takeoff-fill"></i>
+      </div>
+      <div>
+        <div class="brand-title">ResumeIQ</div>
+        <small class="text-secondary" style="font-size: 0.72rem;">Placement Career Coach</small>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main Platform</div>
+      <a href="{% url 'dashboard' %}" class="nav-item-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <span style="font-size: 1.2rem; width: 24px; text-align: center;">🏠</span> Dashboard
+      </a>
+
+      <div class="nav-section-label">Resume Intelligence</div>
+      <a href="{% url 'resumes:upload' %}" class="nav-item-link {% if request.resolver_match.url_name == 'upload' %}active{% endif %}">
+        <span style="font-size: 1.2rem; width: 24px; text-align: center;">📤</span> Upload Resume
+      </a>
+      <a href="{% url 'resumes:ai_rewrite_feature' %}" class="nav-item-link {% if request.resolver_match.url_name == 'ai_rewrite_feature' %}active{% endif %}">
+        <span style="font-size: 1.2rem; width: 24px; text-align: center;">✨</span> AI Resume Rewrite
+      </a>
+      {% with latest_resume=user.resumes.first %}
+      {% if latest_resume %}
+      <a href="{% url 'resumes:detail' latest_resume.id %}" class="nav-item-link {% if request.resolver_match.app_name == 'resumes' and request.resolver_match.url_name == 'detail' %}active{% endif %}">
+        <span style="font-size: 1.2rem; width: 24px; text-align: center;">📈</span> View Analysis
+      </a>
+      {% endif %}
+      {% endwith %}
+
+      <div class="nav-section-label">Job Matching</div>
+      <a href="{% url 'jobs:match' %}" class="nav-item-link {% if request.resolver_match.app_name == 'jobs' and request.resolver_match.url_name in 'match match_detail' %}active{% endif %}">
+        <span style="font-size: 1.2rem; width: 24px; text-align: center;">🎯</span> Job Matcher (TF-IDF)
+      </a>
+      <a href="{% url 'jobs:tracker' %}" class="nav-item-link {% if request.resolver_match.url_name == 'tracker' %}active{% endif %}">
+        <span style="font-size: 1.2rem; width: 24px; text-align: center;">📌</span> Application Tracker
+      </a>
+      <a href="{% url 'jobs:resources' %}" class="nav-item-link {% if request.resolver_match.url_name == 'resources' %}active{% endif %}">
+        <span style="font-size: 1.2rem; width: 24px; text-align: center;">📚</span> Learning Hub
+      </a>
+
+      <div class="nav-section-label">Placement & Prep</div>
+      <a href="{% url 'coaching:interview' %}" class="nav-item-link {% if request.resolver_match.url_name == 'interview' %}active{% endif %}">
+        <span style="font-size: 1.2rem; width: 24px; text-align: center;">💬</span> AI Interview Coach
+      </a>
+      <a href="{% url 'coaching:readiness' %}" class="nav-item-link {% if request.resolver_match.url_name == 'readiness' %}active{% endif %}">
+        <span style="font-size: 1.2rem; width: 24px; text-align: center;">🚀</span> Placement Readiness
+      </a>
+      <a href="{% url 'coaching:roadmap' %}" class="nav-item-link {% if request.resolver_match.url_name == 'roadmap' %}active{% endif %}">
+        <span style="font-size: 1.2rem; width: 24px; text-align: center;">🗺️</span> Learning Roadmap
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user-card" style="padding: 12px 16px;">
+        <div class="d-flex align-items-center gap-3">
+          <div class="avatar-squircle" style="width: 40px; height: 40px; border-radius: 10px; background: #6366F1; display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);">
+            {{ user.first_name.0|default:user.username.0|upper }}{{ user.last_name.0|default:""|upper }}
+          </div>
+          <div>
+            <div style="font-size: 0.95rem; font-weight: 700; line-height: 1.2; color: var(--text-primary);">{{ user.username }}</div>
+            <small class="text-secondary" style="font-size: 0.8rem;">{{ user_profile.target_role|default:"User" }}</small>
+          </div>
+        </div>
+        <a href="{% url 'logout' %}" class="text-secondary ms-auto hover-danger" title="Logout"><i class="bi bi-box-arrow-right fs-5"></i></a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Workspace -->
+  <main class="main-content">
+    <!-- Topbar Header -->
+    <header class="app-topbar">
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn text-secondary d-lg-none p-0" id="sidebarToggleBtn"><i class="bi bi-list fs-2"></i></button>
+        <h1 class="page-title" style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">{% block header_title %}Dashboard{% endblock %}</h1>
+      </div>
+
+      <div class="topbar-actions d-flex align-items-center gap-2 gap-md-3">
+        <span class="skill-badge d-none d-md-inline-flex" style="background: rgba(127, 124, 255, 0.15); color: #7F7CFF; border-color: rgba(127, 124, 255, 0.3);">
+          <i class="bi bi-briefcase-fill"></i> {{ user_profile.target_role|default:"Career Explorer" }}
+        </span>
+
+        <button class="btn btn-saas-secondary rounded-circle" style="width: 42px; height: 42px; padding: 0; display: flex; align-items: center; justify-content: center; border-color: rgba(255,255,255,0.1);" id="themeToggleBtn" title="Toggle Theme">
+          <i class="bi bi-sun-fill text-warning"></i>
+        </button>
+
+        <div class="dropdown">
+          <a href="#" class="d-flex align-items-center gap-2" style="background: rgba(99, 102, 241, 0.15); border-radius: 30px; padding: 6px 16px 6px 6px; text-decoration: none; cursor: pointer; transition: all 0.2s;" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="d-flex align-items-center justify-content-center bg-white rounded-circle fw-bold shadow-sm" style="width: 32px; height: 32px; font-size: 14px; color: #6366F1;">
+              {{ user.username.0|upper|default:"U" }}
+            </div>
+            <span class="d-none d-md-block fw-bold" style="color: #4b5563; letter-spacing: -0.2px;">{{ user.username|default:"demo_student" }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end border-0" aria-labelledby="profileDropdown" style="width: 260px; border-radius: 16px; padding: 8px; margin-top: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); font-family: 'Inter', sans-serif; background-color: var(--bg-card);">
+            <li class="px-3 py-3 mb-2 d-flex align-items-center gap-3" style="border-bottom: 1px solid var(--border-color);">
+              <div class="avatar-squircle" style="width: 42px; height: 42px; min-width: 42px; border-radius: 10px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);">
+                {{ user.first_name.0|default:user.username.0|upper }}{{ user.last_name.0|default:""|upper }}
+              </div>
+              <div style="overflow: hidden;">
+                <div class="fw-bold text-truncate" style="color: var(--text-primary); font-size: 0.95rem; letter-spacing: -0.01em;">{{ user.username|default:"demo_student" }}</div>
+                <div class="small text-truncate" style="color: var(--text-secondary); font-size: 0.8rem;">{{ user.email|default:"demo@student.com" }}</div>
+              </div>
+            </li>
+            <li>
+              <a class="dropdown-item py-2 px-3 mb-1 d-flex align-items-center gap-3 rounded" href="{% url 'dashboard' %}" style="color: var(--text-primary); font-weight: 500; transition: all 0.2s;">
+                <div class="d-flex align-items-center justify-content-center rounded" style="width: 32px; height: 32px; background: rgba(59, 130, 246, 0.1); color: #3B82F6;">
+                  <i class="bi bi-grid-fill"></i>
+                </div>
+                Dashboard
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item py-2 px-3 mb-1 d-flex align-items-center gap-3 rounded" href="{% url 'profile' %}" style="color: var(--text-primary); font-weight: 500; transition: all 0.2s;">
+                <div class="d-flex align-items-center justify-content-center rounded" style="width: 32px; height: 32px; background: rgba(139, 92, 246, 0.1); color: #8B5CF6;">
+                  <i class="bi bi-person-fill"></i>
+                </div>
+                Profile Setup
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item py-2 px-3 mb-1 d-flex align-items-center gap-3 rounded" href="{% url 'analytics' %}" style="color: var(--text-primary); font-weight: 500; transition: all 0.2s;">
+                <div class="d-flex align-items-center justify-content-center rounded" style="width: 32px; height: 32px; background: rgba(16, 185, 129, 0.1); color: #10B981;">
+                  <i class="bi bi-bar-chart-fill"></i>
+                </div>
+                Analytics
+              </a>
+            </li>
+            <li><hr class="dropdown-divider my-2" style="border-color: var(--border-color); opacity: 0.5;"></li>
+            <li>
+              <a class="dropdown-item py-2 px-3 d-flex align-items-center gap-3 rounded text-danger" href="{% url 'logout' %}" style="font-weight: 500; transition: all 0.2s;">
+                <div class="d-flex align-items-center justify-content-center rounded" style="width: 32px; height: 32px; background: rgba(239, 68, 68, 0.1); color: #EF4444;">
+                  <i class="bi bi-box-arrow-right"></i>
+                </div>
+                Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Body Content -->
+    <div class="p-4 p-md-5">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show saas-card p-3 mb-4" role="alert">
+            <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+</div>
+{% else %}
+  <div class="auth-wrapper">
+    {% block auth_content %}{% endblock %}
+  </div>
+{% endif %}
+
+{% block extra_modals %}{% endblock %}
+<!-- Bootstrap 5 Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

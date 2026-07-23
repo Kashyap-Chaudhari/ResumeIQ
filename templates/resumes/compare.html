@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Resume Version Comparison | ResumeIQ{% endblock %}
+{% block header_title %}Resume Version Diff & Improvement Comparison{% endblock %}
+
+{% block content %}
+<div class="saas-card mb-4">
+  <form method="GET" class="row g-3 align-items-end">
+    <div class="col-md-5">
+      <label class="form-label text-muted fw-bold">Select Baseline Resume (Version 1)</label>
+      <select name="r1" class="form-select form-control-saas">
+        {% for r in resumes %}
+          <option value="{{ r.id }}" {% if r.id|stringformat:"i" == request.GET.r1 %}selected{% endif %}>{{ r.title }} (ATS: {{ r.ats_score }})</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-md-5">
+      <label class="form-label text-muted fw-bold">Select Updated Resume (Version 2)</label>
+      <select name="r2" class="form-select form-control-saas">
+        {% for r in resumes %}
+          <option value="{{ r.id }}" {% if r.id|stringformat:"i" == request.GET.r2 %}selected{% endif %}>{{ r.title }} (ATS: {{ r.ats_score }})</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-saas-primary w-100"><i class="bi bi-arrow-left-right me-1"></i> Compare</button>
+    </div>
+  </form>
+</div>
+
+{% if diff_data %}
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="saas-card h-100 border-primary">
+      <h5 class="fw-bold mb-3"><i class="bi bi-file-earmark"></i> Version 1: {{ resume1.title }}</h5>
+      <div class="p-3 mb-3 rounded-3" style="background: var(--bg-input);">
+        <div class="text-muted small">ATS Score</div>
+        <div class="display-6 fw-bold text-primary">{{ resume1.ats_score }}/100</div>
+      </div>
+      <div>
+        <h6>Skills List ({{ resume1.parsed_skills|length }}):</h6>
+        {% for skill in resume1.parsed_skills %}
+          <span class="skill-badge">{{ skill }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="saas-card h-100 border-success">
+      <h5 class="fw-bold mb-3"><i class="bi bi-file-earmark-check"></i> Version 2: {{ resume2.title }}</h5>
+      <div class="p-3 mb-3 rounded-3" style="background: var(--bg-input);">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="text-muted small">ATS Score</div>
+            <div class="display-6 fw-bold text-emerald">{{ resume2.ats_score }}/100</div>
+          </div>
+          <div class="text-end">
+            {% if diff_data.score_diff > 0 %}
+              <span class="badge bg-success p-2 fs-6">+{{ diff_data.score_diff }} Score Increase</span>
+            {% elif diff_data.score_diff < 0 %}
+              <span class="badge bg-danger p-2 fs-6">{{ diff_data.score_diff }} Score Decrease</span>
+            {% else %}
+              <span class="badge bg-secondary p-2 fs-6">No Score Change</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <h6>Added Tech Skills ({{ diff_data.added_skills|length }}):</h6>
+      <div class="mb-3">
+        {% for skill in diff_data.added_skills %}
+          <span class="skill-badge matched">+ {{ skill }}</span>
+        {% empty %}
+          <span class="text-muted small">No new skills detected.</span>
+        {% endfor %}
+      </div>
+
+      <h6>Removed Tech Skills ({{ diff_data.removed_skills|length }}):</h6>
+      <div>
+        {% for skill in diff_data.removed_skills %}
+          <span class="skill-badge missing">- {{ skill }}</span>
+        {% empty %}
+          <span class="text-muted small">No skills removed.</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

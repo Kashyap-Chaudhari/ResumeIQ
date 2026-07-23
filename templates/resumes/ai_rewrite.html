@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Resume Rewrite - ResumeIQ{% endblock %}
+{% block header_title %}AI Resume Rewrite{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold mb-2">Rewrite your resume into a recruiter-ready, ATS-optimized version in seconds.</h2>
+            <p class="text-secondary">Upload your resume or paste the text below. The AI will strictly improve wording without inventing facts.</p>
+        </div>
+    </div>
+
+    {% if not ai_result %}
+    <!-- Upload/Input Form -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="saas-card" style="padding: 24px;">
+                <form method="POST" enctype="multipart/form-data" id="rewriteForm">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">1. Provide your Resume</label>
+                        <ul class="nav nav-pills mb-2" id="resumeInputTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active py-1 px-3" id="upload-tab" data-bs-toggle="pill" data-bs-target="#upload" type="button" role="tab" aria-controls="upload" aria-selected="true">Upload File</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link py-1 px-3" id="paste-tab" data-bs-toggle="pill" data-bs-target="#paste" type="button" role="tab" aria-controls="paste" aria-selected="false">Paste Text</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="resumeInputTabContent">
+                            <div class="tab-pane fade show active" id="upload" role="tabpanel" aria-labelledby="upload-tab">
+                                <div class="border rounded p-3 text-center" style="border-style: dashed !important; background: var(--bg-main);">
+                                    <i class="bi bi-cloud-upload text-primary mb-2" style="font-size: 2rem;"></i>
+                                    <p class="mb-1">Drag and drop your resume here, or click to browse</p>
+                                    <small class="text-secondary d-block mb-2">Supported formats: PDF, TXT, DOCX</small>
+                                    <input type="file" name="resume_file" class="form-control form-control-sm w-75 mx-auto" accept=".pdf,.txt,.docx">
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="paste" role="tabpanel" aria-labelledby="paste-tab">
+                                <textarea name="pasted_text" class="form-control" rows="5" placeholder="Paste your resume text here..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">2. Target Job Role (Optional)</label>
+                            <input type="text" name="target_role" class="form-control form-control-sm" placeholder="e.g. Senior Frontend Developer">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">3. Job Description (Optional)</label>
+                            <textarea name="job_description" class="form-control form-control-sm" rows="1" placeholder="Paste job description"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn-gradient-primary px-4 py-2" id="rewriteBtn">
+                            <i class="bi bi-magic me-2"></i> Rewrite Resume
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Loading State -->
+                <div id="loadingState" class="text-center py-5 d-none">
+                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h4 class="fw-bold">AI is rewriting your resume...</h4>
+                    <p class="text-secondary">Analyzing phrasing, optimizing for ATS, and enhancing action verbs.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('rewriteForm').addEventListener('submit', function() {
+            document.getElementById('rewriteBtn').style.display = 'none';
+            document.getElementById('loadingState').classList.remove('d-none');
+        });
+    </script>
+
+    {% else %}
+    <!-- Results Layout -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex gap-3 justify-content-end mb-3">
+                <a href="{% url 'resumes:ai_rewrite_feature' %}" class="btn btn-outline-secondary rounded-pill">
+                    <i class="bi bi-arrow-counterclockwise"></i> Rewrite Again
+                </a>
+                <button class="btn btn-outline-primary rounded-pill" onclick="copyToClipboard()">
+                    <i class="bi bi-clipboard"></i> Copy Rewritten Resume
+                </button>
+                <button class="btn btn-outline-success rounded-pill" onclick="downloadPDF()">
+                    <i class="bi bi-file-pdf"></i> Download PDF
+                </button>
+                <button class="btn btn-outline-info rounded-pill" onclick="downloadDOCX()">
+                    <i class="bi bi-file-word"></i> Download DOCX
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Main Comparison -->
+        <div class="col-lg-8">
+            <ul class="nav nav-tabs mb-3" id="resultTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active fw-bold" id="rewritten-tab" data-bs-toggle="tab" data-bs-target="#rewritten" type="button" role="tab" aria-controls="rewritten" aria-selected="true">
+                        <i class="bi bi-magic text-primary me-2"></i>AI Rewritten Resume
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bold" id="original-tab" data-bs-toggle="tab" data-bs-target="#original" type="button" role="tab" aria-controls="original" aria-selected="false">
+                        <i class="bi bi-file-text me-2"></i>Original Resume
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="tab-content" id="resultTabsContent">
+                <div class="tab-pane fade show active" id="rewritten" role="tabpanel" aria-labelledby="rewritten-tab">
+                    <div class="saas-card p-4" style="background: var(--bg-main);">
+                        <pre id="rewrittenText" class="mb-0" style="white-space: pre-wrap; font-family: inherit; font-size: 0.95rem;">{{ ai_result.rewritten_text }}</pre>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="original" role="tabpanel" aria-labelledby="original-tab">
+                    <div class="saas-card p-4" style="background: var(--bg-main); opacity: 0.8;">
+                        <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit; font-size: 0.95rem;">{{ ai_result.original_text }}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Changes Made -->
+            <h4 class="fw-bold mt-5 mb-4">Changes Made</h4>
+            <div class="saas-card p-0 overflow-hidden">
+                <div class="list-group list-group-flush">
+                    {% for change in ai_result.changes %}
+                    <div class="list-group-item p-4" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <div class="text-danger mb-2" style="font-size: 0.9rem; text-decoration: line-through;">
+                            {{ change.original }}
+                        </div>
+                        <div class="text-center text-muted mb-2">
+                            <i class="bi bi-arrow-down"></i>
+                        </div>
+                        <div class="text-success fw-medium" style="font-size: 0.95rem;">
+                            {{ change.improved }}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="list-group-item p-4 text-center text-muted" style="background-color: var(--bg-card);">
+                        No specific line changes recorded. The overall structure was enhanced.
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Summary -->
+        <div class="col-lg-4">
+            <h4 class="fw-bold mb-4">Improvement Summary</h4>
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="saas-card p-3 d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: rgba(16, 185, 129, 0.1); color: #10B981;">
+                            <i class="bi bi-check2-all fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">Grammar Improved</h6>
+                            <small class="text-secondary">Corrected tense and flow</small>
+                        </div>
+                        {% if ai_result.summary.grammar_improved %}
+                        <i class="bi bi-check-circle-fill text-success ms-auto fs-5"></i>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-12">
+                    <div class="saas-card p-3 d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: rgba(99, 102, 241, 0.1); color: #6366F1;">
+                            <i class="bi bi-robot fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">ATS Optimization</h6>
+                            <small class="text-secondary">Formatted for parsers</small>
+                        </div>
+                        {% if ai_result.summary.ats_optimization %}
+                        <i class="bi bi-check-circle-fill text-success ms-auto fs-5"></i>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-12">
+                    <div class="saas-card p-3 d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: rgba(59, 130, 246, 0.1); color: #3B82F6;">
+                            <i class="bi bi-person-check fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">Professional Tone</h6>
+                            <small class="text-secondary">Elevated vocabulary</small>
+                        </div>
+                        {% if ai_result.summary.professional_tone %}
+                        <i class="bi bi-check-circle-fill text-success ms-auto fs-5"></i>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-12">
+                    <div class="saas-card p-3 d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: rgba(245, 158, 11, 0.1); color: #F59E0B;">
+                            <i class="bi bi-eye fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">Readability</h6>
+                            <small class="text-secondary">Clearer bullet points</small>
+                        </div>
+                        {% if ai_result.summary.readability %}
+                        <i class="bi bi-check-circle-fill text-success ms-auto fs-5"></i>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-12">
+                    <div class="saas-card p-3 d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: rgba(236, 72, 153, 0.1); color: #EC4899;">
+                            <i class="bi bi-lightning-charge fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">Action Verbs Enhanced</h6>
+                            <small class="text-secondary">Stronger impact words</small>
+                        </div>
+                        {% if ai_result.summary.action_verbs %}
+                        <i class="bi bi-check-circle-fill text-success ms-auto fs-5"></i>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-12">
+                    <div class="saas-card p-3 d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: rgba(139, 92, 246, 0.1); color: #8B5CF6;">
+                            <i class="bi bi-key fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">Keyword Optimization</h6>
+                            <small class="text-secondary">Matched with target role</small>
+                        </div>
+                        {% if ai_result.summary.keyword_optimization %}
+                        <i class="bi bi-check-circle-fill text-success ms-auto fs-5"></i>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function copyToClipboard() {
+            const text = document.getElementById('rewrittenText').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            });
+        }
+        
+        function downloadPDF() {
+            window.print();
+        }
+        
+        function downloadDOCX() {
+            // Simplified export for SaaS mockup purposes
+            const text = document.getElementById('rewrittenText').innerText;
+            const blob = new Blob([text], {type: "application/msword"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Rewritten_Resume.docx';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+    {% endif %}
+
+</div>
+{% endblock %}

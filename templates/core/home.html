@@ -1,0 +1,385 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeIQ – Ace Your Placements!</title>
+    <!-- Google Fonts - Geist, Inter & JetBrains Mono inspired -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        :root {
+            --pw-dark: #f0f4f8; /* softer, cool-toned light bg */
+            --pw-text: #0f172a; 
+            --feature-bg: rgba(255, 255, 255, 0.65); /* glassmorphism base */
+            --feature-border: rgba(99, 102, 241, 0.15); /* indigo-tinted border */
+            --nav-link: #475569;
+            --nav-link-hover: #0f172a;
+            --hero-glow: rgba(59, 130, 246, 0.15);
+            --hero-glow-end: rgba(240, 244, 248, 0);
+            --card-shadow: rgba(99, 102, 241, 0.1);
+        }
+        
+        [data-theme="dark"] {
+            --pw-dark: #0f172a; 
+            --pw-text: #f1f5f9; 
+            --feature-bg: rgba(30, 41, 59, 0.7);
+            --feature-border: rgba(255, 255, 255, 0.05);
+            --nav-link: #94a3b8;
+            --nav-link-hover: #f8fafc;
+            --hero-glow: rgba(59, 130, 246, 0.15);
+            --hero-glow-end: rgba(15, 23, 42, 0);
+            --card-shadow: rgba(0, 0, 0, 0.5);
+        }
+        
+
+        .text-dynamic { color: var(--pw-text) !important; }
+        .bg-dynamic { 
+            background-color: var(--feature-bg) !important; 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .border-dynamic { border-color: var(--feature-border) !important; }
+        body {
+            background-color: var(--pw-dark);
+            color: var(--pw-text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Vibrant Gradients inspired by PrepWise */
+        .text-gradient {
+            background: linear-gradient(to right, #3b82f6, #06b6d4); /* blue-500 to cyan-500 */
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gradient-purple {
+            background: linear-gradient(to right, #a855f7, #8b5cf6); /* purple-500 to violet-500 */
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .bg-gradient-green { background: linear-gradient(135deg, #22c55e, #059669); } /* green-500 to emerald-600 */
+        .bg-gradient-blue { background: linear-gradient(135deg, #3b82f6, #06b6d4); }
+        .bg-gradient-purple { background: linear-gradient(135deg, #a855f7, #8b5cf6); }
+        .bg-gradient-amber { background: linear-gradient(135deg, #f59e0b, #f97316); } /* amber-500 to orange-500 */
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white !important;
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+            opacity: 0.95;
+        }
+
+        .feature-card {
+            background-color: var(--feature-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--feature-border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            height: 100%;
+            box-shadow: 0 4px 6px -1px var(--card-shadow), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .feature-card:hover {
+            border-color: rgba(168, 85, 247, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px var(--card-shadow);
+        }
+
+        .icon-box {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-section {
+            padding: 120px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, var(--hero-glow) 0%, var(--hero-glow-end) 70%);
+            z-index: -1;
+        }
+
+        .nav-link {
+            color: var(--nav-link) !important;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: var(--nav-link-hover) !important; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg py-3 bg-dynamic border-bottom border-dynamic sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2 text-dynamic" href="#">
+                <i class="bi bi-rocket-takeoff-fill text-gradient fs-4"></i>
+                <span class="fs-5 tracking-tight">ResumeIQ</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="bi bi-list text-dynamic fs-1"></i>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center gap-4">
+                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+                    
+                    <li class="nav-item d-none d-lg-block"><div class="vr" style="background-color: var(--feature-border); width: 2px; height: 24px;"></div></li>
+                    
+                    <li class="nav-item">
+                        <button id="themeToggleBtn" class="btn btn-link nav-link px-2" title="Toggle Theme">
+                            <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                        </button>
+                    </li>
+                    
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item">
+                        <a class="btn btn-gradient px-4 py-2 rounded-pill" href="{% url 'register' %}">Get Started Free</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <div class="d-inline-block mb-4 px-3 py-1 rounded-pill" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2);">
+                <span class="text-info mono-font text-sm"><i class="bi bi-stars"></i> The Ultimate AI Career & Placement Coach</span>
+            </div>
+            
+            <h1 class="display-3 fw-bold mb-4 tracking-tight" style="line-height: 1.1;">
+                Optimize Your Resume.<br>
+                <span class="text-gradient">Land Your Dream Job.</span>
+            </h1>
+            
+            <p class="fs-5 text-secondary mx-auto mb-5" style="max-width: 650px;">
+                Get real-time AI ATS scoring, rewrite your resume, practice realistic mock interviews, and generate personalized step-by-step career roadmaps.
+            </p>
+            
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                <a href="{% url 'register' %}" class="btn btn-gradient px-5 py-3 rounded-pill fs-6 shadow-lg">
+                    Analyze My Resume Free
+                </a>
+                <a href="#features" class="btn btn-outline-secondary px-5 py-3 rounded-pill fs-6 text-dynamic border-dynamic">
+                    Explore Features
+                </a>
+            </div>
+            
+            <div class="mt-5 pt-4 text-muted small">
+                <p>Trusted by students mastering <span class="text-dynamic">Software Engineering</span>, <span class="text-dynamic">Data Science</span>, and <span class="text-dynamic">Product Management</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section id="features" class="py-5 mt-4">
+        <div class="container">
+            <div class="text-center mb-5 pb-3">
+                <h2 class="fw-bold display-5 mb-3">Comprehensive <span class="text-gradient-purple">Placement Prep</span></h2>
+                <p class="text-secondary fs-5">Everything you need from resume review to final interview.</p>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Feature 1 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="icon-box bg-gradient-blue shadow-lg">
+                            <i class="bi bi-file-earmark-check-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-dynamic mb-3">ATS Resume Scoring</h5>
+                        <p class="text-secondary mb-0">Optimize your resume against top ATS algorithms. Identify missing keywords instantly.</p>
+                    </div>
+                </div>
+                <!-- Feature 2 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="icon-box bg-gradient-green shadow-lg">
+                            <i class="bi bi-bullseye"></i>
+                        </div>
+                        <h5 class="fw-bold text-dynamic mb-3">Target Job Matching</h5>
+                        <p class="text-secondary mb-0">Match your profile to specific JDs using advanced NLP. Uncover your hidden skill gaps.</p>
+                    </div>
+                </div>
+                <!-- Feature 3 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="icon-box bg-gradient-purple shadow-lg">
+                            <i class="bi bi-chat-dots-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-dynamic mb-3">Mock Interviews</h5>
+                        <p class="text-secondary mb-0">Practice behavioral and technical questions customized to your target role with our AI coach.</p>
+                    </div>
+                </div>
+                <!-- Feature 4 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="icon-box bg-gradient-amber shadow-lg">
+                            <i class="bi bi-bar-chart-line-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-dynamic mb-3">Progress Analytics</h5>
+                        <p class="text-secondary mb-0">Track your application funnel and placement readiness score all in one unified dashboard.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- FAQ -->
+    <section id="faq" class="py-5 mb-5">
+        <div class="container text-center">
+            <h2 class="fw-bold mb-5">Got Questions?</h2>
+            <div class="row justify-content-center text-start">
+                <div class="col-lg-8">
+                    <div class="accordion accordion-flush" id="faqAccordion">
+                        <div class="accordion-item bg-transparent border-bottom border-dynamic">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-dynamic fw-bold shadow-none px-0" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    Can I bookmark questions to revisit later?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body px-0 text-secondary">
+                                    Yes! You can bookmark any question to revisit later. Your bookmarks are saved and accessible from your dashboard.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-transparent border-bottom border-dynamic">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-dynamic fw-bold shadow-none px-0" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    What topics are covered?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body px-0 text-secondary">
+                                    We cover quantitative aptitude, logical reasoning, verbal ability, recursive problem solving, dynamic programming, and general DSA.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-transparent border-bottom border-dynamic">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-dynamic fw-bold shadow-none px-0" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    Is ResumeIQ completely free to use?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body px-0 text-secondary">
+                                    Yes! We use open-source technologies and the free tier of the Google Gemini API to provide premium career preparation features at zero cost.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-transparent border-bottom border-dynamic">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-dynamic fw-bold shadow-none px-0" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                    How does the ATS Resume Scoring work?
+                                </button>
+                            </h2>
+                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body px-0 text-secondary">
+                                    Our system analyzes your resume against industry-standard ATS algorithms, extracting key skills, identifying formatting issues, and highlighting missing keywords critical for passing automated screenings.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-transparent border-bottom border-dynamic">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed bg-transparent text-dynamic fw-bold shadow-none px-0" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                    How accurate is the AI Interview Coach?
+                                </button>
+                            </h2>
+                            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body px-0 text-secondary">
+                                    The AI Interview Coach uses advanced Natural Language Processing (NLP) to evaluate your responses based on the STAR method (Situation, Task, Action, Result) and technical accuracy, giving you actionable, real-time feedback.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4 text-center mt-5" style="border-top: 1px solid var(--feature-border);">
+        <div class="container text-muted">
+            <p class="mb-0"><small>&copy; 2026 ResumeIQ (Inspired by PrepWise). Ace your placements!</small></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            const themeIcon = document.getElementById('themeIcon');
+            const htmlElement = document.documentElement;
+            
+            // Check for saved theme preference or default to dark
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            htmlElement.setAttribute('data-theme', savedTheme);
+            updateIcon(savedTheme);
+
+            themeToggleBtn.addEventListener('click', () => {
+                const currentTheme = htmlElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateIcon(newTheme);
+            });
+
+            function updateIcon(theme) {
+                if (theme === 'dark') {
+                    themeIcon.className = 'bi bi-moon-stars-fill';
+                } else {
+                    themeIcon.className = 'bi bi-brightness-high-fill';
+                }
+            }
+        });
+    </script>
+    <style>
+        /* Bootstrap Accordion Overrides */
+        .accordion-button::after {
+            filter: invert(1);
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,334 @@
+{% extends 'base.html' %}
+
+{% block title %}Placement Readiness Dashboard | ResumeIQ{% endblock %}
+{% block header_title %}Placement Readiness Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .glass-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 12px rgba(0,0,0,0.1);
+    }
+    
+    .progress-bar-animated {
+        transition: width 1.5s ease-in-out;
+    }
+    
+    /* Skeleton Loader */
+    .skeleton-box {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+        border-radius: 0.25rem;
+    }
+    
+    @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+</style>
+
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold mb-1">Placement Readiness</h2>
+            <p class="text-secondary mb-0">Real-time analysis based on your activity across all modules.</p>
+        </div>
+        <div>
+            <button onclick="loadReadinessData()" class="btn btn-outline-primary me-2"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+            <button onclick="window.print()" class="btn btn-primary"><i class="bi bi-download"></i> Download Report</button>
+        </div>
+    </div>
+</div>
+
+<!-- Skeleton Loading State -->
+<div id="loading-state" class="row g-4">
+    <div class="col-md-4">
+        <div class="glass-card p-4 h-100 text-center">
+            <div class="skeleton-box mx-auto rounded-circle mb-3" style="width:120px; height:120px;"></div>
+            <div class="skeleton-box mx-auto mb-2" style="height:24px; width:60%;"></div>
+            <div class="skeleton-box mx-auto" style="height:16px; width:40%;"></div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="glass-card p-4 h-100">
+            <div class="skeleton-box mb-4" style="height:24px; width:30%;"></div>
+            <div class="skeleton-box mb-3" style="height:16px; width:100%;"></div>
+            <div class="skeleton-box mb-3" style="height:16px; width:90%;"></div>
+            <div class="skeleton-box mb-3" style="height:16px; width:95%;"></div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="glass-card p-4">
+            <div class="row g-3">
+                <div class="col-md-3"><div class="skeleton-box" style="height:80px; width:100%;"></div></div>
+                <div class="col-md-3"><div class="skeleton-box" style="height:80px; width:100%;"></div></div>
+                <div class="col-md-3"><div class="skeleton-box" style="height:80px; width:100%;"></div></div>
+                <div class="col-md-3"><div class="skeleton-box" style="height:80px; width:100%;"></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard Data State (Hidden initially) -->
+<div id="dashboard-state" style="display: none;">
+    <div class="row g-4 mb-4">
+        <!-- Overall Score Card -->
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 d-flex flex-column justify-content-center align-items-center text-center">
+                <h5 class="fw-bold mb-4">Overall Readiness</h5>
+                
+                <div class="position-relative d-inline-flex align-items-center justify-content-center mb-3" style="width: 150px; height: 150px;">
+                    <svg class="w-100 h-100" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#e9ecef" stroke-width="8"></circle>
+                        <circle id="overall-circle" cx="50" cy="50" r="45" fill="none" stroke="#0d6efd" stroke-width="8" 
+                                stroke-dasharray="283" stroke-dashoffset="283" transform="rotate(-90 50 50)" 
+                                style="transition: stroke-dashoffset 1.5s ease-in-out;"></circle>
+                    </svg>
+                    <div class="position-absolute d-flex flex-column align-items-center">
+                        <h2 class="display-5 fw-bold mb-0" id="overall-score-text">0%</h2>
+                    </div>
+                </div>
+                
+                <h4 class="fw-bold" id="status-text">Calculating...</h4>
+                <p class="text-muted small mb-0">Weighted average of all module data</p>
+            </div>
+        </div>
+        
+        <!-- Summary & Checklist -->
+        <div class="col-md-8">
+            <div class="glass-card p-4 h-100 d-flex flex-column">
+                <h5 class="fw-bold mb-3"><i class="bi bi-lightning-charge text-warning"></i> AI Summary</h5>
+                <p class="lead fs-6 text-secondary mb-4" id="readiness-summary">Loading summary...</p>
+                
+                <h6 class="fw-bold mt-auto mb-3">Placement Checklist</h6>
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <i id="chk-resume-upload" class="bi bi-circle text-muted"></i> 
+                            <span class="small">Resume Uploaded</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <i id="chk-resume-analyze" class="bi bi-circle text-muted"></i> 
+                            <span class="small">Resume Analyzed</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <i id="chk-ats" class="bi bi-circle text-muted"></i> 
+                            <span class="small">ATS Checked</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <i id="chk-job" class="bi bi-circle text-muted"></i> 
+                            <span class="small">Job Matched</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <i id="chk-interview" class="bi bi-circle text-muted"></i> 
+                            <span class="small">Interview Completed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Component Scores -->
+    <h5 class="fw-bold mb-3 mt-5">Module Performance</h5>
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="glass-card p-3">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="fw-bold small text-secondary">RESUME SCORE</span>
+                    <span class="fw-bold" id="val-resume">--</span>
+                </div>
+                <div class="progress" style="height: 6px;">
+                    <div id="bar-resume" class="progress-bar bg-primary progress-bar-animated" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-card p-3">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="fw-bold small text-secondary">ATS COMPATIBILITY</span>
+                    <span class="fw-bold" id="val-ats">--</span>
+                </div>
+                <div class="progress" style="height: 6px;">
+                    <div id="bar-ats" class="progress-bar bg-info progress-bar-animated" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-card p-3">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="fw-bold small text-secondary">JOB MATCH</span>
+                    <span class="fw-bold" id="val-job">--</span>
+                </div>
+                <div class="progress" style="height: 6px;">
+                    <div id="bar-job" class="progress-bar bg-success progress-bar-animated" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-card p-3">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="fw-bold small text-secondary">MOCK INTERVIEW</span>
+                    <span class="fw-bold" id="val-interview">--</span>
+                </div>
+                <div class="progress" style="height: 6px;">
+                    <div id="bar-interview" class="progress-bar bg-warning progress-bar-animated" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 border-top border-4 border-success">
+                <h6 class="fw-bold text-success mb-3"><i class="bi bi-shield-check me-2"></i>Key Strengths</h6>
+                <ul class="list-unstyled mb-0" id="list-strengths">
+                    <!-- Populated by JS -->
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 border-top border-4 border-danger">
+                <h6 class="fw-bold text-danger mb-3"><i class="bi bi-shield-exclamation me-2"></i>Areas to Improve</h6>
+                <ul class="list-unstyled mb-0" id="list-weaknesses">
+                    <!-- Populated by JS -->
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100 border-top border-4 border-primary">
+                <h6 class="fw-bold text-primary mb-3"><i class="bi bi-list-task me-2"></i>Next Action Plan</h6>
+                <ol class="mb-0 text-secondary" id="list-actionplan">
+                    <!-- Populated by JS -->
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', loadReadinessData);
+
+async function loadReadinessData() {
+    document.getElementById('loading-state').style.display = 'flex';
+    document.getElementById('dashboard-state').style.display = 'none';
+    
+    try {
+        const response = await fetch('/coaching/api/placement-readiness/');
+        const data = await response.json();
+        
+        // Checklist
+        const setCheck = (id, val) => {
+            const el = document.getElementById(id);
+            if(val) {
+                el.className = 'bi bi-check-circle-fill text-success';
+            } else {
+                el.className = 'bi bi-circle text-muted';
+            }
+        };
+        
+        setCheck('chk-resume-upload', data.checklist.resume_uploaded);
+        setCheck('chk-resume-analyze', data.checklist.resume_analyzed);
+        setCheck('chk-ats', data.checklist.ats_checked);
+        setCheck('chk-job', data.checklist.job_matched);
+        setCheck('chk-interview', data.checklist.interview_completed);
+        
+        // Progress Bars & Values
+        const setBar = (valId, barId, val, defaultText) => {
+            const elVal = document.getElementById(valId);
+            const elBar = document.getElementById(barId);
+            if(val !== null && val !== undefined) {
+                elVal.innerText = Math.round(val) + '%';
+                elBar.style.width = val + '%';
+            } else {
+                elVal.innerText = defaultText || 'N/A';
+                elVal.classList.add('text-muted');
+                elBar.style.width = '0%';
+            }
+        };
+        
+        setBar('val-resume', 'bar-resume', data.resume_score, 'No Resume');
+        setBar('val-ats', 'bar-ats', data.ats_score, 'Not Checked');
+        setBar('val-job', 'bar-job', data.job_match_score, 'No Job Match');
+        setBar('val-interview', 'bar-interview', data.interview_score, 'No Interview');
+        
+        // Overall Score Circle
+        const score = data.overall_score || 0;
+        document.getElementById('overall-score-text').innerText = score + '%';
+        
+        const circle = document.getElementById('overall-circle');
+        const circumference = 2 * Math.PI * 45; // 283
+        const offset = circumference - (score / 100) * circumference;
+        
+        // Setup color based on score
+        let color = '#dc3545'; // red
+        let status = 'Needs Improvement 🔴';
+        if (score >= 90) { color = '#198754'; status = 'Excellent 🟢'; }
+        else if (score >= 75) { color = '#ffc107'; status = 'Good 🟡'; }
+        else if (score >= 50) { color = '#fd7e14'; status = 'Average 🟠'; }
+        
+        if (score === 0) status = 'Data not available';
+        
+        circle.style.stroke = color;
+        setTimeout(() => {
+            circle.style.strokeDashoffset = offset;
+        }, 100);
+        
+        document.getElementById('status-text').innerText = status;
+        document.getElementById('status-text').style.color = color;
+        
+        // Summary
+        document.getElementById('readiness-summary').innerText = data.summary || "No data available to generate a summary.";
+        
+        // Lists
+        const populateList = (id, items, emptyMsg, isOrdered=false) => {
+            const el = document.getElementById(id);
+            if(!items || items.length === 0) {
+                el.innerHTML = `<li class="text-muted small">${emptyMsg}</li>`;
+                return;
+            }
+            if(isOrdered) {
+                el.innerHTML = items.map(i => `<li class="mb-2">${i}</li>`).join('');
+            } else {
+                el.innerHTML = items.map(i => `<li class="mb-2"><i class="bi bi-check2 text-secondary me-2"></i>${i}</li>`).join('');
+            }
+        };
+        
+        populateList('list-strengths', data.strengths, 'Complete modules to identify strengths.');
+        populateList('list-weaknesses', data.weaknesses, 'Complete modules to identify weaknesses.');
+        populateList('list-actionplan', data.action_plan, 'No actions recommended yet.', true);
+        
+        // Switch views
+        document.getElementById('loading-state').style.display = 'none';
+        document.getElementById('dashboard-state').style.display = 'block';
+        
+    } catch(err) {
+        console.error(err);
+        alert('Failed to load readiness data. Make sure you are logged in and the server is running.');
+    }
+}
+</script>
+{% endblock %}

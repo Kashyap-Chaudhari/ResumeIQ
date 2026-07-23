@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics | ResumeIQ{% endblock %}
+{% block header_title %}Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Main Analytics Card -->
+    <div class="col-12">
+        <div class="saas-card p-5 text-center" style="background: var(--bg-card);">
+            <div class="mb-4">
+                <i class="bi bi-graph-up text-primary" style="font-size: 3rem;"></i>
+            </div>
+            <h3 class="fw-bold mb-3">Application Pipeline Insights</h3>
+            <p class="text-secondary mb-4 mx-auto" style="max-width: 600px;">
+                Track your career progression with real-time data on your application funnel. We're currently rolling out more advanced charts and AI-driven insights to help you optimize your placement strategy.
+            </p>
+            
+            <div class="row text-center g-4 mt-2 justify-content-center">
+                <div class="col-6 col-md-2">
+                    <div class="p-3 rounded border" style="background: rgba(148, 163, 184, 0.05); border-color: var(--border-color) !important;">
+                        <h2 class="fw-bold mb-1 text-primary">{{ app_stats.saved }}</h2>
+                        <small class="text-secondary d-block text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px; font-weight: 600;">Saved</small>
+                    </div>
+                </div>
+                <div class="col-6 col-md-2">
+                    <div class="p-3 rounded border" style="background: rgba(99, 102, 241, 0.05); border-color: var(--border-color) !important;">
+                        <h2 class="fw-bold mb-1" style="color: var(--accent-indigo);">{{ app_stats.applied }}</h2>
+                        <small class="text-secondary d-block text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px; font-weight: 600;">Applied</small>
+                    </div>
+                </div>
+                <div class="col-6 col-md-2">
+                    <div class="p-3 rounded border" style="background: rgba(245, 158, 11, 0.05); border-color: var(--border-color) !important;">
+                        <h2 class="fw-bold mb-1 text-warning">{{ app_stats.interviewing }}</h2>
+                        <small class="text-secondary d-block text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px; font-weight: 600;">Interview</small>
+                    </div>
+                </div>
+                <div class="col-6 col-md-2">
+                    <div class="p-3 rounded border" style="background: rgba(16, 185, 129, 0.05); border-color: var(--border-color) !important;">
+                        <h2 class="fw-bold mb-1 text-success">{{ app_stats.offer }}</h2>
+                        <small class="text-secondary d-block text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px; font-weight: 600;">Offers</small>
+                    </div>
+                </div>
+                <div class="col-6 col-md-2">
+                    <div class="p-3 rounded border" style="background: rgba(244, 63, 94, 0.05); border-color: var(--border-color) !important;">
+                        <h2 class="fw-bold mb-1 text-danger">{{ app_stats.rejected }}</h2>
+                        <small class="text-secondary d-block text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px; font-weight: 600;">Rejected</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5 pt-4 border-top" style="border-color: var(--border-color) !important;">
+                <h5 class="fw-bold mb-4">Coming Soon</h5>
+                <div class="d-flex justify-content-center gap-4 flex-wrap">
+                    <div class="text-secondary d-flex align-items-center gap-2">
+                        <i class="bi bi-clock-history"></i> ATS Score Trends over Time
+                    </div>
+                    <div class="text-secondary d-flex align-items-center gap-2">
+                        <i class="bi bi-bar-chart-steps"></i> Conversion Rate Analysis
+                    </div>
+                    <div class="text-secondary d-flex align-items-center gap-2">
+                        <i class="bi bi-lightning-charge"></i> AI Skill Gap Radar
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

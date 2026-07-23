@@ -1,0 +1,410 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Interview Coach | ResumeIQ{% endblock %}
+{% block header_title %}AI Interview Coach{% endblock %}
+
+{% block content %}
+<style>
+    .chat-container {
+        height: 60vh;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .chat-bubble {
+        max-width: 80%;
+        padding: 1rem 1.25rem;
+        border-radius: 1rem;
+        line-height: 1.5;
+        position: relative;
+    }
+
+    .chat-bubble.ai {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-bottom-left-radius: 0.25rem;
+        align-self: flex-start;
+    }
+    
+    .chat-bubble.user {
+        background: var(--primary-color);
+        color: white;
+        border-bottom-right-radius: 0.25rem;
+        align-self: flex-end;
+    }
+
+    .evaluation-card {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid #10B981;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .typing-indicator span {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background-color: var(--text-secondary);
+        border-radius: 50%;
+        animation: typing 1.4s infinite ease-in-out;
+        margin: 0 2px;
+    }
+    .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-4px); }
+    }
+    
+    #chat-screen {
+        display: none;
+    }
+    #report-screen {
+        display: none;
+    }
+</style>
+
+<!-- Setup Screen -->
+<div id="setup-screen" class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="saas-card p-4 p-md-5 text-center mb-4">
+            <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3" style="width: 64px; height: 64px;">
+                <i class="bi bi-robot fs-2"></i>
+            </div>
+            <h2 class="fw-bold mb-3">AI Interview Coach</h2>
+            <p class="text-secondary mb-0">Experience a realistic, adaptive mock interview. Your AI coach will ask questions, evaluate your answers, and provide actionable feedback.</p>
+        </div>
+        
+        <div class="saas-card p-4">
+            <form id="setupForm">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Target Job Role *</label>
+                        <input type="text" id="int_role" class="form-control" placeholder="e.g. Senior Frontend Developer" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Experience Level</label>
+                        <select id="int_exp" class="form-select">
+                            <option value="Entry Level">Entry Level</option>
+                            <option value="Mid Level" selected>Mid Level</option>
+                            <option value="Senior Level">Senior Level</option>
+                            <option value="Lead/Manager">Lead/Manager</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Interview Type</label>
+                        <select id="int_type" class="form-select">
+                            <option value="Mixed" selected>Mixed (General)</option>
+                            <option value="Technical">Technical</option>
+                            <option value="Behavioral">Behavioral</option>
+                            <option value="HR">HR / Culture Fit</option>
+                            <option value="System Design">System Design</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Difficulty</label>
+                        <select id="int_diff" class="form-select">
+                            <option value="Easy">Easy</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Hard">Hard</option>
+                            <option value="Expert">Expert (FAANG Level)</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Key Skills (Optional)</label>
+                        <input type="text" id="int_skills" class="form-control" placeholder="e.g. React, Node.js, AWS, Docker">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Paste Resume Text (Optional)</label>
+                        <textarea id="int_resume" class="form-control" rows="3" placeholder="Paste your resume here for personalized questions..."></textarea>
+                    </div>
+                    <div class="col-12 text-end mt-4">
+                        <button type="submit" id="startBtn" class="btn btn-gradient-primary px-4 py-2">
+                            <i class="bi bi-play-circle me-1"></i> Start Interview
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Chat Screen -->
+<div id="chat-screen" class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="saas-card d-flex flex-column h-100">
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light rounded-top">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="bi bi-robot fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0">AI Interview Coach</h6>
+                        <small class="text-secondary" id="chat-status">Interview in progress...</small>
+                    </div>
+                </div>
+                <div>
+                    <button id="endInterviewBtn" class="btn btn-sm btn-outline-danger">End Interview & Get Report</button>
+                </div>
+            </div>
+            
+            <div class="p-4 flex-grow-1 chat-container" id="chatbox">
+                <!-- Chat messages go here -->
+            </div>
+            
+            <div class="p-3 border-top">
+                <form id="chatForm">
+                    <div class="input-group">
+                        <textarea id="userAnswer" class="form-control" rows="2" placeholder="Type your answer here..." required></textarea>
+                        <button class="btn btn-primary px-4" type="submit" id="sendBtn">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Report Screen -->
+<div id="report-screen" class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="saas-card p-4 p-md-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-2">Final Interview Report</h2>
+                <p class="text-secondary">Comprehensive analysis of your interview performance.</p>
+                <div class="display-1 fw-bold text-primary my-4" id="r_overall">0</div>
+                <h5 class="fw-bold" id="r_readiness">Readiness: N/A</h5>
+                <p class="text-muted" id="r_hire">Hiring Recommendation: N/A</p>
+            </div>
+            
+            <div class="row g-4 mb-5">
+                <div class="col-md-6">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-graph-up text-success me-2"></i>Scores</h5>
+                    <ul class="list-group list-group-flush" id="r_scores">
+                        <!-- Scores injected here -->
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-lightbulb text-warning me-2"></i>Key Takeaways</h5>
+                    <div class="mb-3">
+                        <strong class="text-success">Strengths:</strong>
+                        <ul id="r_strengths" class="text-secondary small mt-1"></ul>
+                    </div>
+                    <div class="mb-3">
+                        <strong class="text-danger">Weaknesses:</strong>
+                        <ul id="r_weaknesses" class="text-secondary small mt-1"></ul>
+                    </div>
+                    <div>
+                        <strong class="text-primary">Recommended Learning:</strong>
+                        <ul id="r_learning" class="text-secondary small mt-1"></ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button onclick="window.print()" class="btn btn-outline-secondary me-2"><i class="bi bi-printer"></i> Print PDF</button>
+                <button onclick="location.reload()" class="btn btn-primary"><i class="bi bi-arrow-repeat"></i> Start New Interview</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const csrfToken = '{{ csrf_token }}';
+    let currentSessionId = null;
+    let currentQuestionId = null;
+
+    const setupForm = document.getElementById('setupForm');
+    const chatForm = document.getElementById('chatForm');
+    const chatbox = document.getElementById('chatbox');
+    
+    function addAIMessage(text, evalData = null) {
+        const div = document.createElement('div');
+        div.className = 'chat-bubble ai';
+        div.innerText = text;
+        
+        if (evalData) {
+            const evalHtml = `
+                <div class="evaluation-card mt-3">
+                    <strong class="d-block mb-1 text-success"><i class="bi bi-check-circle"></i> AI Evaluation</strong>
+                    <div class="row g-2 mb-2">
+                        <div class="col-6">Technical: ${evalData.technical_accuracy}/100</div>
+                        <div class="col-6">Communication: ${evalData.communication_score}/100</div>
+                        <div class="col-6">Clarity: ${evalData.clarity}/100</div>
+                        <div class="col-6">Completeness: ${evalData.completeness}/100</div>
+                    </div>
+                    <p class="mb-1"><strong>Feedback:</strong> ${evalData.overall_feedback}</p>
+                    <p class="mb-0 text-muted"><strong>Tip:</strong> ${evalData.suggestions_for_improvement}</p>
+                </div>
+            `;
+            div.innerHTML = text + evalHtml;
+        }
+        
+        chatbox.appendChild(div);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+    
+    function addUserMessage(text) {
+        const div = document.createElement('div');
+        div.className = 'chat-bubble user';
+        div.innerText = text;
+        chatbox.appendChild(div);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function showTyping() {
+        const div = document.createElement('div');
+        div.id = 'typing-indicator';
+        div.className = 'chat-bubble ai typing-indicator';
+        div.innerHTML = '<span></span><span></span><span></span>';
+        chatbox.appendChild(div);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function hideTyping() {
+        const el = document.getElementById('typing-indicator');
+        if (el) el.remove();
+    }
+
+    setupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        document.getElementById('startBtn').disabled = true;
+        document.getElementById('startBtn').innerHTML = '<span class="spinner-border spinner-border-sm"></span> Generating...';
+
+        const payload = {
+            role: document.getElementById('int_role').value,
+            experience: document.getElementById('int_exp').value,
+            type: document.getElementById('int_type').value,
+            difficulty: document.getElementById('int_diff').value,
+            skills: document.getElementById('int_skills').value,
+            resume_text: document.getElementById('int_resume').value
+        };
+
+        try {
+            const res = await fetch('/ai-interview/api/interview/start', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            
+            if (data.error) throw new Error(data.error);
+            
+            currentSessionId = data.session_id;
+            currentQuestionId = data.question_id;
+            
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('chat-screen').style.display = 'flex';
+            
+            addAIMessage(data.question);
+        } catch (err) {
+            alert('Failed to start interview: ' + err.message);
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('startBtn').innerHTML = '<i class="bi bi-play-circle me-1"></i> Start Interview';
+        }
+    });
+
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const input = document.getElementById('userAnswer');
+        const text = input.value.trim();
+        if (!text) return;
+        
+        addUserMessage(text);
+        input.value = '';
+        input.disabled = true;
+        document.getElementById('sendBtn').disabled = true;
+        
+        showTyping();
+        
+        try {
+            const res = await fetch('/ai-interview/api/interview/evaluate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                body: JSON.stringify({
+                    session_id: currentSessionId,
+                    question_id: currentQuestionId,
+                    answer: text
+                })
+            });
+            const data = await res.json();
+            hideTyping();
+            
+            if (data.error) throw new Error(data.error);
+            
+            currentQuestionId = data.next_question_id;
+            
+            // Show evaluation inline with the next question!
+            addAIMessage(data.next_question, data.evaluation);
+            
+        } catch (err) {
+            hideTyping();
+            alert('Error evaluating answer: ' + err.message);
+        } finally {
+            input.disabled = false;
+            document.getElementById('sendBtn').disabled = false;
+            input.focus();
+        }
+    });
+
+    document.getElementById('endInterviewBtn').addEventListener('click', async () => {
+        if (!confirm('Are you sure you want to end the interview and generate the report?')) return;
+        
+        document.getElementById('chat-screen').style.display = 'none';
+        document.getElementById('setup-screen').style.display = 'none';
+        
+        // Show a full screen loader instead of standard UI
+        document.body.insertAdjacentHTML('beforeend', '<div id="report-loader" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;"><div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div><h4 class="mt-3">Analyzing your entire interview...</h4></div>');
+
+        try {
+            const res = await fetch('/ai-interview/api/interview/report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                body: JSON.stringify({ session_id: currentSessionId })
+            });
+            const data = await res.json();
+            
+            if (data.error) throw new Error(data.error);
+            
+            const r = data.report;
+            document.getElementById('r_overall').innerText = r.overall_interview_score + '/100';
+            document.getElementById('r_readiness').innerText = 'Readiness: ' + r.interview_readiness;
+            document.getElementById('r_hire').innerText = 'Hiring Recommendation: ' + r.hiring_recommendation;
+            
+            let scoresHtml = '';
+            const scoreKeys = ['communication', 'technical_knowledge', 'confidence', 'problem_solving', 'behavioral_skills', 'leadership', 'grammar', 'professionalism'];
+            scoreKeys.forEach(k => {
+                if(r[k] !== undefined) {
+                    scoresHtml += `<li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white px-0 border-secondary">
+                        <span class="text-capitalize">${k.replace('_', ' ')}</span>
+                        <span class="badge bg-primary rounded-pill">${r[k]}/100</span>
+                    </li>`;
+                }
+            });
+            document.getElementById('r_scores').innerHTML = scoresHtml;
+            
+            document.getElementById('r_strengths').innerHTML = (r.strengths || []).map(s => `<li>${s}</li>`).join('');
+            document.getElementById('r_weaknesses').innerHTML = (r.weaknesses || []).map(s => `<li>${s}</li>`).join('');
+            document.getElementById('r_learning').innerHTML = (r.recommended_learning_topics || []).map(s => `<li>${s}</li>`).join('');
+            
+            document.getElementById('report-loader').remove();
+            document.getElementById('report-screen').style.display = 'flex';
+        } catch(err) {
+            document.getElementById('report-loader').remove();
+            alert('Failed to generate report: ' + err.message);
+            document.getElementById('chat-screen').style.display = 'flex';
+        }
+    });
+</script>
+{% endblock %}

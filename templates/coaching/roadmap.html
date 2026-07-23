@@ -1,0 +1,337 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Career Roadmap | ResumeIQ{% endblock %}
+{% block header_title %}Step-by-Step Personalized Career Roadmap{% endblock %}
+
+{% block content %}
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    
+    .timeline-container {
+        position: relative;
+        padding-left: 2rem;
+    }
+    .timeline-container::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--bs-primary);
+        opacity: 0.3;
+    }
+    .timeline-item {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+    .timeline-marker {
+        position: absolute;
+        left: -2.35rem;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--bs-primary);
+        border: 4px solid var(--bs-body-bg);
+        box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.2);
+    }
+    
+    .skeleton-box {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+        border-radius: 0.25rem;
+    }
+    @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+</style>
+
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold mb-1">Career Roadmap</h2>
+            <p class="text-secondary mb-0">Generate a step-by-step personalized plan based on your goals and AI analysis.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Configuration Form -->
+    <div class="col-lg-4">
+        <div class="glass-card p-4 sticky-top" style="top: 2rem;">
+            <h5 class="fw-bold mb-3"><i class="bi bi-sliders text-primary me-2"></i>Roadmap Settings</h5>
+            <form id="roadmap-form" onsubmit="generateRoadmap(event)">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label small text-secondary fw-bold">Target Career</label>
+                    <select class="form-select" id="target_career" required>
+                        <option value="Python Developer">Python Developer</option>
+                        <option value="Full Stack Developer">Full Stack Developer</option>
+                        <option value="Backend Developer">Backend Developer</option>
+                        <option value="Frontend Developer">Frontend Developer</option>
+                        <option value="Data Analyst">Data Analyst</option>
+                        <option value="AI/ML Engineer">AI/ML Engineer</option>
+                        <option value="Java Developer">Java Developer</option>
+                        <option value="DevOps Engineer">DevOps Engineer</option>
+                        <option value="UI/UX Designer">UI/UX Designer</option>
+                        <option value="Cyber Security">Cyber Security</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small text-secondary fw-bold">Target Timeline</label>
+                    <select class="form-select" id="target_timeline" required>
+                        <option value="1 Month">1 Month</option>
+                        <option value="3 Months">3 Months</option>
+                        <option value="6 Months">6 Months</option>
+                        <option value="1 Year">1 Year</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small text-secondary fw-bold">Current Skill Level</label>
+                    <select class="form-select" id="skill_level" required>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small text-secondary fw-bold">Daily Study Time</label>
+                    <select class="form-select" id="study_time" required>
+                        <option value="30 Minutes">30 Minutes</option>
+                        <option value="1 Hour">1 Hour</option>
+                        <option value="2 Hours">2 Hours</option>
+                        <option value="3+ Hours">3+ Hours</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label small text-secondary fw-bold">Goal</label>
+                    <select class="form-select" id="goal" required>
+                        <option value="Campus Placement">Campus Placement</option>
+                        <option value="Internship">Internship</option>
+                        <option value="First Job">First Job</option>
+                        <option value="Career Switch">Career Switch</option>
+                        <option value="Skill Improvement">Skill Improvement</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary w-100" id="btn-generate">
+                    <i class="bi bi-magic me-2"></i>Generate Roadmap
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Output Area -->
+    <div class="col-lg-8">
+        
+        <!-- Empty State -->
+        <div id="empty-state" class="glass-card p-5 text-center h-100 d-flex flex-column justify-content-center align-items-center">
+            <i class="bi bi-map text-primary opacity-50 mb-3" style="font-size: 4rem;"></i>
+            <h4 class="fw-bold">No Roadmap Generated</h4>
+            <p class="text-secondary">Fill out the settings on the left and click "Generate Roadmap" to create your personalized plan.</p>
+        </div>
+
+        <!-- Skeleton State -->
+        <div id="loading-state" class="d-none">
+            <div class="glass-card p-4 mb-4">
+                <div class="skeleton-box mb-3" style="height:24px; width:40%;"></div>
+                <div class="skeleton-box mb-2" style="height:16px; width:100%;"></div>
+                <div class="skeleton-box mb-2" style="height:16px; width:80%;"></div>
+            </div>
+            <div class="glass-card p-4 mb-4">
+                <div class="d-flex gap-4">
+                    <div class="skeleton-box rounded-circle" style="width:80px; height:80px;"></div>
+                    <div class="flex-grow-1">
+                        <div class="skeleton-box mb-2" style="height:20px; width:60%;"></div>
+                        <div class="skeleton-box mb-2" style="height:16px; width:90%;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card p-4">
+                <div class="skeleton-box mb-4" style="height:24px; width:30%;"></div>
+                <div class="skeleton-box mb-4" style="height:80px; width:100%;"></div>
+                <div class="skeleton-box mb-4" style="height:80px; width:100%;"></div>
+                <div class="skeleton-box mb-4" style="height:80px; width:100%;"></div>
+            </div>
+        </div>
+
+        <!-- Dashboard State -->
+        <div id="dashboard-state" class="d-none">
+            <!-- Progress & Summary Header -->
+            <div class="glass-card p-4 mb-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3">
+                    <div>
+                        <h4 class="fw-bold text-primary mb-1" id="out-career-goal">--</h4>
+                        <p class="text-secondary mb-0">Estimated Time: <strong id="out-timeline">--</strong> | Readiness: <strong id="out-readiness">--</strong></p>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-secondary btn-sm me-2" onclick="window.print()"><i class="bi bi-download"></i> PDF</button>
+                        <button class="btn btn-outline-primary btn-sm"><i class="bi bi-save"></i> Save</button>
+                    </div>
+                </div>
+                
+                <p class="mb-4" id="out-summary">--</p>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="bg-dark bg-opacity-10 rounded p-3">
+                            <small class="text-secondary fw-bold d-block mb-2">OVERALL PROGRESS</small>
+                            <div class="d-flex align-items-center gap-3">
+                                <h3 class="fw-bold mb-0" id="out-progress-text">0%</h3>
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar bg-success" id="out-progress-bar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <small class="text-secondary mt-2 d-block"><span id="out-tasks-completed">0</span> completed, <span id="out-tasks-remaining">0</span> remaining</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-primary bg-opacity-10 rounded p-3 border border-primary border-opacity-25 h-100">
+                            <small class="text-primary fw-bold d-block mb-1"><i class="bi bi-star-fill me-1"></i>NEXT BEST ACTION</small>
+                            <div class="fw-bold" id="out-next-action">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="glass-card p-4">
+                <h5 class="fw-bold mb-4">Step-by-Step Roadmap</h5>
+                <div class="timeline-container" id="roadmap-timeline">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function getPriorityBadge(priority) {
+        if (!priority) return '';
+        const p = priority.toLowerCase();
+        if (p.includes('high')) return '<span class="badge bg-danger">High Priority</span>';
+        if (p.includes('medium')) return '<span class="badge bg-warning text-dark">Medium Priority</span>';
+        return '<span class="badge bg-info text-dark">Low Priority</span>';
+    }
+
+    async function generateRoadmap(e) {
+        e.preventDefault();
+        
+        // UI transitions
+        document.getElementById('empty-state').classList.add('d-none');
+        document.getElementById('dashboard-state').classList.add('d-none');
+        document.getElementById('loading-state').classList.remove('d-none');
+        
+        const btn = document.getElementById('btn-generate');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Generating...';
+        btn.disabled = true;
+
+        const payload = {
+            target_career: document.getElementById('target_career').value,
+            target_timeline: document.getElementById('target_timeline').value,
+            skill_level: document.getElementById('skill_level').value,
+            study_time: document.getElementById('study_time').value,
+            goal: document.getElementById('goal').value,
+        };
+
+        try {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const res = await fetch('/coaching/api/career-roadmap/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(payload)
+            });
+            
+            const data = await res.json();
+            
+            if (data.error) {
+                alert("Error: " + data.error);
+                throw new Error(data.error);
+            }
+            
+            const r = data.roadmap;
+            
+            // Populate Header Data
+            document.getElementById('out-career-goal').innerText = r.career_goal || payload.target_career;
+            document.getElementById('out-timeline').innerText = r.estimated_completion || payload.target_timeline;
+            document.getElementById('out-readiness').innerText = r.current_readiness || payload.skill_level;
+            document.getElementById('out-summary').innerText = r.summary || '';
+            document.getElementById('out-next-action').innerText = r.next_best_action || 'Start working on your first step.';
+            
+            // Progress defaults
+            const totalTasks = r.steps ? r.steps.length : 0;
+            document.getElementById('out-tasks-remaining').innerText = totalTasks;
+            document.getElementById('out-tasks-completed').innerText = '0';
+            
+            // Render Timeline
+            const container = document.getElementById('roadmap-timeline');
+            container.innerHTML = '';
+            
+            if (r.steps && r.steps.length > 0) {
+                r.steps.forEach(step => {
+                    const html = `
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="card bg-dark bg-opacity-25 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="fw-bold mb-0">Step ${step.step_number}: ${step.title}</h6>
+                                        ${getPriorityBadge(step.priority)}
+                                    </div>
+                                    <p class="text-secondary small mb-2"><i class="bi bi-clock me-1"></i> Est: ${step.estimated_time}</p>
+                                    <div class="bg-dark rounded p-2 mb-3">
+                                        <small class="fw-bold text-primary d-block mb-1">Reason for recommendation:</small>
+                                        <span class="small">${step.reason}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="check-step-${step.step_number}">
+                                            <label class="form-check-label small" for="check-step-${step.step_number}">
+                                                Mark as Completed
+                                            </label>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-search me-1"></i>Resources</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += html;
+                });
+            } else {
+                container.innerHTML = '<p class="text-muted">No steps generated.</p>';
+            }
+
+            // Switch UI states
+            document.getElementById('loading-state').classList.add('d-none');
+            document.getElementById('dashboard-state').classList.remove('d-none');
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById('empty-state').classList.remove('d-none');
+            document.getElementById('loading-state').classList.add('d-none');
+        } finally {
+            btn.innerHTML = '<i class="bi bi-magic me-2"></i>Generate Roadmap';
+            btn.disabled = false;
+        }
+    }
+</script>
+{% endblock %}

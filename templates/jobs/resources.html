@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Learning Resources Hub | ResumeIQ{% endblock %}
+{% block header_title %}Missing Skill Learning Resources Hub{% endblock %}
+
+{% block content %}
+<div class="row g-4" id="skills-container">
+  {% if missing_skills %}
+    {% for skill in missing_skills %}
+    <div class="col-12" id="skill-card-{{ forloop.counter }}">
+      <div class="saas-card p-4 h-100">
+        <h4 class="fw-bold mb-3 d-flex align-items-center gap-2">
+          <i class="bi bi-journal-code text-primary"></i> {{ skill }}
+        </h4>
+        
+        <div id="results-{{ forloop.counter }}" class="search-results-container">
+          <!-- Loading State -->
+          <div class="text-center py-4 text-muted loading-state">
+            <div class="spinner-border spinner-border-sm text-primary mb-2" role="status"></div>
+            <div>Searching Google...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="col-12 text-center py-5 text-muted saas-card">
+      <i class="bi bi-stars fs-1 mb-2 d-block text-warning"></i>
+      <h4 class="fw-bold">No missing skills detected!</h4>
+      <p class="mb-0">Run a Job Match analysis to identify skills you need to learn.</p>
+      <a href="{% url 'jobs:match' %}" class="btn btn-saas-primary mt-3">Go to Job Matcher</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const missingSkills = {{ missing_skills|safe|default:"[]" }};
+    
+    missingSkills.forEach((skill, index) => {
+        const containerId = `results-${index + 1}`;
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        fetch(`/jobs/api/google-search/?skill=${encodeURIComponent(skill)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.error || !data.results || data.results.length === 0) {
+                    container.innerHTML = `
+                        <div class="alert alert-secondary border-0 text-center py-3">
+                            <i class="bi bi-info-circle me-1"></i> No verified learning resources found.
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '<h6 class="fw-bold text-muted small text-uppercase mb-3">Search Results</h6><div class="list-group list-group-flush gap-2">';
+                
+                data.results.forEach((r, i) => {
+                    const domain = new URL(r.url).hostname.replace('www.', '');
+                    const favicon = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+                    
+                    html += `
+                        <div class="list-group-item list-group-item-action border rounded-3 p-3" style="background: rgba(255,255,255,0.02);">
+                            <div class="d-flex gap-3 align-items-start">
+                                <div class="fw-bold text-muted" style="min-width: 20px;">${i + 1}.</div>
+                                <img src="${favicon}" alt="favicon" width="20" height="20" class="rounded mt-1">
+                                <div class="flex-grow-1">
+                                    <div class="small text-primary fw-bold mb-1">${domain}</div>
+                                    <h6 class="fw-bold mb-1">${r.title}</h6>
+                                    <p class="text-secondary small mb-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${r.body}</p>
+                                    <a href="${r.url}" target="_blank" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+                                        Open Website <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+            })
+            .catch(err => {
+                console.error("API Error:", err);
+                container.innerHTML = `
+                    <div class="alert alert-danger border-0 text-center py-3">
+                        <i class="bi bi-exclamation-triangle me-1"></i> API Error fetching results.
+                    </div>
+                `;
+            });
+    });
+});
+</script>
+{% endblock %}

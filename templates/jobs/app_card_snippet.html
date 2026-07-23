@@ -1,0 +1,34 @@
+<div class="kanban-card">
+  <div class="fw-bold mb-1" style="font-size: 0.95rem;">{{ app.job_title }}</div>
+  <div class="text-muted small mb-2"><i class="bi bi-building"></i> {{ app.company_name }}</div>
+
+  {% if app.match_analysis %}
+    <div class="mb-2">
+      <span class="badge bg-emerald" style="background: rgba(16,185,129,0.15); color: var(--accent-emerald);">
+        <i class="bi bi-bullseye me-1"></i> {{ app.match_analysis.match_score }}% Match
+      </span>
+    </div>
+  {% endif %}
+
+  <div class="d-flex align-items-center justify-content-between pt-2 border-top border-secondary">
+    <form method="POST" class="d-inline">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="update_status">
+      <input type="hidden" name="app_id" value="{{ app.id }}">
+      <select name="status" class="form-select form-select-sm form-control-saas" onchange="this.form.submit()" style="font-size: 0.72rem; padding: 2px 6px;">
+        <option value="SAVED" {% if app.status == 'SAVED' %}selected{% endif %}>Saved</option>
+        <option value="APPLIED" {% if app.status == 'APPLIED' %}selected{% endif %}>Applied</option>
+        <option value="INTERVIEWING" {% if app.status == 'INTERVIEWING' %}selected{% endif %}>Interviewing</option>
+        <option value="OFFER" {% if app.status == 'OFFER' %}selected{% endif %}>Offer</option>
+        <option value="REJECTED" {% if app.status == 'REJECTED' %}selected{% endif %}>Rejected</option>
+      </select>
+    </form>
+
+    <form method="POST" class="d-inline">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="delete">
+      <input type="hidden" name="app_id" value="{{ app.id }}">
+      <button type="submit" class="btn btn-link text-muted p-0 text-decoration-none" title="Delete"><i class="bi bi-x-lg"></i></button>
+    </form>
+  </div>
+</div>
