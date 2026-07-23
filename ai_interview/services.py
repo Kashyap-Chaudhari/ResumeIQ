@@ -1,13 +1,37 @@
 import os
 import json
-import google.generativeai as genai
+import requests
+
+class GeminiModel:
+    def __init__(self, api_key, model_name="gemini-1.5-flash"):
+        self.api_key = api_key
+        self.model_name = model_name
+
+    def generate_content(self, prompt):
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model_name}:generateContent?key={self.api_key}"
+        headers = {'Content-Type': 'application/json'}
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}]
+        }
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()
+        data = response.json()
+        
+        class ResponseText:
+            def __init__(self, text):
+                self.text = text
+                
+        try:
+            text = data['candidates'][0]['content']['parts'][0]['text']
+            return ResponseText(text)
+        except (KeyError, IndexError):
+            raise Exception("Invalid response format from Gemini API")
 
 def get_genai_model(api_key=None):
     key = api_key or os.environ.get('GEMINI_API_KEY')
     if not key:
         raise ValueError("No Gemini API key found.")
-    genai.configure(api_key=key)
-    return genai.GenerativeModel('gemini-1.5-flash')
+    return GeminiModel(api_key=key)
 
 def generate_first_question(role, experience, skills, difficulty, interview_type, resume_text, job_description, api_key=None):
     model = get_genai_model(api_key)

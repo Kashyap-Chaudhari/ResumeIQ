@@ -1,7 +1,31 @@
 import os
 import json
 import requests
-import google.generativeai as genai
+
+class GeminiModel:
+    def __init__(self, api_key, model_name="gemini-1.5-flash"):
+        self.api_key = api_key
+        self.model_name = model_name
+
+    def generate_content(self, prompt):
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model_name}:generateContent?key={self.api_key}"
+        headers = {'Content-Type': 'application/json'}
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}]
+        }
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()
+        data = response.json()
+        
+        class ResponseText:
+            def __init__(self, text):
+                self.text = text
+                
+        try:
+            text = data['candidates'][0]['content']['parts'][0]['text']
+            return ResponseText(text)
+        except (KeyError, IndexError):
+            raise Exception("Invalid response format from Gemini API")
 
 def get_gemini_model(user_api_key=None):
     """
@@ -10,13 +34,7 @@ def get_gemini_model(user_api_key=None):
     api_key = user_api_key or os.getenv('GEMINI_API_KEY')
     if not api_key:
         return None
-    try:
-        genai.configure(api_key=api_key)
-        # Try gemini-1.5-flash or gemini-2.0-flash
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        return model
-    except Exception:
-        return None
+    return GeminiModel(api_key=api_key)
 
 # ================================
 # 1. RESUME REWRITE & BULLETS

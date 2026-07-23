@@ -1,7 +1,7 @@
 import re
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 from resumes.services.nlp_extractor import extract_skills_from_text
+import math
+from collections import Counter
 
 def analyze_job_match(resume_text, job_text):
     """
@@ -24,23 +24,54 @@ def analyze_job_match(resume_text, job_text):
     # 2. Extract technical skills to limit the universe of keywords
     jd_skills = set(extract_skills_from_text(job_text))
     
-    # 3. TF-IDF Cosine Similarity on full text
+    # 3. Custom TF-IDF Cosine Similarity on full text
+    def get_ngrams(text, n=1):
+        words = text.split()
+        ngrams = []
+        for i in range(len(words)-n+1):
+            ngrams.append(" ".join(words[i:i+n]))
+        return ngrams
+
+    def compute_tfidf_cosine_similarity(text1, text2):
+        words1 = text1.split() + get_ngrams(text1, 2)
+        words2 = text2.split() + get_ngrams(text2, 2)
+        stop_words = {"the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for", "with", "is", "are"}
+        words1 = [w for w in words1 if w not in stop_words]
+        words2 = [w for w in words2 if w not in stop_words]
+        c1 = Counter(words1)
+        c2 = Counter(words2)
+        all_words = set(c1.keys()).union(set(c2.keys()))
+        vec1, vec2 = [], []
+        for w in all_words:
+            df = sum(1 for c in (c1, c2) if w in c)
+            idf = math.log(3 / (1 + df)) + 1
+            vec1.append(c1.get(w, 0) * idf)
+            vec2.append(c2.get(w, 0) * idf)
+        dot = sum(v1 * v2 for v1, v2 in zip(vec1, vec2))
+        norm1 = math.sqrt(sum(v * v for v in vec1))
+        norm2 = math.sqrt(sum(v * v for v in vec2))
+        if norm1 == 0 or norm2 == 0: return 0.0
+        return dot / (norm1 * norm2)
+
     try:
-        tfidf_vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 2))
-        tfidf_matrix = tfidf_vectorizer.fit_transform([clean_res, clean_job])
-        similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
+        similarity = compute_tfidf_cosine_similarity(clean_res, clean_job)
         # Boost similarity slightly for a realistic 0-100 score
         raw_match_score = similarity * 100 * 1.5 
     except Exception:
         raw_match_score = 45.0
 
-    # 4. CountVectorizer for precise Skill Frequencies
+    # 4. Custom CountVectorizer for precise Skill Frequencies
     vocab = list(jd_skills)
     if not vocab:
         vocab = ["python", "javascript", "sql", "aws", "docker"] # fallback
 
-    count_vectorizer = CountVectorizer(vocabulary=[v.lower() for v in vocab], ngram_range=(1, 2))
-    counts = count_vectorizer.fit_transform([clean_res, clean_job]).toarray()
+    vocab_lower = [v.lower() for v in vocab]
+    res_ngrams = clean_res.split() + get_ngrams(clean_res, 2)
+    job_ngrams = clean_job.split() + get_ngrams(clean_job, 2)
+    c_res = Counter(res_ngrams)
+    c_job = Counter(job_ngrams)
+    
+    counts = [[c_res.get(v, 0) for v in vocab_lower], [c_job.get(v, 0) for v in vocab_lower]]
     
     # counts[0] = resume counts, counts[1] = job counts
     skill_freq = []
