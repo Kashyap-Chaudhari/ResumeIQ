@@ -1,8 +1,5 @@
 #!/bin/bash
-
-set -e
-
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-
-python manage.py collectstatic --noinput
+echo "BUILD START"
+python3 -m pip install -r requirements.txt --break-system-packages
+python3 manage.py collectstatic --noinput --clear
+echo "BUILD END"
