@@ -155,7 +155,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_STORAGE = (
-    "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    "whitenoise.storage.CompressedStaticFilesStorage"
 )
 
 STATIC_DIR = BASE_DIR / "static"
