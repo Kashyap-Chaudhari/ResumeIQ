@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="{{ user_theme|default:'dark' }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,16 +19,17 @@
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
   
   <style>
-    /* Premium SaaS Core Styles */
+    /* Adaptive SaaS System for Light & Dark Mode */
     html, body {
-      background-color: #0B1020 !important;
-      color: #F8FAFC;
+      background-color: var(--bg-main) !important;
+      color: var(--text-primary);
       font-family: 'Plus Jakarta Sans', sans-serif;
       overflow-x: hidden;
       scroll-behavior: smooth;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    /* Ambient Background Orbs & Grid */
+    /* Ambient Background Orbs */
     .saas-bg-overlay {
       position: fixed;
       top: 0;
@@ -38,7 +39,7 @@
       pointer-events: none;
       z-index: 0;
       background-image: 
-        radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 50% 0%, var(--accent-indigo-glow, rgba(99, 102, 241, 0.15)) 0%, transparent 50%),
         radial-gradient(circle at 100% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 40%),
         radial-gradient(circle at 0% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
     }
@@ -51,18 +52,18 @@
       height: 100vh;
       pointer-events: none;
       z-index: 0;
-      background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-image: linear-gradient(var(--border-color) 1px, transparent 1px),
+                        linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
       background-size: 50px 50px;
-      opacity: 0.8;
+      opacity: 0.4;
     }
 
     /* Top Navigation Bar */
     .landing-nav {
-      background: rgba(11, 16, 32, 0.82);
+      background: var(--glass-topbar, rgba(11, 16, 32, 0.82));
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid var(--border-color);
       position: sticky;
       top: 0;
       z-index: 1000;
@@ -78,17 +79,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
     }
 
     .brand-logo-box i {
       font-size: 20px;
-      color: #818CF8;
-      filter: drop-shadow(0 0 6px rgba(129, 140, 248, 0.6));
+      color: #6366F1;
+      filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.5));
     }
 
     .nav-link-custom {
-      color: #94A3B8;
+      color: var(--text-secondary);
       text-decoration: none;
       font-weight: 600;
       font-size: 0.95rem;
@@ -98,13 +99,13 @@
     }
 
     .nav-link-custom:hover {
-      color: #F8FAFC;
-      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+      background: var(--glass-hover-bg, rgba(255, 255, 255, 0.05));
     }
 
     /* Hero Section */
     .hero-section {
-      padding: 100px 0 80px;
+      padding: 90px 0 70px;
       position: relative;
       z-index: 1;
     }
@@ -113,17 +114,17 @@
       display: inline-flex;
       align-items: center;
       background: rgba(99, 102, 241, 0.12);
-      color: #A5B4FC;
+      color: #6366F1;
       border: 1px solid rgba(99, 102, 241, 0.3);
       padding: 8px 18px;
       border-radius: 30px;
       font-size: 0.88rem;
       font-weight: 600;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.12);
     }
 
     .hero-title {
-      color: #F8FAFC;
+      color: var(--text-primary);
       font-size: 3.5rem;
       font-weight: 800;
       letter-spacing: -1.5px;
@@ -137,16 +138,16 @@
     }
 
     .hero-subtitle {
-      color: #94A3B8;
+      color: var(--text-secondary);
       max-width: 740px;
       font-size: 1.15rem;
       line-height: 1.6;
     }
 
-    /* Buttons */
+    /* Buttons matching Login Page */
     .btn-hero-primary {
       background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-      color: #FFFFFF;
+      color: #FFFFFF !important;
       font-weight: 700;
       border: none;
       border-radius: 12px;
@@ -157,42 +158,42 @@
     .btn-hero-primary:hover {
       transform: translateY(-2px);
       box-shadow: 0 12px 32px -4px rgba(139, 92, 246, 0.6);
-      color: #FFFFFF;
+      color: #FFFFFF !important;
       filter: brightness(1.08);
     }
 
     .btn-hero-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      color: #F8FAFC;
+      background: var(--bg-card);
+      color: var(--text-primary) !important;
       font-weight: 600;
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid var(--border-color);
       border-radius: 12px;
-      backdrop-filter: blur(10px);
       transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
     }
 
     .btn-hero-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.25);
-      color: #FFFFFF;
+      background: var(--bg-card-hover);
+      border-color: rgba(99, 102, 241, 0.3);
+      color: var(--text-primary) !important;
       transform: translateY(-2px);
     }
 
     /* Hero Mockup Preview Card */
     .hero-mockup-card {
-      background: rgba(15, 23, 42, 0.85);
+      background: var(--glass-card, rgba(15, 23, 42, 0.85));
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(99, 102, 241, 0.3);
+      border: 1px solid var(--border-glow, rgba(99, 102, 241, 0.3));
       border-radius: 20px;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 40px rgba(99, 102, 241, 0.2);
+      box-shadow: var(--shadow-md), 0 0 35px rgba(99, 102, 241, 0.15);
       overflow: hidden;
       position: relative;
     }
 
     .mockup-header-bar {
-      background: rgba(0, 0, 0, 0.3);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--bg-input);
+      border-bottom: 1px solid var(--border-color);
       padding: 12px 20px;
     }
 
@@ -205,21 +206,22 @@
 
     /* Feature Cards */
     .feature-card {
-      background: rgba(15, 23, 42, 0.65);
+      background: var(--glass-card, rgba(15, 23, 42, 0.65));
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-color);
       border-radius: 18px;
       padding: 32px 28px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
+      box-shadow: var(--shadow-sm);
     }
 
     .feature-card:hover {
       transform: translateY(-8px);
       border-color: rgba(99, 102, 241, 0.4);
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.15);
+      box-shadow: var(--shadow-md), 0 0 25px rgba(99, 102, 241, 0.15);
     }
 
     .feature-icon-box {
@@ -231,7 +233,7 @@
       justify-content: center;
       font-size: 1.5rem;
       margin-bottom: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
 
     /* How It Works Steps */
@@ -245,16 +247,16 @@
       font-size: 1.8rem;
       font-weight: 800;
       margin: 0 auto 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       position: relative;
       z-index: 2;
     }
 
     /* FAQ Accordion */
     .faq-accordion .accordion-item {
-      background: rgba(15, 23, 42, 0.7) !important;
+      background: var(--glass-card, rgba(15, 23, 42, 0.7)) !important;
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border: 1px solid var(--border-color) !important;
       border-radius: 14px !important;
       margin-bottom: 14px;
       overflow: hidden;
@@ -267,7 +269,7 @@
 
     .faq-accordion .accordion-button {
       background: transparent !important;
-      color: #F8FAFC !important;
+      color: var(--text-primary) !important;
       font-weight: 700;
       font-size: 1.05rem;
       padding: 22px 24px;
@@ -275,27 +277,47 @@
     }
 
     .faq-accordion .accordion-button:not(.collapsed) {
-      color: #818CF8 !important;
+      color: #6366F1 !important;
     }
 
     .faq-accordion .accordion-body {
-      color: #94A3B8;
-      background: rgba(0, 0, 0, 0.25);
+      color: var(--text-secondary);
+      background: var(--bg-input);
       padding: 22px 24px;
       font-size: 0.96rem;
       line-height: 1.75;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid var(--border-color);
     }
 
     /* Final CTA Card */
     .cta-banner-card {
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 27, 75, 0.8) 100%);
+      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(99, 102, 241, 0.12) 100%);
       backdrop-filter: blur(20px);
       border: 1px solid rgba(99, 102, 241, 0.35);
       border-radius: 24px;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6), 0 0 40px rgba(99, 102, 241, 0.2);
+      box-shadow: var(--shadow-md), 0 0 35px rgba(99, 102, 241, 0.15);
       position: relative;
       overflow: hidden;
+    }
+
+    /* Theme Toggle Button */
+    .btn-theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-theme-toggle:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(99, 102, 241, 0.3);
     }
 
     /* Animations */
@@ -326,7 +348,7 @@
         <div class="brand-logo-box">
           <i class="bi bi-rocket-takeoff-fill"></i>
         </div>
-        <span class="brand-title fs-4 fw-bold text-white" style="letter-spacing: -0.5px;">ResumeIQ</span>
+        <span class="brand-title fs-4 fw-bold" style="letter-spacing: -0.5px; color: var(--text-primary);">ResumeIQ</span>
       </a>
 
       <div class="d-none d-md-flex align-items-center gap-2">
@@ -337,6 +359,11 @@
       </div>
 
       <div class="d-flex align-items-center gap-3">
+        <!-- Theme Switcher Button -->
+        <button class="btn-theme-toggle" id="landingThemeBtn" onclick="toggleLandingTheme()" title="Toggle Theme">
+          <i class="bi bi-sun-fill text-warning" id="landingThemeIcon"></i>
+        </button>
+
         {% if user.is_authenticated %}
           <a href="{% url 'dashboard' %}" class="btn btn-hero-primary px-4 py-2">
             <i class="bi bi-grid-1x2-fill me-1"></i> Go to Dashboard
@@ -361,7 +388,7 @@
 
         <h1 class="hero-title mb-4">
           Land Your Dream Tech Job with <br class="d-none d-md-inline">
-          <span style="background: linear-gradient(135deg, #60A5FA 0%, #C084FC 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">AI Career Intelligence</span>
+          <span style="background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">AI Career Intelligence</span>
         </h1>
 
         <p class="hero-subtitle mx-auto mb-4">
@@ -393,35 +420,35 @@
               <span class="mockup-dot" style="background: #FFBD2E;"></span>
               <span class="mockup-dot" style="background: #27C93F;"></span>
             </div>
-            <span class="badge bg-success rounded-pill px-3 py-2" style="background: rgba(16, 185, 129, 0.2) !important; color: #34D399; border: 1px solid rgba(16, 185, 129, 0.3);"><i class="bi bi-check-circle-fill me-1"></i> ATS Score: 94/100</span>
-            <span class="badge rounded-pill px-3 py-2" style="background: rgba(6, 182, 212, 0.15); color: #38BDF8; border: 1px solid rgba(6, 182, 212, 0.3);"><i class="bi bi-bullseye me-1"></i> 88% Match to Senior Full Stack Role</span>
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 700;"><i class="bi bi-check-circle-fill me-1"></i> ATS Score: 94/100</span>
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(6, 182, 212, 0.15); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3); font-weight: 700;"><i class="bi bi-bullseye me-1"></i> 88% Match to Senior Full Stack Role</span>
           </div>
-          <span class="text-secondary small d-none d-sm-inline"><i class="bi bi-shield-check text-indigo me-1"></i> Real-time AI Analysis</span>
+          <span class="text-secondary small d-none d-sm-inline"><i class="bi bi-shield-check me-1" style="color: #6366F1;"></i> Real-time AI Analysis</span>
         </div>
 
         <div class="row g-4">
           <div class="col-md-7">
-            <h6 class="fw-bold mb-2 text-white" style="font-size: 0.9rem;">Extracted Key Skill Keywords:</h6>
+            <h6 class="fw-bold mb-2" style="color: var(--text-primary); font-size: 0.9rem;">Extracted Key Skill Keywords:</h6>
             <div class="mb-3 d-flex flex-wrap gap-1.5">
-              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> Python</span>
-              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> Django</span>
-              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> React</span>
-              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> PostgreSQL</span>
-              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> Docker</span>
-              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> REST API</span>
+              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> Python</span>
+              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> Django</span>
+              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> React</span>
+              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> PostgreSQL</span>
+              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> Docker</span>
+              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> REST API</span>
             </div>
             <h6 class="fw-bold mb-2 text-warning" style="font-size: 0.9rem;"><i class="bi bi-magic me-1"></i> AI STAR Bullet Suggestion:</h6>
-            <div class="p-3 rounded-3 small" style="background: rgba(0, 0, 0, 0.35); border-left: 3px solid #818CF8; color: #CBD5E1; line-height: 1.6;">
+            <div class="p-3 rounded-3 small" style="background: var(--bg-input); border-left: 3px solid #6366F1; color: var(--text-secondary); line-height: 1.6;">
               "Architected and deployed microservice backend with Django & Redis, reducing API latency by 42% for 50k+ monthly active users."
             </div>
           </div>
 
-          <div class="col-md-5 d-flex flex-column justify-content-center align-items-center text-center p-3 rounded-3" style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.05);">
-            <div class="score-circle mb-2" style="width: 96px; height: 96px; border-radius: 50%; background: conic-gradient(#10B981 94%, rgba(255,255,255,0.08) 0); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);">
-              <div style="width: 78px; height: 78px; border-radius: 50%; background: #0F172A; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem; color: #34D399;">94</div>
+          <div class="col-md-5 d-flex flex-column justify-content-center align-items-center text-center p-3 rounded-3" style="background: var(--bg-input); border: 1px solid var(--border-color);">
+            <div class="score-circle mb-2" style="width: 96px; height: 96px; border-radius: 50%; background: conic-gradient(#10B981 94%, rgba(255,255,255,0.08) 0); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);">
+              <div style="width: 78px; height: 78px; border-radius: 50%; background: var(--bg-card); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem; color: #10B981;">94</div>
             </div>
-            <div class="fw-bold text-white">Placement Readiness</div>
-            <small class="text-secondary opacity-75">High Candidate Match</small>
+            <div class="fw-bold" style="color: var(--text-primary);">Placement Readiness</div>
+            <small class="text-secondary">High Candidate Match</small>
           </div>
         </div>
       </div>
@@ -432,7 +459,7 @@
   <section class="py-5 position-relative z-1" id="features">
     <div class="container py-4">
       <div class="text-center mb-5 animate-fade-up">
-        <h2 class="fw-extrabold display-5 mb-2 text-white" style="letter-spacing: -1px;">Everything You Need to Get Hired</h2>
+        <h2 class="fw-extrabold display-5 mb-2" style="letter-spacing: -1px; color: var(--text-primary);">Everything You Need to Get Hired</h2>
         <p class="text-secondary mx-auto" style="max-width: 620px; font-size: 1.05rem;">A complete suite of AI-powered career tools designed for modern tech candidates.</p>
       </div>
 
@@ -440,10 +467,10 @@
         <!-- Feature 1 -->
         <div class="col-md-6 col-lg-4">
           <div class="feature-card h-100">
-            <div class="feature-icon-box" style="background: rgba(99, 102, 241, 0.15); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.3);">
+            <div class="feature-icon-box" style="background: rgba(99, 102, 241, 0.15); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.3);">
               <i class="bi bi-file-earmark-code-fill"></i>
             </div>
-            <h5 class="fw-bold text-white mb-2">ATS Resume Analyzer</h5>
+            <h5 class="fw-bold mb-2" style="color: var(--text-primary);">ATS Resume Analyzer</h5>
             <p class="text-secondary small mb-0" style="line-height: 1.65;">Parses PDF resumes using pdfplumber, scoring keyword density, quantitative metrics, action verbs, and structural completeness on a 0-100 scale.</p>
           </div>
         </div>
@@ -451,10 +478,10 @@
         <!-- Feature 2 -->
         <div class="col-md-6 col-lg-4">
           <div class="feature-card h-100">
-            <div class="feature-icon-box" style="background: rgba(6, 182, 212, 0.15); color: #38BDF8; border: 1px solid rgba(6, 182, 212, 0.3);">
+            <div class="feature-icon-box" style="background: rgba(6, 182, 212, 0.15); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3);">
               <i class="bi bi-bullseye"></i>
             </div>
-            <h5 class="fw-bold text-white mb-2">TF-IDF Job Description Matcher</h5>
+            <h5 class="fw-bold mb-2" style="color: var(--text-primary);">TF-IDF Job Description Matcher</h5>
             <p class="text-secondary small mb-0" style="line-height: 1.65;">Uses scikit-learn cosine similarity algorithms to match your resume against target JDs and extract missing skills.</p>
           </div>
         </div>
@@ -462,10 +489,10 @@
         <!-- Feature 3 -->
         <div class="col-md-6 col-lg-4">
           <div class="feature-card h-100">
-            <div class="feature-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.3);">
+            <div class="feature-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3);">
               <i class="bi bi-magic"></i>
             </div>
-            <h5 class="fw-bold text-white mb-2">AI STAR Bullet Rewriter</h5>
+            <h5 class="fw-bold mb-2" style="color: var(--text-primary);">AI STAR Bullet Rewriter</h5>
             <p class="text-secondary small mb-0" style="line-height: 1.65;">Transforms weak resume bullets into high-converting STAR method achievements with quantifiable metrics.</p>
           </div>
         </div>
@@ -473,10 +500,10 @@
         <!-- Feature 4 -->
         <div class="col-md-6 col-lg-4">
           <div class="feature-card h-100">
-            <div class="feature-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.3);">
+            <div class="feature-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3);">
               <i class="bi bi-chat-left-quote-fill"></i>
             </div>
-            <h5 class="fw-bold text-white mb-2">AI Technical Interview Coach</h5>
+            <h5 class="fw-bold mb-2" style="color: var(--text-primary);">AI Technical Interview Coach</h5>
             <p class="text-secondary small mb-0" style="line-height: 1.65;">Generates custom technical, system design, and behavioral questions with real-time answer scoring and constructive feedback.</p>
           </div>
         </div>
@@ -484,10 +511,10 @@
         <!-- Feature 5 -->
         <div class="col-md-6 col-lg-4">
           <div class="feature-card h-100">
-            <div class="feature-icon-box" style="background: rgba(139, 92, 246, 0.15); color: #C084FC; border: 1px solid rgba(139, 92, 246, 0.3);">
+            <div class="feature-icon-box" style="background: rgba(139, 92, 246, 0.15); color: #8B5CF6; border: 1px solid rgba(139, 92, 246, 0.3);">
               <i class="bi bi-radar"></i>
             </div>
-            <h5 class="fw-bold text-white mb-2">Placement Readiness Radar</h5>
+            <h5 class="fw-bold mb-2" style="color: var(--text-primary);">Placement Readiness Radar</h5>
             <p class="text-secondary small mb-0" style="line-height: 1.65;">Evaluates candidate readiness across 5 dimensions using Chart.js radar visualization graphs.</p>
           </div>
         </div>
@@ -495,10 +522,10 @@
         <!-- Feature 6 -->
         <div class="col-md-6 col-lg-4">
           <div class="feature-card h-100">
-            <div class="feature-icon-box" style="background: rgba(244, 63, 94, 0.15); color: #FB7185; border: 1px solid rgba(244, 63, 94, 0.3);">
+            <div class="feature-icon-box" style="background: rgba(244, 63, 94, 0.15); color: #F43F5E; border: 1px solid rgba(244, 63, 94, 0.3);">
               <i class="bi bi-kanban-fill"></i>
             </div>
-            <h5 class="fw-bold text-white mb-2">Job Application Kanban Tracker</h5>
+            <h5 class="fw-bold mb-2" style="color: var(--text-primary);">Job Application Kanban Tracker</h5>
             <p class="text-secondary small mb-0" style="line-height: 1.65;">Track your job search across Saved, Applied, Interviewing, Offer, and Rejected pipeline stages.</p>
           </div>
         </div>
@@ -510,31 +537,31 @@
   <section class="py-5 position-relative z-1" id="how-it-works">
     <div class="container py-4">
       <div class="text-center mb-5 animate-fade-up">
-        <h2 class="fw-extrabold display-5 mb-2 text-white" style="letter-spacing: -1px;">How ResumeIQ Works</h2>
+        <h2 class="fw-extrabold display-5 mb-2" style="letter-spacing: -1px; color: var(--text-primary);">How ResumeIQ Works</h2>
         <p class="text-secondary font-semibold" style="font-size: 1.05rem;">3 simple steps to accelerate your hiring success.</p>
       </div>
 
       <div class="row g-4 text-center">
         <div class="col-md-4 animate-fade-up delay-1">
           <div class="feature-card h-100 p-4">
-            <div class="step-number-node" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(99, 102, 241, 0.05) 100%); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.4);">01</div>
-            <h5 class="fw-bold text-white mb-2">Upload Your PDF Resume</h5>
+            <div class="step-number-node" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(99, 102, 241, 0.05) 100%); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.4);">01</div>
+            <h5 class="fw-bold mb-2" style="color: var(--text-primary);">Upload Your PDF Resume</h5>
             <p class="text-secondary small mb-0" style="line-height: 1.65;">Our parser extracts technical skills, sections, and metrics to calculate your baseline ATS score.</p>
           </div>
         </div>
 
         <div class="col-md-4 animate-fade-up delay-2">
           <div class="feature-card h-100 p-4">
-            <div class="step-number-node" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(6, 182, 212, 0.05) 100%); color: #38BDF8; border: 1px solid rgba(6, 182, 212, 0.4);">02</div>
-            <h5 class="fw-bold text-white mb-2">Match Target Job Description</h5>
+            <div class="step-number-node" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(6, 182, 212, 0.05) 100%); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.4);">02</div>
+            <h5 class="fw-bold mb-2" style="color: var(--text-primary);">Match Target Job Description</h5>
             <p class="text-secondary small mb-0" style="line-height: 1.65;">Paste any job posting to calculate TF-IDF Cosine Similarity and identify exact missing skill gaps.</p>
           </div>
         </div>
 
         <div class="col-md-4 animate-fade-up delay-3">
           <div class="feature-card h-100 p-4">
-            <div class="step-number-node" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.05) 100%); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4);">03</div>
-            <h5 class="fw-bold text-white mb-2">Practice & Get Placed</h5>
+            <div class="step-number-node" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.05) 100%); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.4);">03</div>
+            <h5 class="fw-bold mb-2" style="color: var(--text-primary);">Practice & Get Placed</h5>
             <p class="text-secondary small mb-0" style="line-height: 1.65;">Rewrite bullets with AI, complete mock interview sessions, follow your career roadmap, and get hired!</p>
           </div>
         </div>
@@ -546,7 +573,7 @@
   <section class="py-5 position-relative z-1" id="faq">
     <div class="container py-4" style="max-width: 840px;">
       <div class="text-center mb-5 animate-fade-up">
-        <h2 class="fw-extrabold display-5 mb-2 text-white" style="letter-spacing: -1px;">Frequently Asked Questions</h2>
+        <h2 class="fw-extrabold display-5 mb-2" style="letter-spacing: -1px; color: var(--text-primary);">Frequently Asked Questions</h2>
         <p class="text-secondary" style="font-size: 1.05rem;">Everything you need to know about ResumeIQ.</p>
       </div>
 
@@ -555,7 +582,7 @@
           <div class="accordion-item">
             <h2 class="accordion-header" id="heading{{ faq.id }}">
               <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ faq.id }}">
-                <i class="bi bi-question-circle-fill me-3" style="color: #818CF8;"></i> {{ faq.q }}
+                <i class="bi bi-question-circle-fill me-3" style="color: #6366F1;"></i> {{ faq.q }}
               </button>
             </h2>
             <div id="collapse{{ faq.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#faqAccordion">
@@ -573,7 +600,7 @@
   <section class="py-5 text-center position-relative z-1">
     <div class="container py-4">
       <div class="cta-banner-card p-5 mx-auto animate-fade-up floating-element" style="max-width: 880px;">
-        <h2 class="fw-extrabold display-5 mb-3 text-white" style="letter-spacing: -1px;">Ready to Land Your Next Role?</h2>
+        <h2 class="fw-extrabold display-5 mb-3" style="letter-spacing: -1px; color: var(--text-primary);">Ready to Land Your Next Role?</h2>
         <p class="text-secondary mb-4 mx-auto" style="max-width: 620px; font-size: 1.05rem; line-height: 1.6;">Start auditing your resume and practicing interview questions with AI today — 100% free.</p>
         {% if user.is_authenticated %}
           <a href="{% url 'dashboard' %}" class="btn btn-hero-primary btn-lg px-5 py-3 fs-6">Go to My Dashboard</a>
@@ -585,14 +612,40 @@
   </section>
 
   <!-- Footer -->
-  <footer class="py-4 border-top text-center text-secondary small position-relative z-1" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+  <footer class="py-4 border-top text-center text-secondary small position-relative z-1" style="border-color: var(--border-color) !important;">
     <div class="container">
-      <p class="mb-1 text-slate-300">&copy; 2026 ResumeIQ. All rights reserved.</p>
+      <p class="mb-1" style="color: var(--text-primary);">&copy; 2026 ResumeIQ. All rights reserved.</p>
       <small class="opacity-75">Powered by Django, Bootstrap 5, scikit-learn & Google Gemini AI</small>
     </div>
   </footer>
 
   <!-- Bootstrap 5 JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    function toggleLandingTheme() {
+        const htmlEl = document.documentElement;
+        const currentTheme = htmlEl.getAttribute('data-theme') || 'dark';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        htmlEl.setAttribute('data-theme', newTheme);
+        localStorage.setItem('resumeiq_theme', newTheme);
+        
+        const icon = document.getElementById('landingThemeIcon');
+        if (icon) {
+            icon.className = newTheme === 'dark' ? 'bi bi-sun-fill text-warning' : 'bi bi-moon-stars-fill text-primary';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedTheme = localStorage.getItem('resumeiq_theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const icon = document.getElementById('landingThemeIcon');
+            if (icon) {
+                icon.className = savedTheme === 'dark' ? 'bi bi-sun-fill text-warning' : 'bi bi-moon-stars-fill text-primary';
+            }
+        }
+    });
+  </script>
 </body>
 </html>
