@@ -12,7 +12,7 @@
     <div class="particles-container" id="particlesContainer"></div>
 </div>
 
-<div class="auth-page-wrapper d-flex flex-column align-items-center justify-content-center px-3 py-3">
+<div class="auth-page-wrapper d-flex flex-column align-items-center justify-content-center px-3 py-2">
     
     <!-- Main Glassmorphism Registration Card -->
     <div class="auth-glass-card animate-slide-up">
@@ -21,13 +21,13 @@
         <div class="card-top-glow"></div>
 
         <!-- Header Section -->
-        <div class="text-center mb-3 position-relative z-1">
-            <div class="logo-box mx-auto mb-2 d-flex align-items-center justify-content-center animate-float">
+        <div class="text-center mb-2 position-relative z-1">
+            <div class="logo-box mx-auto mb-1.5 d-flex align-items-center justify-content-center animate-float">
                 <i class="bi bi-rocket-takeoff-fill logo-icon"></i>
             </div>
-            <h3 class="auth-heading mb-1">Create Your Account 🚀</h3>
-            <p class="auth-subtitle mb-2">Start your AI-powered career journey today.</p>
-            <span class="badge bg-indigo-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1 fw-semibold small" style="font-size: 0.75rem; background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3) !important;">
+            <h3 class="auth-heading mb-0.5">Create Your Account 🚀</h3>
+            <p class="auth-subtitle mb-1">Start your AI-powered career journey today.</p>
+            <span class="badge bg-indigo-subtle text-primary border border-primary-subtle rounded-pill px-2.5 py-0.5 fw-semibold" style="font-size: 0.7rem; background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3) !important;">
                 ✨ Free Forever for Students
             </span>
         </div>
@@ -37,12 +37,12 @@
             {% csrf_token %}
             
             {% if form.non_field_errors %}
-            <div class="alert alert-danger-glass p-2 mb-3 rounded-3 d-flex flex-column gap-1 align-items-center justify-content-center text-center">
+            <div class="alert alert-danger-glass p-2 mb-2 rounded-3 d-flex flex-column gap-1 align-items-center justify-content-center text-center">
                 <div class="d-flex align-items-center gap-2 font-weight-bold small">
                     <i class="bi bi-exclamation-triangle-fill"></i>
                     <span>Registration Error</span>
                 </div>
-                <div class="small opacity-90" style="font-size: 0.8rem;">
+                <div class="small opacity-90" style="font-size: 0.78rem;">
                     {% for error in form.non_field_errors %}
                         {{ error }}<br>
                     {% endfor %}
@@ -52,7 +52,7 @@
             
             <!-- Full Name Row -->
             <div class="row gx-2">
-                <div class="col-md-6 mb-2.5">
+                <div class="col-md-6 mb-2">
                     <label for="{{ form.first_name.id_for_label }}" class="form-label saas-field-label">FIRST NAME</label>
                     <div class="saas-input-wrapper">
                         <i class="bi bi-person saas-input-icon"></i>
@@ -62,7 +62,7 @@
                     <div class="saas-field-error">{{ form.first_name.errors }}</div>
                     {% endif %}
                 </div>
-                <div class="col-md-6 mb-2.5">
+                <div class="col-md-6 mb-2">
                     <label for="{{ form.last_name.id_for_label }}" class="form-label saas-field-label">LAST NAME</label>
                     <div class="saas-input-wrapper">
                         <i class="bi bi-person saas-input-icon"></i>
@@ -74,75 +74,77 @@
                 </div>
             </div>
 
-            <!-- Username Field -->
-            <div class="mb-2.5">
-                <label for="{{ form.username.id_for_label }}" class="form-label saas-field-label">USERNAME</label>
-                <div class="saas-input-wrapper">
-                    <i class="bi bi-at saas-input-icon fs-5"></i>
-                    {{ form.username }}
-                </div>
-                {% if form.username.errors %}
-                <div class="saas-field-error">{{ form.username.errors }}</div>
-                {% endif %}
-            </div>
-
-            <!-- Email Field -->
-            <div class="mb-2.5">
-                <label for="{{ form.email.id_for_label }}" class="form-label saas-field-label">EMAIL ADDRESS</label>
-                <div class="saas-input-wrapper">
-                    <i class="bi bi-envelope saas-input-icon"></i>
-                    {{ form.email }}
-                </div>
-                {% if form.email.errors %}
-                <div class="saas-field-error">{{ form.email.errors }}</div>
-                {% endif %}
-            </div>
-
-            <!-- Password Fields -->
-            {% for field in form %}
-                {% if 'password' in field.name|lower %}
-                    <div class="mb-2.5">
-                        <label for="{{ field.id_for_label }}" class="form-label saas-field-label">{{ field.label|upper }}</label>
-                        <div class="saas-input-wrapper position-relative">
-                            <i class="bi bi-lock saas-input-icon"></i>
-                            {{ field }}
-                            <i class="bi bi-eye-slash saas-password-toggle" title="Toggle password visibility"></i>
-                        </div>
-                        {% if field.errors %}
-                        <div class="saas-field-error">{{ field.errors }}</div>
-                        {% endif %}
+            <!-- Username & Email Row -->
+            <div class="row gx-2">
+                <div class="col-md-6 mb-2">
+                    <label for="{{ form.username.id_for_label }}" class="form-label saas-field-label">USERNAME</label>
+                    <div class="saas-input-wrapper">
+                        <i class="bi bi-at saas-input-icon fs-5"></i>
+                        {{ form.username }}
                     </div>
-                {% endif %}
-            {% endfor %}
+                    {% if form.username.errors %}
+                    <div class="saas-field-error">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="{{ form.email.id_for_label }}" class="form-label saas-field-label">EMAIL ADDRESS</label>
+                    <div class="saas-input-wrapper">
+                        <i class="bi bi-envelope saas-input-icon"></i>
+                        {{ form.email }}
+                    </div>
+                    {% if form.email.errors %}
+                    <div class="saas-field-error">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Password & Confirm Password Row -->
+            <div class="row gx-2">
+                {% for field in form %}
+                    {% if 'password' in field.name|lower %}
+                        <div class="col-md-6 mb-2">
+                            <label for="{{ field.id_for_label }}" class="form-label saas-field-label">{{ field.label|upper }}</label>
+                            <div class="saas-input-wrapper position-relative">
+                                <i class="bi bi-lock saas-input-icon"></i>
+                                {{ field }}
+                                <i class="bi bi-eye-slash saas-password-toggle" title="Toggle password visibility"></i>
+                            </div>
+                            {% if field.errors %}
+                            <div class="saas-field-error">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
 
             <!-- Dynamic Password Requirements Checklist -->
-            <div class="password-checklist mb-3">
-                <div class="small fw-bold text-white-50 mb-1.5" style="font-size: 0.7rem; letter-spacing: 0.5px;">PASSWORD REQUIREMENTS</div>
+            <div class="password-checklist mb-2">
+                <div class="small fw-bold text-white-50 mb-1" style="font-size: 0.68rem; letter-spacing: 0.5px;">PASSWORD REQUIREMENTS</div>
                 <div class="row g-1 small">
-                    <div class="col-6 text-secondary opacity-75 check-item" id="checkLength">
+                    <div class="col-6 text-secondary opacity-75 check-item" id="checkLength" style="font-size: 0.72rem;">
                         <i class="bi bi-circle me-1"></i> At least 8 characters
                     </div>
-                    <div class="col-6 text-secondary opacity-75 check-item" id="checkUpper">
+                    <div class="col-6 text-secondary opacity-75 check-item" id="checkUpper" style="font-size: 0.72rem;">
                         <i class="bi bi-circle me-1"></i> One uppercase letter
                     </div>
-                    <div class="col-6 text-secondary opacity-75 check-item" id="checkNumber">
+                    <div class="col-6 text-secondary opacity-75 check-item" id="checkNumber" style="font-size: 0.72rem;">
                         <i class="bi bi-circle me-1"></i> One number
                     </div>
-                    <div class="col-6 text-secondary opacity-75 check-item" id="checkSpecial">
+                    <div class="col-6 text-secondary opacity-75 check-item" id="checkSpecial" style="font-size: 0.72rem;">
                         <i class="bi bi-circle me-1"></i> One special character
                     </div>
                 </div>
             </div>
 
             <!-- Terms & Conditions Checkbox -->
-            <div class="mb-3 form-check d-flex align-items-start gap-2">
+            <div class="mb-2.5 form-check d-flex align-items-start gap-2">
                 {{ form.accept_terms }}
-                <label class="form-check-label text-secondary lh-sm small" for="{{ form.accept_terms.id_for_label }}" style="font-size: 0.8rem; cursor: pointer; user-select: none;">
+                <label class="form-check-label text-secondary lh-sm small" for="{{ form.accept_terms.id_for_label }}" style="font-size: 0.78rem; cursor: pointer; user-select: none;">
                     I agree to the <a href="#" class="forgot-pass-link">Terms of Service</a> and <a href="#" class="forgot-pass-link">Privacy Policy</a>
                 </label>
             </div>
             {% if form.accept_terms.errors %}
-            <div class="saas-field-error mb-3">{{ form.accept_terms.errors }}</div>
+            <div class="saas-field-error mb-2">{{ form.accept_terms.errors }}</div>
             {% endif %}
             
             <!-- Primary Submit Button -->
@@ -153,8 +155,8 @@
         </form>
 
         <!-- Login Redirect Section -->
-        <div class="text-center position-relative z-1 mt-3">
-            <span class="text-secondary small me-2" style="font-size: 0.82rem;">Already have an account?</span>
+        <div class="text-center position-relative z-1 mt-2">
+            <span class="text-secondary small me-2" style="font-size: 0.8rem;">Already have an account?</span>
             <a href="{% url 'login' %}" class="btn-create-account d-inline-flex align-items-center gap-1 fw-semibold">
                 <span>Sign In</span>
                 <i class="bi bi-arrow-right ms-1"></i>
@@ -163,19 +165,19 @@
     </div>
 
     <!-- Footer Links & Security Banner -->
-    <footer class="auth-footer text-center mt-3">
-        <div class="d-flex align-items-center justify-content-center gap-1 text-secondary mb-1 opacity-75" style="font-size: 0.78rem;">
+    <footer class="auth-footer text-center mt-2">
+        <div class="d-flex align-items-center justify-content-center gap-1 text-secondary mb-1 opacity-75" style="font-size: 0.75rem;">
             <i class="bi bi-shield-lock-fill text-primary"></i>
-            <span>🔒 Secure Registration • Your data is encrypted and protected</span>
+            <span>🔒 Secure Registration • Data Encrypted</span>
         </div>
-        <div class="footer-links mb-1" style="font-size: 0.78rem;">
+        <div class="footer-links mb-0.5" style="font-size: 0.75rem;">
             <a href="#" class="text-secondary text-decoration-none mx-1 hover-light">Privacy Policy</a>
             <span class="text-secondary opacity-50">•</span>
             <a href="#" class="text-secondary text-decoration-none mx-1 hover-light">Terms of Service</a>
             <span class="text-secondary opacity-50">•</span>
             <a href="#" class="text-secondary text-decoration-none mx-1 hover-light">Help Center</a>
         </div>
-        <div class="text-secondary opacity-50" style="font-size: 0.75rem;">
+        <div class="text-secondary opacity-50" style="font-size: 0.72rem;">
             © 2026 ResumeIQ. All rights reserved.
         </div>
     </footer>
@@ -199,7 +201,7 @@
         justify-content: center;
         position: relative;
         overflow: hidden;
-        padding: 20px 0;
+        padding: 10px 0;
     }
 
     /* Ambient Background Orbs & Floating Particles */
@@ -273,7 +275,7 @@
     /* Wrapper */
     .auth-page-wrapper {
         width: 100%;
-        max-width: 520px;
+        max-width: 500px;
         position: relative;
         z-index: 1;
     }
@@ -285,8 +287,8 @@
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 20px;
-        padding: 30px 30px 26px 30px;
+        border-radius: 18px;
+        padding: 20px 24px 16px 24px;
         box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.15);
         position: relative;
         overflow: hidden;
@@ -308,39 +310,39 @@
 
     /* Header Logo */
     .logo-box {
-        width: 52px;
-        height: 52px;
-        border-radius: 16px;
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
         background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.2) 100%);
         border: 1px solid rgba(129, 140, 248, 0.4);
-        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.15);
+        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3), inset 0 0 8px rgba(255, 255, 255, 0.15);
     }
 
     .logo-icon {
-        font-size: 26px;
+        font-size: 22px;
         color: #818CF8;
         filter: drop-shadow(0 0 8px rgba(129, 140, 248, 0.6));
     }
 
     .auth-heading {
         color: #F8FAFC;
-        font-size: 1.55rem;
+        font-size: 1.4rem;
         font-weight: 800;
         letter-spacing: -0.5px;
     }
 
     .auth-subtitle {
         color: #94A3B8;
-        font-size: 0.88rem;
+        font-size: 0.82rem;
     }
 
     /* Form Fields */
     .saas-field-label {
         color: #CBD5E1;
-        font-size: 0.74rem;
+        font-size: 0.7rem;
         font-weight: 700;
         letter-spacing: 0.8px;
-        margin-bottom: 4px;
+        margin-bottom: 3px;
         display: block;
     }
 
@@ -352,14 +354,14 @@
     /* Style for Django generated input elements */
     .saas-input-wrapper input {
         width: 100%;
-        height: 44px;
+        height: 38px;
         background: rgba(15, 23, 42, 0.75) !important;
         border: 1px solid rgba(255, 255, 255, 0.14) !important;
-        border-radius: 12px !important;
-        padding-left: 44px !important;
-        padding-right: 44px !important;
+        border-radius: 10px !important;
+        padding-left: 38px !important;
+        padding-right: 38px !important;
         color: #F8FAFC !important;
-        font-size: 0.9rem !important;
+        font-size: 0.85rem !important;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
@@ -371,17 +373,17 @@
     .saas-input-wrapper input:focus {
         background: rgba(15, 23, 42, 0.95) !important;
         border-color: #6366F1 !important;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25), 0 0 15px rgba(99, 102, 241, 0.2) !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25), 0 0 12px rgba(99, 102, 241, 0.2) !important;
         outline: none !important;
     }
 
     .saas-input-icon {
         position: absolute;
-        left: 14px;
+        left: 12px;
         top: 50%;
         transform: translateY(-50%);
         color: #64748B;
-        font-size: 1.05rem;
+        font-size: 0.95rem;
         pointer-events: none;
         transition: color 0.25s ease;
         z-index: 2;
@@ -393,11 +395,11 @@
 
     .saas-password-toggle {
         position: absolute;
-        right: 14px;
+        right: 12px;
         top: 50%;
         transform: translateY(-50%);
         color: #64748B;
-        font-size: 1.05rem;
+        font-size: 0.95rem;
         cursor: pointer;
         transition: color 0.2s ease;
         z-index: 2;
@@ -434,9 +436,9 @@
     .form-check-input {
         background-color: rgba(15, 23, 42, 0.7);
         border-color: rgba(255, 255, 255, 0.2);
-        border-radius: 5px;
-        width: 16px;
-        height: 16px;
+        border-radius: 4px;
+        width: 15px;
+        height: 15px;
         margin-top: 2px;
     }
     .form-check-input:checked {
@@ -447,14 +449,14 @@
 
     /* Primary Submit Button */
     .btn-saas-gradient {
-        height: 48px;
-        border-radius: 12px;
+        height: 42px;
+        border-radius: 10px;
         background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
         color: #FFFFFF;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         font-weight: 700;
         border: none;
-        box-shadow: 0 6px 20px -3px rgba(59, 130, 246, 0.45);
+        box-shadow: 0 6px 18px -3px rgba(59, 130, 246, 0.45);
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
@@ -462,7 +464,7 @@
 
     .btn-saas-gradient:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 28px -3px rgba(139, 92, 246, 0.55);
+        box-shadow: 0 10px 24px -3px rgba(139, 92, 246, 0.55);
         color: #FFFFFF;
         filter: brightness(1.08);
     }
@@ -480,43 +482,15 @@
         transform: translateX(4px);
     }
 
-    /* Divider */
-    .saas-divider {
-        display: flex;
-        align-items: center;
-        text-align: center;
-        color: #64748B;
-        font-size: 0.75rem;
-        font-weight: 600;
-        letter-spacing: 1px;
-    }
-
-    .saas-divider::before,
-    .saas-divider::after {
-        content: '';
-        flex: 1;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .saas-divider span {
-        padding: 0 12px;
-    }
-
-    /* Benefits Section */
-    .auth-benefits-card {
-        background: rgba(99, 102, 241, 0.08);
-        border: 1px solid rgba(99, 102, 241, 0.2);
-    }
-
     /* Create Account Button */
     .btn-create-account {
         color: #60A5FA;
         text-decoration: none;
-        padding: 6px 14px;
-        border-radius: 10px;
+        padding: 5px 12px;
+        border-radius: 8px;
         background: rgba(59, 130, 246, 0.1);
         border: 1px solid rgba(59, 130, 246, 0.25);
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         transition: all 0.25s ease;
     }
 
@@ -537,8 +511,8 @@
     
     .saas-field-error {
         color: #F87171;
-        font-size: 0.78rem;
-        margin-top: 3px;
+        font-size: 0.74rem;
+        margin-top: 2px;
     }
 
     /* Footer Links */
@@ -572,7 +546,7 @@
 
     @keyframes float {
         0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-5px); }
+        50% { transform: translateY(-4px); }
     }
 </style>
 
@@ -596,12 +570,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Input Placeholders Setup
     const inputPlaceholders = {
-        'first_name': 'Enter your first name',
-        'last_name': 'Enter your last name',
-        'username': 'Choose a username',
-        'email': 'Enter your email address',
-        'password1': 'Create a strong password',
-        'password2': 'Confirm your password'
+        'first_name': 'First name',
+        'last_name': 'Last name',
+        'username': 'Choose username',
+        'email': 'Enter email',
+        'password1': 'Create password',
+        'password2': 'Confirm password'
     };
 
     Object.keys(inputPlaceholders).forEach(name => {
