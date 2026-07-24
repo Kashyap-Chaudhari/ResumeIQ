@@ -116,7 +116,7 @@
             {% endfor %}
 
             <!-- Dynamic Password Requirements Checklist -->
-            <div class="password-checklist p-2.5 rounded-3 mb-3">
+            <div class="password-checklist mb-3">
                 <div class="small fw-bold text-white-50 mb-1.5" style="font-size: 0.7rem; letter-spacing: 0.5px;">PASSWORD REQUIREMENTS</div>
                 <div class="row g-1 small">
                     <div class="col-6 text-secondary opacity-75 check-item" id="checkLength">
@@ -152,28 +152,8 @@
             </button>
         </form>
 
-        <!-- Divider Line -->
-        <div class="saas-divider my-3">
-            <span>OR</span>
-        </div>
-
-        <!-- Included Benefits Section -->
-        <div class="auth-benefits-card mb-3 p-3 rounded-3">
-            <div class="fw-bold text-white small mb-2 d-flex align-items-center gap-1.5" style="font-size: 0.8rem;">
-                <i class="bi bi-stars text-warning"></i>
-                <span>✨ What you'll get for free</span>
-            </div>
-            <div class="row g-2 text-secondary" style="font-size: 0.78rem;">
-                <div class="col-6 d-flex align-items-center gap-1.5"><i class="bi bi-check2-circle text-success fs-6"></i> AI Resume Analyzer</div>
-                <div class="col-6 d-flex align-items-center gap-1.5"><i class="bi bi-check2-circle text-success fs-6"></i> AI Interview Coach</div>
-                <div class="col-6 d-flex align-items-center gap-1.5"><i class="bi bi-check2-circle text-success fs-6"></i> Skill Gap Analysis</div>
-                <div class="col-6 d-flex align-items-center gap-1.5"><i class="bi bi-check2-circle text-success fs-6"></i> Personal Roadmap</div>
-                <div class="col-12 d-flex align-items-center gap-1.5"><i class="bi bi-check2-circle text-success fs-6"></i> Placement Readiness Dashboard</div>
-            </div>
-        </div>
-
         <!-- Login Redirect Section -->
-        <div class="text-center position-relative z-1">
+        <div class="text-center position-relative z-1 mt-3">
             <span class="text-secondary small me-2" style="font-size: 0.82rem;">Already have an account?</span>
             <a href="{% url 'login' %}" class="btn-create-account d-inline-flex align-items-center gap-1 fw-semibold">
                 <span>Sign In</span>
@@ -441,8 +421,9 @@
 
     /* Password Checklist */
     .password-checklist {
-        background: rgba(0, 0, 0, 0.25);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: transparent;
+        border: none;
+        padding: 0;
     }
 
     .check-item {
