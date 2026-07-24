@@ -318,6 +318,8 @@ p, span, small {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  overflow-y: auto;
+  height: 100vh;
 }
 
 /* Topbar */
