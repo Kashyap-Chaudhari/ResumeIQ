@@ -182,7 +182,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('atsScoreChart').getContext('2d');
-    const score = {{ recent_resume.ats_score }};
+    const score = Number("{{ recent_resume.ats_score|default:0 }}");
     const remainder = 100 - score;
     let color = '#ef4444'; // red
     if (score >= 80) color = '#22c55e'; // green

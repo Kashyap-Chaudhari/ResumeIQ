@@ -75,6 +75,26 @@
       font-size: 0.95rem;
       line-height: 1.7;
     }
+    
+    /* Subtle Animations */
+    @keyframes floatSoft {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+      100% { transform: translateY(0px); }
+    }
+    .floating-element {
+      animation: floatSoft 6s ease-in-out infinite;
+    }
+    .hover-lift {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+    }
+    .hover-lift:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3), 0 0 15px rgba(99, 102, 241, 0.15) !important;
+    }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
   </style>
 </head>
 <body class="bg-main text-white">
@@ -113,20 +133,22 @@
   <section class="hero-section text-center" id="hero">
     <div class="hero-glow"></div>
     <div class="container position-relative">
-      <span class="badge bg-indigo mb-3 py-2 px-3 rounded-pill" style="background: rgba(99,102,241,0.15); color: var(--accent-indigo); border: 1px solid rgba(99,102,241,0.3);">
-        <i class="bi bi-stars text-warning me-1"></i> Next-Gen AI Career Placement Platform
-      </span>
+      <div class="animate-fade-up">
+        <span class="badge bg-indigo mb-3 py-2 px-3 rounded-pill" style="background: rgba(99,102,241,0.15); color: var(--accent-indigo); border: 1px solid rgba(99,102,241,0.3);">
+          <i class="bi bi-stars text-warning me-1"></i> Next-Gen AI Career Placement Platform
+        </span>
 
-      <h1 class="display-3 fw-extrabold mb-4" style="letter-spacing: -1.5px; line-height: 1.15;">
-        Land Your Dream Tech Job with <br class="d-none d-md-inline">
-        <span style="background: var(--gradient-brand); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AI Career Intelligence</span>
-      </h1>
+        <h1 class="display-3 fw-extrabold mb-4" style="letter-spacing: -1.5px; line-height: 1.15;">
+          Land Your Dream Tech Job with <br class="d-none d-md-inline">
+          <span style="background: var(--gradient-brand); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">AI Career Intelligence</span>
+        </h1>
 
-      <p class="lead text-secondary mx-auto mb-4" style="max-width: 720px; font-size: 1.15rem;">
-        Instant ATS Resume Audit, Scikit-Learn TF-IDF Job Description Matcher, AI Mock Technical Interview Coach, Placement Readiness Radar, & Personalized Learning Roadmaps.
-      </p>
+        <p class="lead text-secondary mx-auto mb-4" style="max-width: 720px; font-size: 1.15rem;">
+          Instant ATS Resume Audit, Scikit-Learn TF-IDF Job Description Matcher, AI Mock Technical Interview Coach, Placement Readiness Radar, & Personalized Learning Roadmaps.
+        </p>
+      </div>
 
-      <div class="d-flex justify-content-center gap-3 mb-5">
+      <div class="d-flex justify-content-center gap-3 mb-5 animate-fade-up delay-1">
         {% if user.is_authenticated %}
           <a href="{% url 'dashboard' %}" class="btn btn-saas-primary btn-lg px-4 py-3 fs-6">
             <i class="bi bi-rocket-takeoff-fill me-2"></i> Launch Dashboard
@@ -142,7 +164,7 @@
       </div>
 
       <!-- Hero Glass Mockup Card Preview -->
-      <div class="saas-card mx-auto p-4 shadow-lg text-start" style="max-width: 900px; background: rgba(20, 30, 51, 0.9); border-color: rgba(99,102,241,0.3);">
+      <div class="saas-card mx-auto p-4 shadow-lg text-start animate-fade-up delay-2 floating-element" style="max-width: 900px; background: rgba(20, 30, 51, 0.9); border-color: rgba(99,102,241,0.3);">
         <div class="d-flex align-items-center justify-content-between pb-3 border-bottom border-secondary mb-4">
           <div class="d-flex align-items-center gap-2">
             <span class="badge bg-success rounded-pill px-3 py-2"><i class="bi bi-check-circle-fill me-1"></i> ATS Score: 94/100</span>
@@ -183,7 +205,7 @@
   <!-- Features Grid Section -->
   <section class="py-5" id="features">
     <div class="container py-4">
-      <div class="text-center mb-5">
+      <div class="text-center mb-5 animate-fade-up">
         <h2 class="fw-bold display-5 mb-2">Everything You Need to Get Hired</h2>
         <p class="text-secondary" style="max-width: 600px; margin: 0 auto;">A complete suite of AI-powered career tools designed for modern tech candidates.</p>
       </div>
@@ -191,7 +213,7 @@
       <div class="row g-4">
         <!-- Feature 1 -->
         <div class="col-md-6 col-lg-4">
-          <div class="saas-card h-100 p-4">
+          <div class="saas-card h-100 p-4 hover-lift">
             <div class="feature-icon-box" style="background: rgba(99,102,241,0.15); color: var(--accent-indigo);">
               <i class="bi bi-file-earmark-code-fill"></i>
             </div>
@@ -202,7 +224,7 @@
 
         <!-- Feature 2 -->
         <div class="col-md-6 col-lg-4">
-          <div class="saas-card h-100 p-4">
+          <div class="saas-card h-100 p-4 hover-lift">
             <div class="feature-icon-box" style="background: rgba(6,182,212,0.15); color: var(--accent-cyan);">
               <i class="bi bi-bullseye"></i>
             </div>
@@ -213,7 +235,7 @@
 
         <!-- Feature 3 -->
         <div class="col-md-6 col-lg-4">
-          <div class="saas-card h-100 p-4">
+          <div class="saas-card h-100 p-4 hover-lift">
             <div class="feature-icon-box" style="background: rgba(245,158,11,0.15); color: var(--accent-amber);">
               <i class="bi bi-magic"></i>
             </div>
@@ -224,7 +246,7 @@
 
         <!-- Feature 4 -->
         <div class="col-md-6 col-lg-4">
-          <div class="saas-card h-100 p-4">
+          <div class="saas-card h-100 p-4 hover-lift">
             <div class="feature-icon-box" style="background: rgba(16,185,129,0.15); color: var(--accent-emerald);">
               <i class="bi bi-chat-left-quote-fill"></i>
             </div>
@@ -235,7 +257,7 @@
 
         <!-- Feature 5 -->
         <div class="col-md-6 col-lg-4">
-          <div class="saas-card h-100 p-4">
+          <div class="saas-card h-100 p-4 hover-lift">
             <div class="feature-icon-box" style="background: rgba(139,92,246,0.15); color: var(--accent-violet);">
               <i class="bi bi-radar"></i>
             </div>
@@ -246,7 +268,7 @@
 
         <!-- Feature 6 -->
         <div class="col-md-6 col-lg-4">
-          <div class="saas-card h-100 p-4">
+          <div class="saas-card h-100 p-4 hover-lift">
             <div class="feature-icon-box" style="background: rgba(244,63,94,0.15); color: var(--accent-rose);">
               <i class="bi bi-kanban-fill"></i>
             </div>
@@ -261,13 +283,13 @@
   <!-- How It Works Section -->
   <section class="py-5" id="how-it-works" style="background: rgba(15, 23, 42, 0.4);">
     <div class="container py-4">
-      <div class="text-center mb-5">
+      <div class="text-center mb-5 animate-fade-up">
         <h2 class="fw-bold display-5 mb-2">How ResumeIQ Works</h2>
         <p class="text-secondary">3 simple steps to accelerate your hiring success.</p>
       </div>
 
       <div class="row g-4 text-center">
-        <div class="col-md-4">
+        <div class="col-md-4 animate-fade-up delay-1">
           <div class="p-4">
             <div class="display-4 fw-extrabold text-indigo mb-3">01</div>
             <h5 class="fw-bold mb-2">Upload Your PDF Resume</h5>
@@ -275,7 +297,7 @@
           </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-4 animate-fade-up delay-2">
           <div class="p-4">
             <div class="display-4 fw-extrabold text-cyan mb-3">02</div>
             <h5 class="fw-bold mb-2">Match Target Job Description</h5>
@@ -283,7 +305,7 @@
           </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-4 animate-fade-up delay-3">
           <div class="p-4">
             <div class="display-4 fw-extrabold text-emerald mb-3">03</div>
             <h5 class="fw-bold mb-2">Practice & Get Placed</h5>
@@ -297,12 +319,12 @@
   <!-- FAQ Section -->
   <section class="py-5" id="faq">
     <div class="container py-4" style="max-width: 800px;">
-      <div class="text-center mb-5">
+      <div class="text-center mb-5 animate-fade-up">
         <h2 class="fw-bold display-5 mb-2">Frequently Asked Questions</h2>
         <p class="text-secondary">Everything you need to know about ResumeIQ.</p>
       </div>
 
-      <div class="accordion faq-accordion" id="faqAccordion">
+      <div class="accordion faq-accordion animate-fade-up delay-1" id="faqAccordion">
         {% for faq in faqs %}
           <div class="accordion-item">
             <h2 class="accordion-header" id="heading{{ faq.id }}">
@@ -324,7 +346,7 @@
   <!-- Final CTA Banner -->
   <section class="py-5 text-center">
     <div class="container py-4">
-      <div class="saas-card p-5 mx-auto" style="max-width: 850px; background: linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(6,182,212,0.15) 100%); border-color: rgba(99,102,241,0.4);">
+      <div class="saas-card p-5 mx-auto animate-fade-up floating-element" style="max-width: 850px; background: linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(6,182,212,0.15) 100%); border-color: rgba(99,102,241,0.4);">
         <h2 class="fw-bold display-5 mb-3">Ready to Land Your Next Role?</h2>
         <p class="text-secondary mb-4 mx-auto" style="max-width: 600px;">Start auditing your resume and practicing interview questions with AI today — 100% free.</p>
         {% if user.is_authenticated %}

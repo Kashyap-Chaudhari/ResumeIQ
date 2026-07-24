@@ -35,9 +35,11 @@
 {% endblock %}
 
 {% block extra_js %}
+{{ missing_skills|json_script:"missing-skills-data" }}
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const missingSkills = {{ missing_skills|safe|default:"[]" }};
+    const missingSkillsText = document.getElementById('missing-skills-data').textContent;
+    const missingSkills = missingSkillsText ? JSON.parse(missingSkillsText) : [];
     
     missingSkills.forEach((skill, index) => {
         const containerId = `results-${index + 1}`;
