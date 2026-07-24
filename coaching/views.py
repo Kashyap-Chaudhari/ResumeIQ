@@ -310,7 +310,7 @@ def api_generate_career_roadmap(request):
                 context_data['interview_score'] = latest_interview.average_score
 
         # 2. Call AI Engine
-        api_key = request.user.userprofile.gemini_api_key if hasattr(request.user, 'userprofile') else None
+        api_key = request.user.profile.gemini_api_key if hasattr(request.user, 'profile') else None
         
         roadmap_data = generate_personalized_roadmap(
             target_career=target_career,

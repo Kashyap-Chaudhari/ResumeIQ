@@ -612,114 +612,200 @@ def generate_personalized_roadmap(target_career, target_timeline, skill_level, s
     
     if model:
         try:
-            prompt = f"""Generate a personalized Step-by-Step Career Roadmap for a user.
+            prompt = f"""You are a Principal Career Advisor and Technical Architect.
+Generate a personalized, highly accurate Step-by-Step Career Roadmap for a user with the following goals:
+
 Inputs:
 - Target Career: {target_career}
-- Timeline: {target_timeline}
+- Target Timeline: {target_timeline}
 - Current Skill Level: {skill_level}
 - Daily Study Time: {study_time}
-- Goal: {goal}
+- Career Goal: {goal}
 
-Existing Analysis Data (Incorporate this to personalize steps):
+Candidate Profile & Analysis Context:
 - Resume/ATS Score: {resume_score} (out of 100)
 - Missing Skills Identified: {', '.join(missing_skills) if missing_skills else 'None specifically identified'}
-- Mock Interview Score: {interview_score} (out of 100)
+- Mock Interview Performance: {interview_score} (out of 100)
 
-Return a structured JSON object with EXACTLY this format:
+Requirements:
+- Return ONLY a valid JSON object.
+- Each step MUST include real, valid resource titles and authentic working URLs (e.g. docs.python.org, developer.mozilla.org, sqlbolt.com, freecodecamp.org, roadmap.sh, fullstackopen.com, leetcode.com, kaggle.com).
+- Include 3 to 5 core topics to cover for each step.
+
+JSON Output Schema:
 {{
-  "career_goal": "String, summary of the goal",
-  "current_readiness": "String, e.g. 'Beginner' or 'Intermediate'",
-  "estimated_completion": "String, e.g. '3 Months'",
+  "career_goal": "{goal} - {target_career}",
+  "current_readiness": "{skill_level}",
+  "estimated_completion": "{target_timeline}",
   "overall_progress": 0,
-  "summary": "String, concise roadmap summary explaining why these steps were recommended based on inputs and existing analysis.",
-  "next_best_action": "String, ONE highest priority recommendation",
+  "summary": "Detailed, professional summary of the candidate's roadmap path based on their target timeline and skill gaps.",
+  "next_best_action": "Single highest-priority immediate step to take",
   "steps": [
     {{
       "step_number": 1,
-      "title": "Step Title",
-      "reason": "String, explicitly state why this is recommended (e.g. 'Required for your target role and currently missing from your resume.')",
-      "priority": "High" (or Medium, Low),
-      "estimated_time": "String (e.g. '5 Days')",
+      "title": "Step Title (e.g. Master SQL Query Optimization & Relational Schema Design)",
+      "reason": "Explicit justification explaining why this step is critical for a {target_career} based on current skills.",
+      "priority": "High",
+      "estimated_time": "1 Week",
+      "topics_to_cover": ["Topic 1", "Topic 2", "Topic 3"],
+      "resource_title": "SQLBolt & Mode SQL Tutorial",
+      "resource_url": "https://sqlbolt.com/",
       "status": "Not Started"
     }}
   ]
-}}
-Make the steps highly actionable and specific to the {target_career}."""
+}}"""
             response = model.generate_content(prompt)
             clean_text = response.text.strip()
             start = clean_text.find('{')
             end = clean_text.rfind('}') + 1
             if start != -1 and end != -1:
-                return json.loads(clean_text[start:end])
+                parsed = json.loads(clean_text[start:end])
+                if isinstance(parsed, dict) and 'steps' in parsed and len(parsed['steps']) > 0:
+                    return parsed
         except Exception as e:
             print(f"Roadmap generation error: {e}")
             pass
 
-    # Heuristic Offline Fallback
-    steps = []
-    step_num = 1
-    
-    # Use existing analysis
-    if missing_skills:
-        for skill in missing_skills[:2]:
-            steps.append({
-                "step_number": step_num,
-                "title": f"Learn {skill}",
-                "reason": f"Required for your target {target_career} role and currently missing from your resume.",
+    # Authentic Heuristic Fallback with Real Working Resource Links
+    role_lower = target_career.lower()
+
+    if "data" in role_lower or "analyst" in role_lower:
+        fallback_steps = [
+            {
+                "step_number": 1,
+                "title": "Master Advanced SQL & Database Querying",
+                "reason": "SQL is the core foundation for 90%+ of Data Analyst and Data Science interviews.",
                 "priority": "High",
-                "estimated_time": "1 Week",
+                "estimated_time": "1 to 2 Weeks",
+                "topics_to_cover": ["Window Functions (RANK, DENSE_RANK)", "EXPLAIN ANALYZE & Indexing", "CTEs & Subqueries", "Joins & Aggregations"],
+                "resource_title": "SQLBolt Interactive SQL Guide",
+                "resource_url": "https://sqlbolt.com/",
                 "status": "Not Started"
-            })
-            step_num += 1
-            
-    if resume_score != 'N/A' and (isinstance(resume_score, int) or isinstance(resume_score, float)) and resume_score < 75:
-        steps.append({
-            "step_number": step_num,
-            "title": "Improve ATS Resume",
-            "reason": "Current ATS Score is below the recommended level.",
-            "priority": "High",
-            "estimated_time": "3 Days",
-            "status": "Not Started"
-        })
-        step_num += 1
-        
-    if interview_score != 'N/A' and (isinstance(interview_score, int) or isinstance(interview_score, float)) and interview_score < 80:
-        steps.append({
-            "step_number": step_num,
-            "title": "Complete AI Mock Interview",
-            "reason": "Interview score needs improvement.",
-            "priority": "Medium",
-            "estimated_time": "2 Days",
-            "status": "Not Started"
-        })
-        step_num += 1
-        
-    # Standard fallback steps
-    steps.append({
-        "step_number": step_num,
-        "title": f"Master Core {target_career} Concepts",
-        "reason": f"Essential foundation for your {goal} goal.",
-        "priority": "High",
-        "estimated_time": "2 Weeks",
-        "status": "Not Started"
-    })
-    step_num += 1
-    
-    steps.append({
-        "step_number": step_num,
-        "title": "Build a Portfolio Project",
-        "reason": f"Your resume needs more practical project experience for {target_career}.",
-        "priority": "Medium",
-        "estimated_time": "3 Weeks",
-        "status": "Not Started"
-    })
+            },
+            {
+                "step_number": 2,
+                "title": "Data Analysis & Wrangling with Python (Pandas & NumPy)",
+                "reason": "Crucial for cleaning datasets, handling missing values, and performing Exploratory Data Analysis (EDA).",
+                "priority": "High",
+                "estimated_time": "2 Weeks",
+                "topics_to_cover": ["Pandas DataFrames & Merging", "Groupby & Aggregations", "Handling Nulls & Outliers", "Vectorized NumPy Operations"],
+                "resource_title": "Kaggle Python & Pandas Tutorials",
+                "resource_url": "https://www.kaggle.com/learn/pandas",
+                "status": "Not Started"
+            },
+            {
+                "step_number": 3,
+                "title": "Data Visualization & Dashboard Building (PowerBI / Tableau / Seaborn)",
+                "reason": "Transform analytical insights into interactive business dashboards for stakeholders.",
+                "priority": "Medium",
+                "estimated_time": "1 to 2 Weeks",
+                "topics_to_cover": ["Matplotlib & Seaborn Charting", "PowerBI DAX Measures", "Interactive Dashboards", "Storytelling with Data"],
+                "resource_title": "Microsoft Power BI Official Documentation",
+                "resource_url": "https://learn.microsoft.com/en-us/power-bi/",
+                "status": "Not Started"
+            },
+            {
+                "step_number": 4,
+                "title": "Build & Host 2 Real-World Data Case Study Projects",
+                "reason": "Demonstrate end-to-end analytical competence to hiring managers on GitHub & LinkedIn.",
+                "priority": "High",
+                "estimated_time": "2 Weeks",
+                "topics_to_cover": ["E-Commerce Customer Churn Analysis", "Sales Forecasting Dashboard", "GitHub Repository Documentation", "Project Readme Writeup"],
+                "resource_title": "FreeCodeCamp Data Analysis Certificate",
+                "resource_url": "https://www.freecodecamp.org/learn/data-analysis-with-python/",
+                "status": "Not Started"
+            }
+        ]
+    elif "frontend" in role_lower or "web" in role_lower:
+        fallback_steps = [
+            {
+                "step_number": 1,
+                "title": "Master Modern JavaScript (ES6+) & DOM Manipulation",
+                "reason": "Core requirement for all frontend frameworks and technical coding assessments.",
+                "priority": "High",
+                "estimated_time": "2 Weeks",
+                "topics_to_cover": ["Promises & Async/Await", "Array Methods (map, filter, reduce)", "Closures & Scope", "DOM Event Delegation"],
+                "resource_title": "MDN JavaScript Developer Guide",
+                "resource_url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+                "status": "Not Started"
+            },
+            {
+                "step_number": 2,
+                "title": "Build Single Page Apps with React.js & TailwindCSS",
+                "reason": "Industry standard component-driven framework requested by modern web tech stacks.",
+                "priority": "High",
+                "estimated_time": "3 Weeks",
+                "topics_to_cover": ["React Hooks (useState, useEffect, useMemo)", "Context API & State Management", "Tailwind Responsive Layouts", "REST API Fetching"],
+                "resource_title": "Full Stack Open (University of Helsinki)",
+                "resource_url": "https://fullstackopen.com/en/",
+                "status": "Not Started"
+            },
+            {
+                "step_number": 3,
+                "title": "Frontend Performance, Accessibility (a11y) & Testing",
+                "reason": "Distinguishes junior developers from production-ready frontend engineers.",
+                "priority": "Medium",
+                "estimated_time": "1 Week",
+                "topics_to_cover": ["Lighthouse Audit Optimization", "ARIA Roles & Keyboard Nav", "Jest & React Testing Library", "Web Vitals"],
+                "resource_title": "web.dev Performance & Accessibility",
+                "resource_url": "https://web.dev/learn",
+                "status": "Not Started"
+            }
+        ]
+    else:
+        fallback_steps = [
+            {
+                "step_number": 1,
+                "title": f"Master Core {target_career} Language & Fundamentals",
+                "reason": f"Essential core foundation required for entry to mid-level {target_career} interview rounds.",
+                "priority": "High",
+                "estimated_time": "2 Weeks",
+                "topics_to_cover": ["Data Structures & Algorithms", "Object-Oriented Programming", "Memory Management", "Clean Code Principles"],
+                "resource_title": f"Official {target_career} Documentation & Roadmap",
+                "resource_url": "https://roadmap.sh/",
+                "status": "Not Started"
+            },
+            {
+                "step_number": 2,
+                "title": f"Build Scalable Backend Services & RESTful APIs",
+                "reason": "Demonstrate your ability to architect end-to-end applications with secure API communication.",
+                "priority": "High",
+                "estimated_time": "2 Weeks",
+                "topics_to_cover": ["REST API Design", "Database ORM & Migrations", "Authentication (JWT/OAuth2)", "Error Handling & Logging"],
+                "resource_title": "FreeCodeCamp Back End Development API Guide",
+                "resource_url": "https://www.freecodecamp.org/learn/back-end-development-and-apis/",
+                "status": "Not Started"
+            },
+            {
+                "step_number": 3,
+                "title": "Database Optimization, Caching & Microservices",
+                "reason": "Crucial for passing system design and technical architectural assessment rounds.",
+                "priority": "Medium",
+                "estimated_time": "2 Weeks",
+                "topics_to_cover": ["PostgreSQL Indexing & Optimization", "Redis Caching Strategies", "Docker Containerization", "CI/CD Deployment"],
+                "resource_title": "System Design Primer Repository",
+                "resource_url": "https://github.com/donnemartin/system-design-primer",
+                "status": "Not Started"
+            },
+            {
+                "step_number": 4,
+                "title": f"Deploy a Production Capstone Project for {target_career}",
+                "reason": "Provides verifiable proof of candidate capability for recruiters and technical interviewers.",
+                "priority": "High",
+                "estimated_time": "3 Weeks",
+                "topics_to_cover": ["Cloud Deployment (Vercel/AWS)", "Production Environment Variables", "Automated Integration Testing", "GitHub Documentation"],
+                "resource_title": "LeetCode & System Design Prep",
+                "resource_url": "https://leetcode.com/",
+                "status": "Not Started"
+            }
+        ]
 
     return {
-        "career_goal": goal,
+        "career_goal": f"{goal} - {target_career}",
         "current_readiness": skill_level,
         "estimated_completion": target_timeline,
         "overall_progress": 0,
-        "summary": f"This roadmap is designed for a {skill_level} aiming for a {target_career} role within {target_timeline}. It addresses key gaps identified in your resume and skills.",
-        "next_best_action": steps[0]["title"] if steps else "Start learning core concepts.",
-        "steps": steps
+        "summary": f"This personalized roadmap is tailored for a {skill_level} working {study_time}/day to achieve a {target_career} role within {target_timeline}.",
+        "next_best_action": fallback_steps[0]["title"],
+        "steps": fallback_steps
     }
