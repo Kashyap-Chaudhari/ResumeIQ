@@ -12,7 +12,7 @@
     <div class="particles-container" id="particlesContainer"></div>
 </div>
 
-<div class="auth-page-wrapper d-flex flex-column align-items-center justify-content-center py-5 px-3">
+<div class="auth-page-wrapper d-flex flex-column align-items-center justify-content-center px-3">
     
     <!-- Main Glassmorphism Authentication Card -->
     <div class="auth-glass-card animate-slide-up">
@@ -21,11 +21,11 @@
         <div class="card-top-glow"></div>
 
         <!-- Header Section -->
-        <div class="text-center mb-4 position-relative z-1">
-            <div class="logo-box mx-auto mb-3 d-flex align-items-center justify-content-center animate-float">
+        <div class="text-center mb-3 position-relative z-1">
+            <div class="logo-box mx-auto mb-2 d-flex align-items-center justify-content-center animate-float">
                 <i class="bi bi-rocket-takeoff-fill logo-icon"></i>
             </div>
-            <h2 class="auth-heading mb-2">Welcome Back 👋</h2>
+            <h3 class="auth-heading mb-1">Welcome Back 👋</h3>
             <p class="auth-subtitle mb-0">Sign in to continue your career journey.</p>
         </div>
 
@@ -34,12 +34,12 @@
             {% csrf_token %}
             
             {% if form.non_field_errors %}
-            <div class="alert alert-danger-glass p-3 mb-4 rounded-3 d-flex flex-column gap-1 align-items-center justify-content-center text-center">
-                <div class="d-flex align-items-center gap-2 font-weight-bold">
+            <div class="alert alert-danger-glass p-2 mb-3 rounded-3 d-flex flex-column gap-1 align-items-center justify-content-center text-center">
+                <div class="d-flex align-items-center gap-2 font-weight-bold small">
                     <i class="bi bi-exclamation-triangle-fill"></i>
                     <span>Authentication Error</span>
                 </div>
-                <div class="small opacity-90">
+                <div class="small opacity-90" style="font-size: 0.8rem;">
                     {% for error in form.non_field_errors %}
                         {{ error }}<br>
                     {% endfor %}
@@ -48,7 +48,7 @@
             {% endif %}
             
             <!-- Username Field -->
-            <div class="mb-3">
+            <div class="mb-2.5 mb-md-3">
                 <label for="{{ form.username.id_for_label }}" class="form-label saas-field-label">USERNAME</label>
                 <div class="saas-input-wrapper">
                     <i class="bi bi-person saas-input-icon"></i>
@@ -62,7 +62,7 @@
             </div>
 
             <!-- Password Field -->
-            <div class="mb-3">
+            <div class="mb-2.5 mb-md-3">
                 <label for="{{ form.password.id_for_label }}" class="form-label saas-field-label">PASSWORD</label>
                 <div class="saas-input-wrapper position-relative">
                     <i class="bi bi-lock saas-input-icon"></i>
@@ -77,14 +77,14 @@
             </div>
 
             <!-- Remember Me & Forgot Password -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="form-check d-flex align-items-center gap-2 m-0">
                     {{ form.remember_me }}
-                    <label class="form-check-label text-secondary small" for="{{ form.remember_me.id_for_label }}" style="cursor: pointer; user-select: none;">
+                    <label class="form-check-label text-secondary small" for="{{ form.remember_me.id_for_label }}" style="cursor: pointer; user-select: none; font-size: 0.82rem;">
                         Remember me
                     </label>
                 </div>
-                <a href="#" class="forgot-pass-link small">Forgot Password?</a>
+                <a href="#" class="forgot-pass-link small" style="font-size: 0.82rem;">Forgot Password?</a>
             </div>
             
             <!-- Primary Submit Button -->
@@ -95,26 +95,26 @@
         </form>
 
         <!-- Divider Line -->
-        <div class="saas-divider my-4">
+        <div class="saas-divider my-3">
             <span>OR</span>
         </div>
 
         <!-- Create Account Link / Section -->
         <div class="text-center position-relative z-1">
-            <p class="text-secondary small mb-2">Don't have an account?</p>
-            <a href="{% url 'register' %}" class="btn-create-account d-inline-flex align-items-center gap-2 fw-semibold">
+            <span class="text-secondary small me-2" style="font-size: 0.82rem;">Don't have an account?</span>
+            <a href="{% url 'register' %}" class="btn-create-account d-inline-flex align-items-center gap-1 fw-semibold">
                 <span>Create Free Account</span>
-                <i class="bi bi-arrow-right"></i>
+                <i class="bi bi-arrow-right ms-1"></i>
             </a>
         </div>
     </div>
 
     <!-- Demo Credentials Card -->
-    <div class="auth-demo-card mt-4 animate-slide-up delay-100">
-        <div class="d-flex align-items-center justify-content-between mb-2">
+    <div class="auth-demo-card mt-3 animate-slide-up delay-100">
+        <div class="d-flex align-items-center justify-content-between mb-1.5">
             <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-lightning-charge-fill text-warning fs-5"></i>
-                <span class="fw-bold text-white small">⚡ Demo Access</span>
+                <i class="bi bi-lightning-charge-fill text-warning" style="font-size: 1rem;"></i>
+                <span class="fw-bold text-white small" style="font-size: 0.82rem;">⚡ Demo Access</span>
             </div>
             <button type="button" class="btn btn-sm btn-demo-copy d-flex align-items-center gap-1" id="copyCredentialsBtn" onclick="copyCredentials()">
                 <i class="bi bi-clipboard"></i>
@@ -134,19 +134,19 @@
     </div>
 
     <!-- Footer Links & Security Banner -->
-    <footer class="auth-footer text-center mt-4">
-        <div class="d-flex align-items-center justify-content-center gap-1 small text-secondary mb-2 opacity-75">
+    <footer class="auth-footer text-center mt-3">
+        <div class="d-flex align-items-center justify-content-center gap-1 text-secondary mb-1 opacity-75" style="font-size: 0.78rem;">
             <i class="bi bi-shield-lock-fill text-primary"></i>
             <span>🔒 Secure Authentication</span>
         </div>
-        <div class="footer-links small mb-2">
+        <div class="footer-links mb-1" style="font-size: 0.78rem;">
             <a href="#" class="text-secondary text-decoration-none mx-1 hover-light">Privacy Policy</a>
             <span class="text-secondary opacity-50">•</span>
             <a href="#" class="text-secondary text-decoration-none mx-1 hover-light">Terms of Service</a>
             <span class="text-secondary opacity-50">•</span>
             <a href="#" class="text-secondary text-decoration-none mx-1 hover-light">Help Center</a>
         </div>
-        <div class="small text-secondary opacity-50">
+        <div class="text-secondary opacity-50" style="font-size: 0.75rem;">
             © 2026 ResumeIQ. All rights reserved.
         </div>
     </footer>
@@ -154,9 +154,12 @@
 
 <style>
     /* Full Page Dark SaaS Background */
-    body {
+    html, body {
         background-color: #0B1020 !important;
         min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto;
     }
     
     .auth-wrapper {
@@ -166,7 +169,8 @@
         align-items: center;
         justify-content: center;
         position: relative;
-        overflow-x: hidden;
+        overflow: hidden;
+        padding: 16px 0;
     }
 
     /* Ambient Background Orbs & Floating Particles */
@@ -184,22 +188,22 @@
     .ambient-orb {
         position: absolute;
         border-radius: 50%;
-        filter: blur(100px);
+        filter: blur(90px);
         opacity: 0.25;
         animation: orbPulse 8s ease-in-out infinite alternate;
     }
 
     .orb-1 {
-        width: 450px;
-        height: 450px;
+        width: 400px;
+        height: 400px;
         background: radial-gradient(circle, #3B82F6 0%, #4F46E5 100%);
         top: -100px;
         left: -100px;
     }
 
     .orb-2 {
-        width: 500px;
-        height: 500px;
+        width: 450px;
+        height: 450px;
         background: radial-gradient(circle, #8B5CF6 0%, #6366F1 100%);
         bottom: -150px;
         right: -100px;
@@ -207,8 +211,8 @@
     }
 
     .orb-3 {
-        width: 300px;
-        height: 300px;
+        width: 250px;
+        height: 250px;
         background: radial-gradient(circle, #06B6D4 0%, #3B82F6 100%);
         top: 40%;
         left: 50%;
@@ -218,13 +222,13 @@
 
     @keyframes orbPulse {
         0% { transform: scale(1) translateY(0); opacity: 0.2; }
-        100% { transform: scale(1.15) translateY(-20px); opacity: 0.35; }
+        100% { transform: scale(1.15) translateY(-15px); opacity: 0.35; }
     }
 
     /* Particles */
     .particle {
         position: absolute;
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.25);
         border-radius: 50%;
         pointer-events: none;
         animation: floatParticle 12s linear infinite;
@@ -240,7 +244,7 @@
     /* Wrapper */
     .auth-page-wrapper {
         width: 100%;
-        max-width: 520px;
+        max-width: 440px;
         position: relative;
         z-index: 1;
     }
@@ -248,13 +252,13 @@
     /* Glassmorphism Card */
     .auth-glass-card {
         width: 100%;
-        background: rgba(15, 23, 42, 0.75);
+        background: rgba(15, 23, 42, 0.8);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 20px;
-        padding: 40px 36px;
-        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6), 0 0 35px rgba(59, 130, 246, 0.15);
+        border-radius: 18px;
+        padding: 28px 28px 24px 28px;
+        box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.15);
         position: relative;
         overflow: hidden;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -262,54 +266,52 @@
 
     .card-top-glow {
         position: absolute;
-        top: -60px;
+        top: -50px;
         left: 50%;
         transform: translateX(-50%);
-        width: 250px;
-        height: 120px;
+        width: 220px;
+        height: 100px;
         background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-        filter: blur(50px);
-        opacity: 0.3;
+        filter: blur(45px);
+        opacity: 0.35;
         pointer-events: none;
     }
 
     /* Header Logo */
     .logo-box {
-        width: 60px;
-        height: 60px;
-        border-radius: 18px;
-        background: linear-gradient(135deg, rgba(59,130,246,0.25) 0%, rgba(139,92,246,0.15) 100%);
-        border: 1px solid rgba(99, 102, 241, 0.4);
-        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.1);
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.2) 100%);
+        border: 1px solid rgba(129, 140, 248, 0.4);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.15);
     }
 
     .logo-icon {
         font-size: 26px;
-        background: linear-gradient(135deg, #60A5FA 0%, #C084FC 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #818CF8;
+        filter: drop-shadow(0 0 8px rgba(129, 140, 248, 0.6));
     }
 
     .auth-heading {
         color: #F8FAFC;
-        font-size: 1.8rem;
+        font-size: 1.55rem;
         font-weight: 800;
         letter-spacing: -0.5px;
     }
 
     .auth-subtitle {
         color: #94A3B8;
-        font-size: 0.95rem;
+        font-size: 0.88rem;
     }
 
     /* Form Fields */
     .saas-field-label {
         color: #CBD5E1;
-        font-size: 0.78rem;
+        font-size: 0.74rem;
         font-weight: 700;
         letter-spacing: 0.8px;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
         display: block;
     }
 
@@ -321,15 +323,15 @@
     /* Style for Django generated input elements */
     .saas-input-wrapper input {
         width: 100%;
-        height: 50px;
-        background: rgba(15, 23, 42, 0.7) !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
-        border-radius: 14px !important;
-        padding-left: 48px !important;
-        padding-right: 48px !important;
+        height: 44px;
+        background: rgba(15, 23, 42, 0.75) !important;
+        border: 1px solid rgba(255, 255, 255, 0.14) !important;
+        border-radius: 12px !important;
+        padding-left: 44px !important;
+        padding-right: 44px !important;
         color: #F8FAFC !important;
-        font-size: 0.95rem !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        font-size: 0.9rem !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
     .saas-input-wrapper input::placeholder {
@@ -340,19 +342,19 @@
     .saas-input-wrapper input:focus {
         background: rgba(15, 23, 42, 0.95) !important;
         border-color: #6366F1 !important;
-        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25), 0 0 20px rgba(99, 102, 241, 0.2) !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25), 0 0 15px rgba(99, 102, 241, 0.2) !important;
         outline: none !important;
     }
 
     .saas-input-icon {
         position: absolute;
-        left: 16px;
+        left: 14px;
         top: 50%;
         transform: translateY(-50%);
         color: #64748B;
-        font-size: 1.15rem;
+        font-size: 1.05rem;
         pointer-events: none;
-        transition: color 0.3s ease;
+        transition: color 0.25s ease;
         z-index: 2;
     }
 
@@ -362,11 +364,11 @@
 
     .saas-password-toggle {
         position: absolute;
-        right: 16px;
+        right: 14px;
         top: 50%;
         transform: translateY(-50%);
         color: #64748B;
-        font-size: 1.15rem;
+        font-size: 1.05rem;
         cursor: pointer;
         transition: color 0.2s ease;
         z-index: 2;
@@ -392,41 +394,41 @@
     .form-check-input {
         background-color: rgba(15, 23, 42, 0.7);
         border-color: rgba(255, 255, 255, 0.2);
-        border-radius: 6px;
-        width: 18px;
-        height: 18px;
+        border-radius: 5px;
+        width: 16px;
+        height: 16px;
     }
     .form-check-input:checked {
         background-color: #6366F1;
         border-color: #6366F1;
-        box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+        box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
     }
 
     /* Primary Submit Button */
     .btn-saas-gradient {
-        height: 54px;
-        border-radius: 14px;
+        height: 46px;
+        border-radius: 12px;
         background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
         color: #FFFFFF;
-        font-size: 1rem;
+        font-size: 0.95rem;
         font-weight: 700;
         border: none;
-        box-shadow: 0 8px 25px -4px rgba(59, 130, 246, 0.5);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 6px 20px -3px rgba(59, 130, 246, 0.45);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
     }
 
     .btn-saas-gradient:hover {
         transform: translateY(-2px);
-        box-shadow: 0 12px 32px -4px rgba(139, 92, 246, 0.6);
+        box-shadow: 0 10px 28px -3px rgba(139, 92, 246, 0.55);
         color: #FFFFFF;
         filter: brightness(1.08);
     }
 
     .btn-saas-gradient:active {
         transform: translateY(0);
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
     }
 
     .btn-icon-arrow {
@@ -443,7 +445,7 @@
         align-items: center;
         text-align: center;
         color: #64748B;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-weight: 600;
         letter-spacing: 1px;
     }
@@ -456,18 +458,19 @@
     }
 
     .saas-divider span {
-        padding: 0 14px;
+        padding: 0 12px;
     }
 
     /* Create Account Button */
     .btn-create-account {
         color: #60A5FA;
         text-decoration: none;
-        padding: 10px 20px;
-        border-radius: 12px;
+        padding: 6px 14px;
+        border-radius: 10px;
         background: rgba(59, 130, 246, 0.1);
         border: 1px solid rgba(59, 130, 246, 0.25);
-        transition: all 0.3s ease;
+        font-size: 0.85rem;
+        transition: all 0.25s ease;
     }
 
     .btn-create-account:hover {
@@ -475,28 +478,28 @@
         border-color: rgba(59, 130, 246, 0.4);
         color: #93C5FD;
         transform: translateY(-1px);
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
     }
 
     /* Demo Access Card */
     .auth-demo-card {
         width: 100%;
-        background: rgba(15, 23, 42, 0.55);
+        background: rgba(15, 23, 42, 0.6);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 16px;
-        padding: 18px 22px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border-radius: 14px;
+        padding: 12px 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
 
     .btn-demo-copy {
         background: rgba(255, 255, 255, 0.06);
         border: 1px solid rgba(255, 255, 255, 0.12);
         color: #CBD5E1;
-        font-size: 0.78rem;
-        padding: 4px 10px;
-        border-radius: 8px;
+        font-size: 0.74rem;
+        padding: 3px 8px;
+        border-radius: 6px;
         transition: all 0.2s ease;
     }
 
@@ -509,11 +512,11 @@
     .demo-credentials-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
+        gap: 8px;
         background: rgba(0, 0, 0, 0.3);
         border: 1px solid rgba(255, 255, 255, 0.03);
-        padding: 10px 16px;
-        border-radius: 12px;
+        padding: 8px 12px;
+        border-radius: 10px;
     }
 
     .demo-cred-item {
@@ -522,7 +525,7 @@
     }
 
     .cred-label {
-        font-size: 0.72rem;
+        font-size: 0.68rem;
         color: #64748B;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -530,7 +533,7 @@
     }
 
     .cred-value {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         color: #38BDF8;
         font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
         font-weight: 700;
@@ -545,14 +548,8 @@
     
     .saas-field-error {
         color: #F87171;
-        font-size: 0.8rem;
-        margin-top: 4px;
-    }
-    
-    .saas-field-error ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
+        font-size: 0.78rem;
+        margin-top: 3px;
     }
 
     /* Footer Links */
@@ -562,7 +559,7 @@
 
     /* Animations */
     .animate-slide-up {
-        animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     .animate-float {
@@ -570,13 +567,13 @@
     }
 
     .delay-100 {
-        animation-delay: 0.1s;
+        animation-delay: 0.08s;
     }
 
     @keyframes slideUp {
         from {
             opacity: 0;
-            transform: translateY(24px);
+            transform: translateY(18px);
         }
         to {
             opacity: 1;
@@ -586,7 +583,7 @@
 
     @keyframes float {
         0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-6px); }
+        50% { transform: translateY(-5px); }
     }
 </style>
 
@@ -617,10 +614,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Generate floating particles
     const container = document.getElementById('particlesContainer');
     if (container) {
-        for (let i = 0; i < 18; i++) {
+        for (let i = 0; i < 15; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
-            const size = Math.random() * 4 + 2;
+            const size = Math.random() * 3 + 2;
             particle.style.width = `${size}px`;
             particle.style.height = `${size}px`;
             particle.style.left = `${Math.random() * 100}%`;
