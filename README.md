@@ -1,66 +1,83 @@
 <div align="center">
   <h1>🚀 ResumeIQ</h1>
-  <p><strong>Your Personal AI Resume Analyzer & Placement Career Coach</strong></p>
+  <p><strong>Next-Gen AI Resume Analyzer, Job Matcher & Placement Career Coach</strong></p>
 
   [![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
   [![Django](https://img.shields.io/badge/Django-5.0-092E20.svg)](https://www.djangoproject.com/)
+  [![Google Gemini](https://img.shields.io/badge/AI-Google_Gemini_API-8E44AD.svg)](https://ai.google.dev/)
+  [![Database](https://img.shields.io/badge/Database-Neon_PostgreSQL-00E599.svg)](https://neon.tech/)
   [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 </div>
 
 <br />
 
-**ResumeIQ** is a production-ready, full-stack SaaS platform designed to transform job seekers into top-tier candidates. It leverages AI-driven resume parsing, ATS scoring, Job Description matching, and skill gap detection, while providing AI interview coaching and personalized career roadmaps.
+**ResumeIQ** is a production-ready, full-stack AI SaaS platform designed to empower job seekers, students, and professionals to land their dream software engineering and tech roles. It seamlessly combines AI resume parsing, ATS scoring, TF-IDF job description matching, AI interview coaching, interactive readiness radar charts, and personalized learning roadmaps into a single premium SaaS interface.
 
 ---
 
-## ✨ Core Features
+## 🌟 What's New in Latest Update
 
-- **🛡️ Secure User Authentication & Profiles:** Robust Django session auth for Registration, Login, and Profile Management (target roles, experience, theme preferences, and optional Google Gemini API Key override).
-- **📄 AI Resume Parsing & ATS Scoring:** Extracts data from PDFs via `pdfplumber` (fallback to PyPDF2) and computes a comprehensive 0-100 ATS Score across Keywords, Metrics, Structure, Action Verbs, and Completeness. Extracts over 250 tech skills.
-- **🎯 TF-IDF & Cosine Similarity Job Matcher:** Matches uploaded resumes against target Job Descriptions using `scikit-learn` to identify missing skills, providing actionable optimization steps.
-- **✨ AI Resume Bullet Rewriter:** Instantly transforms weak, generic bullet points into STAR-method power bullets with quantifiable impact metrics.
-- **🎙️ AI Interview Coach:** Generates role-tailored technical, system design, and behavioral questions. Evaluates responses live with constructive feedback and scoring.
-- **📊 Readiness Score & Radar Charts:** Visualizes candidate readiness across 5 dimensions using stunning **Chart.js** interactive radar charts.
-- **🗺️ Personalized Career Roadmap:** Generates a 4-phase learning path timeline tailored to missing skills with clear action items.
-- **📝 Job Application Kanban Tracker:** Track your pipeline across 5 stages: Saved, Applied, Interviewing, Offer, and Rejected.
-- **🔄 Resume Versioning & Diff:** Compare ATS scores and skill changes between resume versions over time.
-- **📚 Free Learning Resources Hub:** A curated library of top free courses, documentation, and tutorials mapped to your missing skills.
+- **🔐 Premium Glassmorphism Auth Suite (`#0B1020` Theme):**
+  - Completely redesigned **Login** & **Registration (Create Account)** pages featuring dark SaaS aesthetics, ambient animated glowing orbs, floating particle background canvas, and glowing brand logo boxes.
+  - **Live Password Validation Checklist:** Interactive real-time verification of password criteria (8+ characters, uppercase letter, number, and special character).
+  - **⚡ 1-Click Demo Access Card:** Built-in demo credentials card with auto-fill & copy clipboard capabilities (`demo_student` / `Demo@123`).
+- **🎨 Refined Topbar & Navigation UI:**
+  - Expanded user profile badge with rounded squircle avatar, bold typography, and smooth dark/light theme switching.
+- **🗺️ Enhanced Learning Roadmaps:**
+  - Streamlined step-by-step career path visualization and session history management.
+
+---
+
+## ✨ Key Features
+
+- **📄 AI Resume Parsing & ATS Scoring:** Extracts text and structure from uploaded PDF resumes using `pdfplumber` (with `PyPDF2` fallback) and computes a comprehensive 0–100 ATS Score across Keywords, Quantifiable Metrics, Structure, Action Verbs, and Completeness. Automatically detects over 250+ tech skills.
+- **🎯 TF-IDF & Cosine Similarity Job Matcher:** Leverages `scikit-learn` to calculate exact match percentages between candidate resumes and target Job Descriptions, highlighting critical missing keywords and skills.
+- **✨ AI Resume Bullet Rewriter:** Instantly transforms generic or weak bullet points into STAR-formatted (Situation, Task, Action, Result) power statements backed by metrics.
+- **🎙️ AI Interview Coach:** Generates role-tailored technical, system design, and behavioral questions. Offers real-time evaluation and feedback on candidate answers.
+- **📊 Placement Readiness Radar Chart:** Visualizes overall job readiness across 5 dimensions using interactive **Chart.js** radar charts.
+- **🗺️ Personalized Career Roadmap:** Generates structured, step-by-step learning milestones tailored to candidate skill gaps and target roles.
+- **📋 Job Application Kanban Tracker:** Helps candidates manage job applications across 5 pipeline stages (Saved, Applied, Interviewing, Offer, Rejected).
+- **📚 Free Learning Resources Hub:** Curated library of top documentation, tutorials, and courses mapped to candidate skill gaps.
 
 ---
 
 ## 🛠 Tech Stack
 
-**Backend**
+### **Backend**
 - **Framework:** Django 5, Python 3.13
-- **Database:** SQLite3 (Local) / PostgreSQL (Production)
-- **AI & ML:** Google Gemini Free API (`google-generativeai`), `scikit-learn` (TF-IDF + Cosine Similarity)
-- **NLP & Parsing:** Custom Regex, spaCy, `pdfplumber`, `PyPDF2`
+- **Database:** SQLite3 (Local) / Neon PostgreSQL (Production)
+- **AI & ML:** Google Gemini AI API (`google-generativeai`), `scikit-learn` (TF-IDF & Cosine Similarity)
+- **NLP & PDF Processing:** Custom Regex, `pdfplumber`, `PyPDF2`
 
-**Frontend**
-- **Technologies:** HTML5, CSS3, JavaScript (ES6)
-- **Styling:** Bootstrap 5, Custom CSS with Dark & Light modern themes (glassmorphism UI)
-- **Visualizations:** Chart.js (Line, Radar, Doughnut)
+### **Frontend**
+- **Core Technologies:** HTML5, JavaScript (ES6), CSS3 (Custom Glassmorphism SaaS System)
+- **Styling:** Bootstrap 5.3, Bootstrap Icons, Google Fonts (Plus Jakarta Sans & Inter)
+- **Data Visualization:** Chart.js (Interactive Radar & Progress Charts)
 
-**Deployment**
-- **Hosting:** Render / Heroku
-- **Database:** Neon PostgreSQL
+### **Deployment & Cloud Infrastructure**
+- **Hosting:** Vercel / Render
+- **Production Database:** Neon PostgreSQL
+- **Static Assets:** Whitenoise / Django Static
 
 ---
 
 ## 🚀 Quick Start Guide
 
-### 1. Clone & Setup Environment
+### 1. Clone Repository
 
 ```bash
-git clone https://github.com/your-username/careerpilot-ai.git
-cd python_project
+git clone https://github.com/Kashyap-Chaudhari/ResumeIQ.git
+cd ResumeIQ
 ```
 
-### 2. Create a Virtual Environment (Recommended)
+### 2. Create Virtual Environment
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
 ```
 
 ### 3. Install Dependencies
@@ -71,14 +88,15 @@ pip install -r requirements.txt
 
 ### 4. Configure Environment Variables
 
-Create a `.env` file in the root directory (use `.env.example` as a template):
+Create a `.env` file in the project root directory (refer to `.env.example`):
+
 ```env
 DEBUG=True
-SECRET_KEY=your_secret_key_here
+SECRET_KEY=your_django_secret_key_here
 GEMINI_API_KEY=your_google_gemini_api_key_here
 ```
 
-### 5. Setup Database & Superuser
+### 5. Run Database Migrations & Create Superuser
 
 ```bash
 python manage.py makemigrations
@@ -86,36 +104,44 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-### 6. Run the Development Server
+### 6. Start Development Server
 
 ```bash
 python manage.py runserver
 ```
-Visit `http://127.0.0.1:8000/` in your browser!
+
+Open `http://127.0.0.1:8000/` in your browser!
 
 ---
 
-## ☁️ Deployment Guide (Render + Neon PostgreSQL)
+## ⚡ Demo Access
 
-1. Push your repository to GitHub.
-2. Log in to [Render.com](https://render.com).
-3. Create a new **Web Service** and connect your GitHub repo.
-4. Select environment **Python 3**.
-5. Set Build Command:
+For quick testing without creating a new account:
+- **Username:** `demo_student`
+- **Password:** `Demo@123`
+
+*(You can also click the **"Copy Credentials"** button on the Login page to automatically fill in these credentials.)*
+
+---
+
+## ☁️ Production Deployment
+
+### **Deploying to Vercel / Render + Neon DB**
+
+1. Push your latest changes to GitHub.
+2. Link repository to Vercel / Render dashboard.
+3. Configure the environment variables in your deployment dashboard:
+   - `SECRET_KEY`
+   - `DEBUG` = `False`
+   - `DATABASE_URL` = *(Neon PostgreSQL Connection String)*
+   - `GEMINI_API_KEY` = *(Google Gemini API Key)*
+4. Build command:
    ```bash
    pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
    ```
-6. Set Start Command:
-   ```bash
-   gunicorn careerpilot.wsgi:application
-   ```
-7. Add Environment Variables in Render dashboard:
-   - `SECRET_KEY`: Random long string
-   - `DEBUG`: `False`
-   - `GEMINI_API_KEY`: Your Google Gemini API Key
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License**. Built to help job seekers accelerate their career growth!
+This project is licensed under the **MIT License**. Built with ❤️ to help software engineers and candidates land their dream careers!
