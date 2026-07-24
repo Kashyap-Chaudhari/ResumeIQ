@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#bgGrad)"/>
+  <!-- Rocket Body & Wings -->
+  <path d="M44 14C44 14 35 16.5 28.5 23C23.5 28 21 35 21 35L29 43C29 43 36 40.5 41 35.5C47.5 29 50 20 50 20C50 20 47.5 17 44 14Z" fill="#FFFFFF"/>
+  <path d="M21 35L14 37L17 43L24 40L21 35Z" fill="#93C5FD"/>
+  <path d="M29 43L27 50L33 47L30 40L29 43Z" fill="#93C5FD"/>
+  <circle cx="37" cy="27" r="3.5" fill="#3B82F6"/>
+  <!-- Exhaust Flame -->
+  <path d="M21 43C18 48 14 51 14 51C14 51 18 47 23 45L21 43Z" fill="#F59E0B"/>
+</svg>
