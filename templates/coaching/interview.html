@@ -10,13 +10,13 @@
     <div class="saas-card mb-4">
       <h6 class="fw-bold mb-3"><i class="bi bi-play-circle text-primary me-2"></i> Start New Mock Session</h6>
 
-      <form method="POST">
+      <form method="POST" id="generateQuestionsForm">
         {% csrf_token %}
         <input type="hidden" name="action" value="start_session">
 
         <div class="mb-3">
           <label class="form-label text-muted small fw-bold">Target Role</label>
-          <input type="text" name="target_role" class="form-control form-control-saas" value="{{ user_profile.target_role }}" required>
+          <input type="text" name="target_role" class="form-control form-control-saas" value="{{ user_profile.target_role|default:'Software Engineer' }}" required>
         </div>
 
         <div class="mb-4">
@@ -24,8 +24,8 @@
           <input type="text" name="company_name" class="form-control form-control-saas" placeholder="e.g. Stripe / Amazon">
         </div>
 
-        <button type="submit" class="btn btn-saas-primary w-100 py-2">
-          <i class="bi bi-robot me-1"></i> Generate AI Questions
+        <button type="submit" class="btn btn-saas-primary w-100 py-2" id="generateQuestionsBtn">
+          <i class="bi bi-cpu-fill me-1"></i> Generate 20 AI Questions
         </button>
       </form>
     </div>
@@ -38,7 +38,7 @@
           <a href="?session_id={{ sess.id }}" class="list-group-item bg-transparent text-white border-secondary py-2 px-0 d-flex justify-content-between align-items-center {% if sess == current_session %}fw-bold text-primary{% endif %}">
             <div>
               <div class="small">{{ sess.target_role }}</div>
-              <small class="text-muted" style="font-size:0.7rem;">{{ sess.created_at|date:"M d" }}</small>
+              <small class="text-muted" style="font-size:0.7rem;">{{ sess.created_at|date:"M d, Y" }}</small>
             </div>
             <i class="bi bi-chevron-right text-muted"></i>
           </a>
@@ -50,12 +50,30 @@
   </div>
 
   <!-- Interactive Questions & Answer Evaluation Room -->
-  <div class="col-lg-8">
+  <div class="col-lg-8" id="interviewRightPanel">
+    <!-- Generating Loader Card (Hidden by default, shown on submit) -->
+    <div class="saas-card text-center py-5 d-none" id="aiGeneratingLoader" style="background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-glow);">
+      <div class="mb-4 position-relative d-inline-block">
+        <div class="spinner-border text-primary" style="width: 3.5rem; height: 3.5rem; border-width: 0.25em;" role="status"></div>
+        <i class="bi bi-robot position-absolute top-50 start-50 translate-middle text-indigo fs-4"></i>
+      </div>
+      <h4 class="fw-bold mb-2">Generating 20 Tailored AI Questions...</h4>
+      <p class="text-secondary small mb-4 mx-auto" style="max-width: 480px;">
+        Our AI is analyzing your target role, domain skills, and technical requirements to create 20 high-yield technical, system design, and behavioral questions.
+      </p>
+      <div class="progress mx-auto rounded-pill" style="height: 6px; max-width: 360px; background: rgba(255,255,255,0.05);">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary w-100"></div>
+      </div>
+    </div>
+
     {% if current_session %}
-      <div class="saas-card mb-4">
-        <div class="saas-card-header">
-          <h5 class="saas-card-title"><i class="bi bi-chat-square-quote-fill text-indigo"></i> Interview Room: {{ current_session.target_role }}</h5>
-          <span class="badge bg-primary">{{ current_session.questions_data|length }} Questions</span>
+      <div class="saas-card mb-4" id="sessionContentCard">
+        <div class="saas-card-header d-flex justify-content-between align-items-center mb-3 pb-3" style="border-bottom: 1px solid var(--border-color);">
+          <div>
+            <h5 class="saas-card-title mb-1"><i class="bi bi-chat-square-quote-fill text-indigo me-2"></i> Interview Room: {{ current_session.target_role }}</h5>
+            <small class="text-secondary">Answer each question to receive immediate score and detailed AI suggestions.</small>
+          </div>
+          <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill">{{ current_session.questions_data|length }} Questions</span>
         </div>
 
         <div class="accordion accordion-flush" id="questionsAccordion">
@@ -77,7 +95,7 @@
                       <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="fw-bold text-emerald"><i class="bi bi-check-circle-fill me-1"></i> AI Feedback Score: {{ q.score }}/100</span>
                       </div>
-                      <p class="small text-muted mb-0">{{ q.feedback }}</p>
+                      <p class="small text-secondary mb-0">{{ q.feedback }}</p>
                     </div>
                   {% endif %}
 
@@ -94,13 +112,13 @@
 
                     <div class="d-flex justify-content-between align-items-center">
                       <button type="button" class="btn btn-link text-muted btn-sm p-0 text-decoration-none" data-bs-toggle="collapse" data-bs-target="#sample{{ q.id }}">
-                        <i class="bi bi-eye me-1"></i> View Model Answer
+                        <i class="bi bi-eye me-1"></i> View Model Answer Key
                       </button>
                       <button type="submit" class="btn btn-saas-primary btn-sm"><i class="bi bi-send me-1"></i> Submit for AI Scoring</button>
                     </div>
 
                     <div class="collapse mt-3" id="sample{{ q.id }}">
-                      <div class="p-3 rounded-3 text-muted small" style="background: var(--bg-card);">
+                      <div class="p-3 rounded-3 text-secondary small" style="background: var(--bg-card);">
                         <strong class="text-white d-block mb-1">Model Answer Key:</strong>
                         {{ q.sample_answer }}
                       </div>
@@ -113,12 +131,37 @@
         </div>
       </div>
     {% else %}
-      <div class="saas-card text-center py-5">
+      <div class="saas-card text-center py-5" id="noSessionCard">
         <i class="bi bi-chat-left-dots fs-1 text-muted mb-3 d-block"></i>
         <h5>No Active Mock Interview Session</h5>
-        <p class="text-muted small">Select or start a new AI mock interview session on the left to practice questions tailored to your resume and target role.</p>
+        <p class="text-muted small">Select or start a new AI mock interview session on the left to generate 20 technical & behavioral questions tailored to your target role.</p>
       </div>
     {% endif %}
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('generateQuestionsForm');
+  const btn = document.getElementById('generateQuestionsBtn');
+  const loader = document.getElementById('aiGeneratingLoader');
+  const sessionCard = document.getElementById('sessionContentCard');
+  const noSessionCard = document.getElementById('noSessionCard');
+
+  if (form) {
+    form.addEventListener('submit', function() {
+      if (btn) {
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Generating 20 Questions...';
+        btn.style.opacity = '0.85';
+        btn.style.pointerEvents = 'none';
+      }
+      if (sessionCard) sessionCard.classList.add('d-none');
+      if (noSessionCard) noSessionCard.classList.add('d-none');
+      if (loader) loader.classList.remove('d-none');
+    });
+  }
+});
+</script>
 {% endblock %}

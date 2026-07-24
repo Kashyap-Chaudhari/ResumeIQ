@@ -26,7 +26,7 @@ def api_interview_start(request):
             job_description=data.get('job_description', '')
         )
         
-        api_key = request.user.userprofile.gemini_api_key if hasattr(request.user, 'userprofile') else None
+        api_key = request.user.profile.gemini_api_key if hasattr(request.user, 'profile') else None
         first_q = generate_first_question(
             session.role, session.experience, session.skills, 
             session.difficulty, session.type, session.resume_text, 
@@ -65,7 +65,7 @@ def api_interview_evaluate(request):
         previous_qas = session.qas.exclude(id=qa.id).order_by('created_at')
         history = [{"question": q.question_text, "answer": q.user_answer} for q in previous_qas if q.user_answer]
         
-        api_key = request.user.userprofile.gemini_api_key if hasattr(request.user, 'userprofile') else None
+        api_key = request.user.profile.gemini_api_key if hasattr(request.user, 'profile') else None
         
         result = evaluate_answer_and_next_question(
             session.role, session.type, session.difficulty, 
@@ -110,7 +110,7 @@ def api_interview_report(request):
         qas = session.qas.order_by('created_at')
         history = [{"question": q.question_text, "answer": q.user_answer} for q in qas if q.user_answer]
         
-        api_key = request.user.userprofile.gemini_api_key if hasattr(request.user, 'userprofile') else None
+        api_key = request.user.profile.gemini_api_key if hasattr(request.user, 'profile') else None
         
         report = generate_final_report(session.role, session.type, history, api_key=api_key)
         session.final_report = report

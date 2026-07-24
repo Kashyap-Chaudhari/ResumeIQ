@@ -45,7 +45,7 @@ def resume_upload_view(request):
             
             # 5. Full AI Analysis Dashboard
             from coaching.services.ai_engine import generate_full_resume_analysis
-            api_key = request.user.userprofile.gemini_api_key if hasattr(request.user, 'userprofile') else None
+            api_key = request.user.profile.gemini_api_key if hasattr(request.user, 'profile') else None
             ai_analysis = generate_full_resume_analysis(raw_text, skills, api_key=api_key)
             
             # Update Resume Object

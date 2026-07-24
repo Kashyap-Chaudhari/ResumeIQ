@@ -16,7 +16,7 @@ except ImportError:
 @login_required
 def interview_prep_view(request):
     user = request.user
-    api_key = user.userprofile.gemini_api_key if hasattr(user, 'userprofile') else None
+    api_key = user.profile.gemini_api_key if hasattr(user, 'profile') else None
     recent_sessions = InterviewSession.objects.filter(user=user).order_by('-created_at')[:10]
     
     session_id = request.GET.get('session_id')
