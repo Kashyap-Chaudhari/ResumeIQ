@@ -29,9 +29,10 @@ def resume_upload_view(request):
         
         # Process the resume
         try:
-            raw_text = extract_text_from_pdf(resume.file.path)
-        except Exception:
-            raw_text = extract_text_from_pdf(uploaded_file)
+            try:
+                raw_text = extract_text_from_pdf(resume.file.path)
+            except Exception:
+                raw_text = extract_text_from_pdf(uploaded_file)
             
             # 2. Parse Sections
             sections = parse_resume_sections(raw_text)
@@ -62,7 +63,6 @@ def resume_upload_view(request):
             
         except Exception as e:
             messages.error(request, f'Error processing resume: {str(e)}')
-            # Optionally delete the failed resume or keep it as unparsed
             
     return render(request, 'resumes/upload.html')
 
