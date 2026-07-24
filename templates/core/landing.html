@@ -38,10 +38,82 @@
       height: 100vh;
       pointer-events: none;
       z-index: 0;
-      background-image: 
-        radial-gradient(circle at 50% 0%, var(--accent-indigo-glow, rgba(99, 102, 241, 0.15)) 0%, transparent 50%),
-        radial-gradient(circle at 100% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 40%),
-        radial-gradient(circle at 0% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+      overflow: hidden;
+    }
+
+    .ambient-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: var(--blob-opacity, 0.25);
+      animation: orbPulse 8s ease-in-out infinite alternate;
+    }
+
+    .orb-1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #3B82F6 0%, #4F46E5 100%);
+      top: -120px;
+      left: -120px;
+    }
+
+    .orb-2 {
+      width: 550px;
+      height: 550px;
+      background: radial-gradient(circle, #8B5CF6 0%, #6366F1 100%);
+      top: 35%;
+      right: -150px;
+      animation-delay: -4s;
+    }
+
+    .orb-3 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #06B6D4 0%, #3B82F6 100%);
+      bottom: -100px;
+      left: -100px;
+      opacity: 0.18;
+    }
+
+    .orb-4 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, #EC4899 0%, #8B5CF6 100%);
+      bottom: 20%;
+      left: 45%;
+      opacity: 0.12;
+      animation-delay: -2s;
+    }
+
+    @keyframes orbPulse {
+      0% { transform: scale(1) translateY(0); opacity: 0.2; }
+      100% { transform: scale(1.18) translateY(-25px); opacity: 0.35; }
+    }
+
+    /* Floating Background Particles */
+    .particles-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(99, 102, 241, 0.35);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: floatParticle 14s linear infinite;
+    }
+
+    @keyframes floatParticle {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      20% { opacity: 0.7; }
+      80% { opacity: 0.7; }
+      100% { transform: translateY(-10vh) scale(1.3); opacity: 0; }
     }
 
     .saas-grid-pattern {
@@ -54,8 +126,8 @@
       z-index: 0;
       background-image: linear-gradient(var(--border-color) 1px, transparent 1px),
                         linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
-      background-size: 50px 50px;
-      opacity: 0.4;
+      background-size: 45px 45px;
+      opacity: 0.45;
     }
 
     /* Top Navigation Bar */
@@ -79,13 +151,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+      box-shadow: 0 4px 18px rgba(99, 102, 241, 0.3);
     }
 
     .brand-logo-box i {
       font-size: 20px;
       color: #6366F1;
-      filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.5));
+      filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
     }
 
     .nav-link-custom {
@@ -105,7 +177,7 @@
 
     /* Hero Section */
     .hero-section {
-      padding: 90px 0 70px;
+      padding: 95px 0 75px;
       position: relative;
       z-index: 1;
     }
@@ -115,17 +187,36 @@
       align-items: center;
       background: rgba(99, 102, 241, 0.12);
       color: #6366F1;
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      padding: 8px 18px;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      padding: 8px 20px;
       border-radius: 30px;
       font-size: 0.88rem;
       font-weight: 600;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.12);
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-badge::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+      transform: rotate(30deg);
+      animation: shimmerBadge 4s infinite;
+    }
+
+    @keyframes shimmerBadge {
+      0% { transform: translateX(-100%) rotate(30deg); }
+      30%, 100% { transform: translateX(100%) rotate(30deg); }
     }
 
     .hero-title {
       color: var(--text-primary);
-      font-size: 3.5rem;
+      font-size: 3.6rem;
       font-weight: 800;
       letter-spacing: -1.5px;
       line-height: 1.15;
@@ -139,9 +230,9 @@
 
     .hero-subtitle {
       color: var(--text-secondary);
-      max-width: 740px;
+      max-width: 750px;
       font-size: 1.15rem;
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
     /* Buttons matching Login Page */
@@ -151,13 +242,13 @@
       font-weight: 700;
       border: none;
       border-radius: 12px;
-      box-shadow: 0 8px 25px -4px rgba(59, 130, 246, 0.5);
+      box-shadow: 0 8px 28px -4px rgba(59, 130, 246, 0.55);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .btn-hero-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px -4px rgba(139, 92, 246, 0.6);
+      transform: translateY(-3px);
+      box-shadow: 0 14px 35px -4px rgba(139, 92, 246, 0.65);
       color: #FFFFFF !important;
       filter: brightness(1.08);
     }
@@ -174,9 +265,10 @@
 
     .btn-hero-secondary:hover {
       background: var(--bg-card-hover);
-      border-color: rgba(99, 102, 241, 0.3);
+      border-color: rgba(99, 102, 241, 0.4);
       color: var(--text-primary) !important;
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
 
     /* Hero Mockup Preview Card */
@@ -184,9 +276,9 @@
       background: var(--glass-card, rgba(15, 23, 42, 0.85));
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glow, rgba(99, 102, 241, 0.3));
-      border-radius: 20px;
-      box-shadow: var(--shadow-md), 0 0 35px rgba(99, 102, 241, 0.15);
+      border: 1px solid var(--border-glow, rgba(99, 102, 241, 0.35));
+      border-radius: 22px;
+      box-shadow: var(--shadow-md), 0 0 45px rgba(99, 102, 241, 0.2);
       overflow: hidden;
       position: relative;
     }
@@ -194,7 +286,7 @@
     .mockup-header-bar {
       background: var(--bg-input);
       border-bottom: 1px solid var(--border-color);
-      padding: 12px 20px;
+      padding: 14px 22px;
     }
 
     .mockup-dot {
@@ -210,46 +302,72 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border-color);
-      border-radius: 18px;
-      padding: 32px 28px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 20px;
+      padding: 34px 30px;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
       box-shadow: var(--shadow-sm);
     }
 
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #3B82F6 0%, #8B5CF6 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
     .feature-card:hover {
       transform: translateY(-8px);
-      border-color: rgba(99, 102, 241, 0.4);
-      box-shadow: var(--shadow-md), 0 0 25px rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.45);
+      box-shadow: var(--shadow-md), 0 0 30px rgba(99, 102, 241, 0.18);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
     }
 
     .feature-icon-box {
-      width: 54px;
-      height: 54px;
-      border-radius: 14px;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      font-size: 1.55rem;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.18);
+      transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon-box {
+      transform: scale(1.08);
     }
 
     /* How It Works Steps */
     .step-number-node {
-      width: 70px;
-      height: 70px;
-      border-radius: 20px;
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.8rem;
+      font-size: 1.85rem;
       font-weight: 800;
-      margin: 0 auto 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      margin: 0 auto 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
       position: relative;
       z-index: 2;
+      transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover .step-number-node {
+      transform: scale(1.1) rotate(-3deg);
     }
 
     /* FAQ Accordion */
@@ -257,14 +375,14 @@
       background: var(--glass-card, rgba(15, 23, 42, 0.7)) !important;
       backdrop-filter: blur(12px);
       border: 1px solid var(--border-color) !important;
-      border-radius: 14px !important;
+      border-radius: 16px !important;
       margin-bottom: 14px;
       overflow: hidden;
       transition: all 0.25s ease;
     }
 
     .faq-accordion .accordion-item:hover {
-      border-color: rgba(99, 102, 241, 0.3) !important;
+      border-color: rgba(99, 102, 241, 0.35) !important;
     }
 
     .faq-accordion .accordion-button {
@@ -274,10 +392,12 @@
       font-size: 1.05rem;
       padding: 22px 24px;
       box-shadow: none !important;
+      transition: border 0.2s;
     }
 
     .faq-accordion .accordion-button:not(.collapsed) {
       color: #6366F1 !important;
+      border-left: 4px solid #6366F1;
     }
 
     .faq-accordion .accordion-body {
@@ -291,11 +411,11 @@
 
     /* Final CTA Card */
     .cta-banner-card {
-      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(99, 102, 241, 0.12) 100%);
+      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(99, 102, 241, 0.15) 100%);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(99, 102, 241, 0.35);
-      border-radius: 24px;
-      box-shadow: var(--shadow-md), 0 0 35px rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      border-radius: 26px;
+      box-shadow: var(--shadow-md), 0 0 45px rgba(99, 102, 241, 0.2);
       position: relative;
       overflow: hidden;
     }
@@ -313,11 +433,13 @@
       justify-content: center;
       cursor: pointer;
       transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
     }
 
     .btn-theme-toggle:hover {
       background: var(--bg-card-hover);
       border-color: rgba(99, 102, 241, 0.3);
+      transform: scale(1.05);
     }
 
     /* Animations */
@@ -337,8 +459,14 @@
 </head>
 <body>
 
-  <!-- Background Overlays -->
-  <div class="saas-bg-overlay"></div>
+  <!-- Background Overlays & Particles -->
+  <div class="saas-bg-overlay">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+    <div class="ambient-orb orb-4"></div>
+  </div>
+  <div class="particles-container" id="particlesContainer"></div>
   <div class="saas-grid-pattern"></div>
 
   <!-- Landing Top Navbar -->
@@ -388,7 +516,7 @@
 
         <h1 class="hero-title mb-4">
           Land Your Dream Tech Job with <br class="d-none d-md-inline">
-          <span style="background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">AI Career Intelligence</span>
+          <span style="background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 50%, #EC4899 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">AI Career Intelligence</span>
         </h1>
 
         <p class="hero-subtitle mx-auto mb-4">
@@ -420,8 +548,8 @@
               <span class="mockup-dot" style="background: #FFBD2E;"></span>
               <span class="mockup-dot" style="background: #27C93F;"></span>
             </div>
-            <span class="badge rounded-pill px-3 py-2" style="background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 700;"><i class="bi bi-check-circle-fill me-1"></i> ATS Score: 94/100</span>
-            <span class="badge rounded-pill px-3 py-2" style="background: rgba(6, 182, 212, 0.15); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3); font-weight: 700;"><i class="bi bi-bullseye me-1"></i> 88% Match to Senior Full Stack Role</span>
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(16, 185, 129, 0.18); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.35); font-weight: 700; box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);"><i class="bi bi-check-circle-fill me-1"></i> ATS Score: 94/100</span>
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(6, 182, 212, 0.18); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.35); font-weight: 700;"><i class="bi bi-bullseye me-1"></i> 88% Match to Senior Full Stack Role</span>
           </div>
           <span class="text-secondary small d-none d-sm-inline"><i class="bi bi-shield-check me-1" style="color: #6366F1;"></i> Real-time AI Analysis</span>
         </div>
@@ -438,13 +566,13 @@
               <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> REST API</span>
             </div>
             <h6 class="fw-bold mb-2 text-warning" style="font-size: 0.9rem;"><i class="bi bi-magic me-1"></i> AI STAR Bullet Suggestion:</h6>
-            <div class="p-3 rounded-3 small" style="background: var(--bg-input); border-left: 3px solid #6366F1; color: var(--text-secondary); line-height: 1.6;">
+            <div class="p-3 rounded-3 small" style="background: var(--bg-input); border-left: 3px solid #6366F1; color: var(--text-secondary); line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
               "Architected and deployed microservice backend with Django & Redis, reducing API latency by 42% for 50k+ monthly active users."
             </div>
           </div>
 
           <div class="col-md-5 d-flex flex-column justify-content-center align-items-center text-center p-3 rounded-3" style="background: var(--bg-input); border: 1px solid var(--border-color);">
-            <div class="score-circle mb-2" style="width: 96px; height: 96px; border-radius: 50%; background: conic-gradient(#10B981 94%, rgba(255,255,255,0.08) 0); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);">
+            <div class="score-circle mb-2" style="width: 96px; height: 96px; border-radius: 50%; background: conic-gradient(#10B981 94%, rgba(255,255,255,0.08) 0); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 24px rgba(16, 185, 129, 0.35);">
               <div style="width: 78px; height: 78px; border-radius: 50%; background: var(--bg-card); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem; color: #10B981;">94</div>
             </div>
             <div class="fw-bold" style="color: var(--text-primary);">Placement Readiness</div>
@@ -467,7 +595,7 @@
         <!-- Feature 1 -->
         <div class="col-md-6 col-lg-4">
           <div class="feature-card h-100">
-            <div class="feature-icon-box" style="background: rgba(99, 102, 241, 0.15); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.3);">
+            <div class="feature-icon-box" style="background: rgba(99, 102, 241, 0.18); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.35);">
               <i class="bi bi-file-earmark-code-fill"></i>
             </div>
             <h5 class="fw-bold mb-2" style="color: var(--text-primary);">ATS Resume Analyzer</h5>
@@ -478,7 +606,7 @@
         <!-- Feature 2 -->
         <div class="col-md-6 col-lg-4">
           <div class="feature-card h-100">
-            <div class="feature-icon-box" style="background: rgba(6, 182, 212, 0.15); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3);">
+            <div class="feature-icon-box" style="background: rgba(6, 182, 212, 0.18); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.35);">
               <i class="bi bi-bullseye"></i>
             </div>
             <h5 class="fw-bold mb-2" style="color: var(--text-primary);">TF-IDF Job Description Matcher</h5>
@@ -489,7 +617,7 @@
         <!-- Feature 3 -->
         <div class="col-md-6 col-lg-4">
           <div class="feature-card h-100">
-            <div class="feature-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3);">
+            <div class="feature-icon-box" style="background: rgba(245, 158, 11, 0.18); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.35);">
               <i class="bi bi-magic"></i>
             </div>
             <h5 class="fw-bold mb-2" style="color: var(--text-primary);">AI STAR Bullet Rewriter</h5>
@@ -500,7 +628,7 @@
         <!-- Feature 4 -->
         <div class="col-md-6 col-lg-4">
           <div class="feature-card h-100">
-            <div class="feature-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3);">
+            <div class="feature-icon-box" style="background: rgba(16, 185, 129, 0.18); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.35);">
               <i class="bi bi-chat-left-quote-fill"></i>
             </div>
             <h5 class="fw-bold mb-2" style="color: var(--text-primary);">AI Technical Interview Coach</h5>
@@ -511,7 +639,7 @@
         <!-- Feature 5 -->
         <div class="col-md-6 col-lg-4">
           <div class="feature-card h-100">
-            <div class="feature-icon-box" style="background: rgba(139, 92, 246, 0.15); color: #8B5CF6; border: 1px solid rgba(139, 92, 246, 0.3);">
+            <div class="feature-icon-box" style="background: rgba(139, 92, 246, 0.18); color: #8B5CF6; border: 1px solid rgba(139, 92, 246, 0.35);">
               <i class="bi bi-radar"></i>
             </div>
             <h5 class="fw-bold mb-2" style="color: var(--text-primary);">Placement Readiness Radar</h5>
@@ -522,7 +650,7 @@
         <!-- Feature 6 -->
         <div class="col-md-6 col-lg-4">
           <div class="feature-card h-100">
-            <div class="feature-icon-box" style="background: rgba(244, 63, 94, 0.15); color: #F43F5E; border: 1px solid rgba(244, 63, 94, 0.3);">
+            <div class="feature-icon-box" style="background: rgba(244, 63, 94, 0.18); color: #F43F5E; border: 1px solid rgba(244, 63, 94, 0.35);">
               <i class="bi bi-kanban-fill"></i>
             </div>
             <h5 class="fw-bold mb-2" style="color: var(--text-primary);">Job Application Kanban Tracker</h5>
@@ -637,6 +765,22 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Floating particles generator
+        const container = document.getElementById('particlesContainer');
+        if (container) {
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                particle.style.animationDelay = `${Math.random() * 6}s`;
+                container.appendChild(particle);
+            }
+        }
+
         const savedTheme = localStorage.getItem('resumeiq_theme');
         if (savedTheme) {
             document.documentElement.setAttribute('data-theme', savedTheme);
