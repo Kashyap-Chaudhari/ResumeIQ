@@ -15,66 +15,93 @@ except ImportError:
 
 @login_required
 def interview_prep_view(request):
+    user = request.user
+    api_key = user.userprofile.gemini_api_key if hasattr(user, 'userprofile') else None
+    recent_sessions = InterviewSession.objects.filter(user=user).order_by('-created_at')[:10]
+    
+    session_id = request.GET.get('session_id')
+    current_session = None
+    if session_id:
+        current_session = InterviewSession.objects.filter(id=session_id, user=user).first()
+    if not current_session:
+        current_session = recent_sessions.first()
+
     if request.method == 'POST':
-        # Either start a session or submit an answer
         action = request.POST.get('action')
         
-        if action == 'start':
-            target_role = request.POST.get('target_role')
-            session = InterviewSession.objects.create(
-                user=request.user,
-                target_role=target_role
-            )
+        if action in ['start', 'start_session']:
+            target_role = request.POST.get('target_role', 'Software Engineer')
+            company_name = request.POST.get('company_name', '')
             
-            
-            api_key = request.user.userprofile.gemini_api_key if hasattr(request.user, 'userprofile') else None
+            # Fetch skills from latest resume if available
+            latest_resume = user.resumes.first()
+            skills = latest_resume.parsed_skills if latest_resume and latest_resume.parsed_skills else None
             
             try:
-                questions_json = generate_interview_questions(target_role, api_key=api_key)
-                questions_data = json.loads(questions_json)
-                session.questions_json = questions_data.get('questions', [])
-                session.save()
-                return render(request, 'coaching/interview.html', {'session': session, 'current_q': 0})
+                questions_list = generate_interview_questions(
+                    target_role=target_role, 
+                    company_name=company_name, 
+                    skills=skills, 
+                    api_key=api_key
+                )
+                
+                session = InterviewSession.objects.create(
+                    user=user,
+                    target_role=target_role,
+                    company_name=company_name,
+                    questions_data=questions_list
+                )
+                messages.success(request, f"Generated {len(questions_list)} interview questions for {target_role}!")
+                return redirect(f"{request.path}?session_id={session.id}")
             except Exception as e:
                 messages.error(request, f"Failed to generate questions: {str(e)}")
                 return redirect('coaching:interview')
                 
         elif action == 'submit_answer':
             session_id = request.POST.get('session_id')
-            q_index = int(request.POST.get('q_index', 0))
-            answer = request.POST.get('answer')
+            question_id = request.POST.get('question_id')
+            user_answer = request.POST.get('user_answer', '')
             
-            session = get_object_or_404(InterviewSession, id=session_id, user=request.user)
+            session = get_object_or_404(InterviewSession, id=session_id, user=user)
+            questions_data = session.questions_data or []
             
-            
-            api_key = request.user.userprofile.gemini_api_key if hasattr(request.user, 'userprofile') else None
-            
-            try:
-                question_text = session.questions_json[q_index]['question']
-                score, feedback_text = evaluate_interview_answer(question_text, answer, api_key=api_key)
-                feedback = f"Score: {score}/100. {feedback_text}"
-                
-                # Update feedback
-                if not session.feedback_json:
-                    session.feedback_json = []
-                session.feedback_json.append({
-                    'question': question_text,
-                    'answer': answer,
-                    'feedback': feedback
-                })
-                session.save()
-                
-                next_q = q_index + 1
-                if next_q < len(session.questions_json):
-                    return render(request, 'coaching/interview.html', {'session': session, 'current_q': next_q, 'last_feedback': feedback})
-                else:
-                    session.is_completed = True
+            target_q = None
+            for q in questions_data:
+                if str(q.get('id')) == str(question_id):
+                    target_q = q
+                    break
+                    
+            if target_q:
+                try:
+                    q_text = target_q.get('question', '')
+                    sample_ans = target_q.get('sample_answer', '')
+                    eval_result = evaluate_interview_answer(q_text, user_answer, sample_answer=sample_ans, api_key=api_key)
+                    
+                    if isinstance(eval_result, tuple):
+                        score, feedback_text = eval_result
+                    elif isinstance(eval_result, dict):
+                        score = eval_result.get('technical_accuracy', eval_result.get('confidence_score', 80))
+                        feedback_text = eval_result.get('overall_feedback', eval_result.get('suggestions_for_improvement', 'Good answer.'))
+                    else:
+                        score, feedback_text = 80, str(eval_result)
+                        
+                    target_q['user_answer'] = user_answer
+                    target_q['score'] = score
+                    target_q['feedback'] = feedback_text
+                    
+                    session.questions_data = questions_data
                     session.save()
-                    return render(request, 'coaching/interview.html', {'session': session, 'completed': True})
-            except Exception as e:
-                messages.error(request, f"Error evaluating answer: {str(e)}")
-                
-    return render(request, 'coaching/interview.html')
+                    messages.success(request, f"Answer scored: {score}/100!")
+                except Exception as e:
+                    messages.error(request, f"Error evaluating answer: {str(e)}")
+                    
+            return redirect(f"{request.path}?session_id={session.id}")
+
+    context = {
+        'current_session': current_session,
+        'recent_sessions': recent_sessions
+    }
+    return render(request, 'coaching/interview.html', context)
 
 @login_required
 def readiness_view(request):

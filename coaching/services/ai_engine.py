@@ -86,15 +86,20 @@ Return a JSON array of string rewritten bullet points strictly in valid JSON for
 # ================================
 def generate_interview_questions(target_role="Software Engineer", company_name="", skills=None, api_key=None):
     model = get_gemini_model(api_key)
-    skills_str = ", ".join(skills) if skills else "Python, System Design, REST APIs, SQL"
+    skills_str = ", ".join(skills) if skills else "Python, System Design, REST APIs, SQL, Data Structures"
 
     if model:
         try:
-            prompt = f"""You are a Senior Tech Interviewer at {company_name or 'a top tech company'}.
-Generate 4 realistic interview questions for a candidate applying for {target_role}.
-Skills required: {skills_str}.
-Return a JSON array of objects with keys: "id", "question", "category" (Technical, System Design, Behavioral), "sample_answer".
-Example output format:
+            prompt = f"""You are a Lead Staff Tech Interviewer at {company_name or 'a top tier technology company'}.
+Generate exactly 20 realistic, highly specific technical, coding, system architecture, and behavioral interview questions for a candidate applying for the role of {target_role}.
+Skills & Tech Stack context: {skills_str}.
+
+Requirements:
+- Output MUST be a valid JSON array of 20 distinct objects.
+- Each object MUST contain: "id" (1 to 20), "question", "category" (Technical, System Design, Coding, or Behavioral), "sample_answer" (a clear, highly technical 2-4 sentence model answer).
+- Questions MUST be strictly relevant to {target_role} with zero generic filler.
+
+Return ONLY the raw JSON array in this exact format:
 [
   {{"id": 1, "question": "...", "category": "Technical", "sample_answer": "..."}}
 ]
@@ -104,37 +109,140 @@ Example output format:
             start = clean_text.find('[')
             end = clean_text.rfind(']') + 1
             if start != -1 and end != -1:
-                return json.loads(clean_text[start:end])
+                parsed = json.loads(clean_text[start:end])
+                if isinstance(parsed, list) and len(parsed) >= 5:
+                    return parsed
         except Exception:
             pass
 
-    # Heuristic Offline Fallback Questions
-    return [
+    # Heuristic 20 Role-Specific Fallback Questions
+    role_lower = target_role.lower()
+    main_skill = skills[0] if skills else "SQL/Data Analysis" if "data" in role_lower or "analyst" in role_lower else "Python/Backend"
+
+    fallback = [
         {
             "id": 1,
-            "question": f"How do you design a scalable microservice architecture for a high-traffic {target_role} application?",
+            "question": f"Can you walk me through your technical approach to designing a production-grade data pipeline or architecture for {target_role}?",
             "category": "System Design",
-            "sample_answer": "Focus on database partitioning/sharding, caching layers (Redis), asynchronous task queues (Celery/Kafka), and API Gateway rate limiting."
+            "sample_answer": f"I focus on modular component decoupling, idempotent data processing steps, automated retry queues (Celery/Kafka), and robust schema validation using tools like {main_skill}."
         },
         {
             "id": 2,
-            "question": f"Can you explain how you optimized slow database queries in your past work using {skills[0] if skills else 'SQL'}?",
+            "question": f"How do you identify and resolve performance bottlenecks in slow queries or backend services when working with {main_skill}?",
             "category": "Technical",
-            "sample_answer": "I used EXPLAIN ANALYZE to identify full table scans, added composite B-tree indexes, optimized JOIN operations, and cached frequent query outputs in Redis."
+            "sample_answer": "I start by profiling using EXPLAIN ANALYZE or memory profilers to locate unindexed full table scans or heavy memory allocations, then implement indexing, query refactoring, or caching."
         },
         {
             "id": 3,
-            "question": "Describe a time when you faced a severe production bug under tight deadlines. How did you diagnose and fix it?",
+            "question": "Describe a time when you disagreed with a senior engineer or product manager on a technical trade-off. How did you handle it?",
             "category": "Behavioral",
-            "sample_answer": "Use STAR method: Situation, Task, Action (inspecting log traces, rolling back broken commit, applying regression test), Result (resolved in 20 mins with post-mortem documentation)."
+            "sample_answer": "I used data and benchmark prototypes to demonstrate trade-offs objectively, listened to business urgency, and agreed on a staged MVP rollout with clear tech-debt cleanup milestones."
         },
         {
             "id": 4,
-            "question": f"What are the best practices for securing RESTful APIs in modern web applications?",
+            "question": f"What security best practices do you enforce in API endpoints and database access layers for a {target_role} workflow?",
             "category": "Technical",
-            "sample_answer": "JWT/OAuth2 authentication, HTTPS encryption, CSRF tokens, strict CORS policies, input validation/sanitization, and rate limiting per IP."
+            "sample_answer": "Enforce HTTPS/TLS, parameterized queries to eliminate SQL injection, JWT/OAuth2 token rotation, strict CORS settings, rate limiting, and RBAC permission checks."
+        },
+        {
+            "id": 5,
+            "question": f"How do you handle dataset anomalies, missing values, or corrupt incoming payloads in {target_role} tasks?",
+            "category": "Technical",
+            "sample_answer": "I implement input validation schemas (Pydantic/Cerberus), log anomalies to dead-letter queues for auditing, and apply domain-appropriate imputation or strict rejection mechanisms."
+        },
+        {
+            "id": 6,
+            "question": "Tell me about a high-stress production outage you experienced. What steps did you take to restore service and prevent recurrence?",
+            "category": "Behavioral",
+            "sample_answer": "I followed incident response protocols: stabilized system with fast rollback/traffic throttling, communicated status to stakeholders, performed root-cause analysis, and added automated regression tests."
+        },
+        {
+            "id": 7,
+            "question": f"Explain the difference between asynchronous processing and multi-threading/multi-processing in {main_skill}.",
+            "category": "Technical",
+            "sample_answer": "Async handles I/O-bound tasks using an event loop on a single thread. Multi-threading is suited for concurrent I/O with shared memory. Multi-processing bypasses GIL constraints for CPU-heavy tasks."
+        },
+        {
+            "id": 8,
+            "question": f"How do you structure automated testing (Unit, Integration, E2E) for a complex {target_role} codebase?",
+            "category": "Technical",
+            "sample_answer": "I follow the testing pyramid: isolated unit tests with mocks for fast feedback, integration tests against containerized DBs (Testcontainers), and key E2E sanity checks in CI/CD pipelines."
+        },
+        {
+            "id": 9,
+            "question": "Give an example of how you refactored a legacy codebase to improve maintainability without breaking existing functionality.",
+            "category": "Technical",
+            "sample_answer": "I established a suite of safety regression tests first, applied solid design patterns (Factory/Repository), split monolithic files into modular subpackages, and deployed incrementally."
+        },
+        {
+            "id": 10,
+            "question": f"What caching strategies (e.g. Cache-Aside, Write-Through, TTL) do you choose for high-throughput {target_role} applications?",
+            "category": "System Design",
+            "sample_answer": "Cache-Aside with Redis is ideal for read-heavy workloads with strict TTL expiration and lazy loading. For write-heavy analytics, Write-Behind buffers database writes."
+        },
+        {
+            "id": 11,
+            "question": "Describe a project where you had to quickly learn a technology or framework you had never used before.",
+            "category": "Behavioral",
+            "sample_answer": "I reviewed official documentation, built a small proof-of-concept prototype, analyzed open-source reference implementations, and sought code review feedback to ensure idiomatic code."
+        },
+        {
+            "id": 12,
+            "question": f"How do you optimize SQL window functions or aggregations when processing large scale datasets as a {target_role}?",
+            "category": "Technical",
+            "sample_answer": "I leverage PARTITION BY with indexed ordering columns, avoid unnecessary subqueries, partition massive tables by date, and compute incremental materialized views."
+        },
+        {
+            "id": 13,
+            "question": f"What principles do you follow to ensure high availability, fault tolerance, and zero-downtime deployments for {target_role} systems?",
+            "category": "System Design",
+            "sample_answer": "Blue-Green or Canary deployments, stateless application containers behind load balancers, database read-replicas, graceful shutdown handlers, and health check probes."
+        },
+        {
+            "id": 14,
+            "question": "How do you prioritize competing feature requests and bug fixes when resources are constrained?",
+            "category": "Behavioral",
+            "sample_answer": "I evaluate impact vs effort using an Eisenhower/ICE matrix, align with core business goals, address critical security/blocking bugs first, and communicate transparent roadmap trade-offs."
+        },
+        {
+            "id": 15,
+            "question": f"What is your approach to API versioning and backward compatibility when updating client-facing {target_role} services?",
+            "category": "Technical",
+            "sample_answer": "Use URL path versioning (/v1/, /v2/), deprecate old fields gracefully without breaking changes, add headers for deprecation warnings, and maintain sunset schedules."
+        },
+        {
+            "id": 16,
+            "question": f"Explain memory management, garbage collection, or memory leak detection techniques in {main_skill}.",
+            "category": "Technical",
+            "sample_answer": "I monitor heap size, use memory profilers (tracemalloc/valgrind) to spot uncollected circular references or unclosed file/connection handles, and enforce context managers."
+        },
+        {
+            "id": 17,
+            "question": f"How do you implement centralized logging, metrics monitoring, and alerting for a {target_role} environment?",
+            "category": "System Design",
+            "sample_answer": "Collect structured JSON logs via Prometheus/Grafana or ELK stack, attach correlation IDs across microservices, and define actionable alert thresholds for error rates and latency p99."
+        },
+        {
+            "id": 18,
+            "question": "Tell me about a time you mentored a team member or conducted code reviews that improved engineering standards.",
+            "category": "Behavioral",
+            "sample_answer": "I provided constructive, actionable code review comments focusing on architecture rather than style, created shared team style guides, and paired on complex debugging sessions."
+        },
+        {
+            "id": 19,
+            "question": f"How do you design database schemas (normalization vs denormalization) for relational vs document databases in {target_role} projects?",
+            "category": "Technical",
+            "sample_answer": "I normalize to 3NF for OLTP system transactional integrity to prevent anomaly updates, and denormalize into star/snowflake schemas or document stores for analytical OLAP speed."
+        },
+        {
+            "id": 20,
+            "question": "What is the most technically challenging problem you have solved in your career, and what made your solution effective?",
+            "category": "Technical",
+            "sample_answer": "I identified the root bottleneck through empirical metrics, designed a clean decoupled architecture, implemented automated benchmarks to verify a 5x performance boost, and documented the design."
         }
     ]
+
+    return fallback
 
 def evaluate_interview_answer(question_text, user_answer, sample_answer="", api_key=None):
     model = get_gemini_model(api_key)
