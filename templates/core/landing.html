@@ -17,113 +17,333 @@
 
   <!-- Custom SaaS Styles -->
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  
   <style>
+    /* Premium SaaS Core Styles */
+    html, body {
+      background-color: #0B1020 !important;
+      color: #F8FAFC;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* Ambient Background Orbs & Grid */
+    .saas-bg-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 100% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 0% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+    }
+
+    .saas-grid-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+      opacity: 0.8;
+    }
+
+    /* Top Navigation Bar */
     .landing-nav {
-      background: rgba(9, 13, 22, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border-color);
+      background: rgba(11, 16, 32, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       position: sticky;
       top: 0;
       z-index: 1000;
+      transition: all 0.3s ease;
     }
-    .hero-section {
-      padding: 90px 0 70px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-glow {
-      position: absolute;
-      top: -100px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(6, 182, 212, 0.05) 50%, transparent 70%);
-      filter: blur(60px);
-      pointer-events: none;
-    }
-    .feature-icon-box {
-      width: 56px;
-      height: 56px;
-      border-radius: var(--radius-md);
+
+    .brand-logo-box {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.2) 100%);
+      border: 1px solid rgba(129, 140, 248, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
-      margin-bottom: 18px;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
     }
-    .faq-accordion .accordion-item {
-      background: var(--bg-card) !important;
-      border: 1px solid var(--border-color) !important;
-      border-radius: var(--radius-md) !important;
-      margin-bottom: 12px;
+
+    .brand-logo-box i {
+      font-size: 20px;
+      color: #818CF8;
+      filter: drop-shadow(0 0 6px rgba(129, 140, 248, 0.6));
+    }
+
+    .nav-link-custom {
+      color: #94A3B8;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-link-custom:hover {
+      color: #F8FAFC;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      padding: 100px 0 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(99, 102, 241, 0.12);
+      color: #A5B4FC;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15);
+    }
+
+    .hero-title {
+      color: #F8FAFC;
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+    }
+
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+    }
+
+    .hero-subtitle {
+      color: #94A3B8;
+      max-width: 740px;
+      font-size: 1.15rem;
+      line-height: 1.6;
+    }
+
+    /* Buttons */
+    .btn-hero-primary {
+      background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+      color: #FFFFFF;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px -4px rgba(59, 130, 246, 0.5);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-hero-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px -4px rgba(139, 92, 246, 0.6);
+      color: #FFFFFF;
+      filter: brightness(1.08);
+    }
+
+    .btn-hero-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: #F8FAFC;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .btn-hero-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
+      transform: translateY(-2px);
+    }
+
+    /* Hero Mockup Preview Card */
+    .hero-mockup-card {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 20px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 40px rgba(99, 102, 241, 0.2);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .mockup-header-bar {
+      background: rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 20px;
+    }
+
+    .mockup-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* Feature Cards */
+    .feature-card {
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 32px 28px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
       overflow: hidden;
     }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.15);
+    }
+
+    .feature-icon-box {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    /* How It Works Steps */
+    .step-number-node {
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin: 0 auto 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* FAQ Accordion */
+    .faq-accordion .accordion-item {
+      background: rgba(15, 23, 42, 0.7) !important;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 14px !important;
+      margin-bottom: 14px;
+      overflow: hidden;
+      transition: all 0.25s ease;
+    }
+
+    .faq-accordion .accordion-item:hover {
+      border-color: rgba(99, 102, 241, 0.3) !important;
+    }
+
     .faq-accordion .accordion-button {
       background: transparent !important;
-      color: var(--text-primary) !important;
+      color: #F8FAFC !important;
       font-weight: 700;
       font-size: 1.05rem;
-      padding: 20px;
+      padding: 22px 24px;
       box-shadow: none !important;
     }
+
+    .faq-accordion .accordion-button:not(.collapsed) {
+      color: #818CF8 !important;
+    }
+
     .faq-accordion .accordion-body {
-      color: var(--text-secondary);
-      background: var(--bg-input);
-      padding: 20px;
-      font-size: 0.95rem;
-      line-height: 1.7;
+      color: #94A3B8;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 22px 24px;
+      font-size: 0.96rem;
+      line-height: 1.75;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Final CTA Card */
+    .cta-banner-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 27, 75, 0.8) 100%);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 24px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6), 0 0 40px rgba(99, 102, 241, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animations */
+    @keyframes floatSoft {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
     }
     
-    /* Subtle Animations */
-    @keyframes floatSoft {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-12px); }
-      100% { transform: translateY(0px); }
-    }
     .floating-element {
-      animation: floatSoft 6s ease-in-out infinite;
+      animation: floatSoft 5s ease-in-out infinite;
     }
-    .hover-lift {
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
-    }
-    .hover-lift:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.3), 0 0 15px rgba(99, 102, 241, 0.15) !important;
-    }
+
     .delay-1 { animation-delay: 0.1s; }
     .delay-2 { animation-delay: 0.2s; }
     .delay-3 { animation-delay: 0.3s; }
   </style>
 </head>
-<body class="bg-main text-white">
+<body>
+
+  <!-- Background Overlays -->
+  <div class="saas-bg-overlay"></div>
+  <div class="saas-grid-pattern"></div>
 
   <!-- Landing Top Navbar -->
   <nav class="landing-nav py-3">
-    <div class="container d-flex align-items-center justify-content-between">
+    <div class="container d-flex align-items-center justify-content-between position-relative z-1">
       <a href="{% url 'home' %}" class="d-flex align-items-center gap-2 text-decoration-none">
-        <div class="brand-logo-icon">
+        <div class="brand-logo-box">
           <i class="bi bi-rocket-takeoff-fill"></i>
         </div>
-        <span class="brand-title fs-4">ResumeIQ</span>
+        <span class="brand-title fs-4 fw-bold text-white" style="letter-spacing: -0.5px;">ResumeIQ</span>
       </a>
 
-      <div class="d-none d-md-flex align-items-center gap-4">
-        <a href="#hero" class="text-secondary text-decoration-none fw-semibold">Home</a>
-        <a href="#features" class="text-secondary text-decoration-none fw-semibold">Features</a>
-        <a href="#how-it-works" class="text-secondary text-decoration-none fw-semibold">How It Works</a>
-        <a href="#faq" class="text-secondary text-decoration-none fw-semibold">FAQ</a>
+      <div class="d-none d-md-flex align-items-center gap-2">
+        <a href="#hero" class="nav-link-custom">Home</a>
+        <a href="#features" class="nav-link-custom">Features</a>
+        <a href="#how-it-works" class="nav-link-custom">How It Works</a>
+        <a href="#faq" class="nav-link-custom">FAQ</a>
       </div>
 
       <div class="d-flex align-items-center gap-3">
         {% if user.is_authenticated %}
-          <a href="{% url 'dashboard' %}" class="btn btn-saas-primary">
+          <a href="{% url 'dashboard' %}" class="btn btn-hero-primary px-4 py-2">
             <i class="bi bi-grid-1x2-fill me-1"></i> Go to Dashboard
           </a>
         {% else %}
-          <a href="{% url 'login' %}" class="btn btn-saas-secondary">Sign In</a>
-          <a href="{% url 'register' %}" class="btn btn-saas-primary">Get Started Free</a>
+          <a href="{% url 'login' %}" class="btn btn-hero-secondary px-3.5 py-2">Sign In</a>
+          <a href="{% url 'register' %}" class="btn btn-hero-primary px-4 py-2">Get Started Free</a>
         {% endif %}
       </div>
     </div>
@@ -131,71 +351,77 @@
 
   <!-- Hero Section -->
   <section class="hero-section text-center" id="hero">
-    <div class="hero-glow"></div>
-    <div class="container position-relative">
+    <div class="container position-relative z-1">
       <div class="animate-fade-up">
-        <span class="badge bg-indigo mb-3 py-2 px-3 rounded-pill" style="background: rgba(99,102,241,0.15); color: var(--accent-indigo); border: 1px solid rgba(99,102,241,0.3);">
-          <i class="bi bi-stars text-warning me-1"></i> Next-Gen AI Career Placement Platform
-        </span>
+        <div class="mb-3">
+          <span class="hero-badge">
+            <i class="bi bi-stars text-warning me-1.5"></i> Next-Gen AI Career Placement Platform
+          </span>
+        </div>
 
-        <h1 class="display-3 fw-extrabold mb-4" style="letter-spacing: -1.5px; line-height: 1.15;">
+        <h1 class="hero-title mb-4">
           Land Your Dream Tech Job with <br class="d-none d-md-inline">
-          <span style="background: var(--gradient-brand); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">AI Career Intelligence</span>
+          <span style="background: linear-gradient(135deg, #60A5FA 0%, #C084FC 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">AI Career Intelligence</span>
         </h1>
 
-        <p class="lead text-secondary mx-auto mb-4" style="max-width: 720px; font-size: 1.15rem;">
+        <p class="hero-subtitle mx-auto mb-4">
           Instant ATS Resume Audit, Scikit-Learn TF-IDF Job Description Matcher, AI Mock Technical Interview Coach, Placement Readiness Radar, & Personalized Learning Roadmaps.
         </p>
       </div>
 
-      <div class="d-flex justify-content-center gap-3 mb-5 animate-fade-up delay-1">
+      <div class="d-flex flex-wrap justify-content-center gap-3 mb-5 animate-fade-up delay-1">
         {% if user.is_authenticated %}
-          <a href="{% url 'dashboard' %}" class="btn btn-saas-primary btn-lg px-4 py-3 fs-6">
+          <a href="{% url 'dashboard' %}" class="btn btn-hero-primary btn-lg px-4 py-3 fs-6">
             <i class="bi bi-rocket-takeoff-fill me-2"></i> Launch Dashboard
           </a>
         {% else %}
-          <a href="{% url 'register' %}" class="btn btn-saas-primary btn-lg px-4 py-3 fs-6">
+          <a href="{% url 'register' %}" class="btn btn-hero-primary btn-lg px-4 py-3 fs-6">
             <i class="bi bi-play-fill me-1"></i> Start Free Resume Audit
           </a>
-          <a href="{% url 'login' %}" class="btn btn-saas-secondary btn-lg px-4 py-3 fs-6">
+          <a href="{% url 'login' %}" class="btn btn-hero-secondary btn-lg px-4 py-3 fs-6">
             <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Account
           </a>
         {% endif %}
       </div>
 
       <!-- Hero Glass Mockup Card Preview -->
-      <div class="saas-card mx-auto p-4 shadow-lg text-start animate-fade-up delay-2 floating-element" style="max-width: 900px; background: rgba(20, 30, 51, 0.9); border-color: rgba(99,102,241,0.3);">
-        <div class="d-flex align-items-center justify-content-between pb-3 border-bottom border-secondary mb-4">
+      <div class="hero-mockup-card mx-auto p-4 text-start animate-fade-up delay-2 floating-element" style="max-width: 920px;">
+        <div class="mockup-header-bar d-flex align-items-center justify-content-between mb-4 rounded-3">
           <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-success rounded-pill px-3 py-2"><i class="bi bi-check-circle-fill me-1"></i> ATS Score: 94/100</span>
-            <span class="badge bg-cyan rounded-pill px-3 py-2" style="background: rgba(6,182,212,0.15); color: var(--accent-cyan);"><i class="bi bi-bullseye me-1"></i> 88% Match to Senior Full Stack Role</span>
+            <div class="d-flex gap-1.5 me-2">
+              <span class="mockup-dot" style="background: #FF5F56;"></span>
+              <span class="mockup-dot" style="background: #FFBD2E;"></span>
+              <span class="mockup-dot" style="background: #27C93F;"></span>
+            </div>
+            <span class="badge bg-success rounded-pill px-3 py-2" style="background: rgba(16, 185, 129, 0.2) !important; color: #34D399; border: 1px solid rgba(16, 185, 129, 0.3);"><i class="bi bi-check-circle-fill me-1"></i> ATS Score: 94/100</span>
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(6, 182, 212, 0.15); color: #38BDF8; border: 1px solid rgba(6, 182, 212, 0.3);"><i class="bi bi-bullseye me-1"></i> 88% Match to Senior Full Stack Role</span>
           </div>
-          <span class="text-muted small"><i class="bi bi-shield-check text-indigo me-1"></i> Real-time AI Analysis</span>
+          <span class="text-secondary small d-none d-sm-inline"><i class="bi bi-shield-check text-indigo me-1"></i> Real-time AI Analysis</span>
         </div>
 
         <div class="row g-4">
           <div class="col-md-7">
-            <h6 class="fw-bold mb-2 text-white">Extracted Key Skill Keywords:</h6>
-            <div class="mb-3">
-              <span class="skill-badge matched"><i class="bi bi-check2"></i> Python</span>
-              <span class="skill-badge matched"><i class="bi bi-check2"></i> Django</span>
-              <span class="skill-badge matched"><i class="bi bi-check2"></i> React</span>
-              <span class="skill-badge matched"><i class="bi bi-check2"></i> PostgreSQL</span>
-              <span class="skill-badge matched"><i class="bi bi-check2"></i> Docker</span>
-              <span class="skill-badge matched"><i class="bi bi-check2"></i> REST API</span>
+            <h6 class="fw-bold mb-2 text-white" style="font-size: 0.9rem;">Extracted Key Skill Keywords:</h6>
+            <div class="mb-3 d-flex flex-wrap gap-1.5">
+              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> Python</span>
+              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> Django</span>
+              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> React</span>
+              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> PostgreSQL</span>
+              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> Docker</span>
+              <span class="badge px-3 py-1.5 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 600;"><i class="bi bi-check2 me-1"></i> REST API</span>
             </div>
-            <h6 class="fw-bold mb-2 text-warning"><i class="bi bi-magic me-1"></i> AI STAR Bullet Suggestion:</h6>
-            <div class="p-3 rounded-3 small" style="background: var(--bg-input); border-left: 3px solid var(--accent-indigo);">
+            <h6 class="fw-bold mb-2 text-warning" style="font-size: 0.9rem;"><i class="bi bi-magic me-1"></i> AI STAR Bullet Suggestion:</h6>
+            <div class="p-3 rounded-3 small" style="background: rgba(0, 0, 0, 0.35); border-left: 3px solid #818CF8; color: #CBD5E1; line-height: 1.6;">
               "Architected and deployed microservice backend with Django & Redis, reducing API latency by 42% for 50k+ monthly active users."
             </div>
           </div>
 
-          <div class="col-md-5 d-flex flex-column justify-content-center align-items-center text-center p-3 rounded-3" style="background: var(--bg-input);">
-            <div class="score-circle mb-2" style="width: 100px; height: 100px; border-radius: 50%; background: conic-gradient(var(--accent-emerald) 94%, rgba(255,255,255,0.08) 0); display: flex; align-items: center; justify-content: center;">
-              <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--bg-card); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem;" class="text-emerald">94</div>
+          <div class="col-md-5 d-flex flex-column justify-content-center align-items-center text-center p-3 rounded-3" style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.05);">
+            <div class="score-circle mb-2" style="width: 96px; height: 96px; border-radius: 50%; background: conic-gradient(#10B981 94%, rgba(255,255,255,0.08) 0); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);">
+              <div style="width: 78px; height: 78px; border-radius: 50%; background: #0F172A; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem; color: #34D399;">94</div>
             </div>
             <div class="fw-bold text-white">Placement Readiness</div>
-            <small class="text-muted">High Candidate Match</small>
+            <small class="text-secondary opacity-75">High Candidate Match</small>
           </div>
         </div>
       </div>
@@ -203,77 +429,77 @@
   </section>
 
   <!-- Features Grid Section -->
-  <section class="py-5" id="features">
+  <section class="py-5 position-relative z-1" id="features">
     <div class="container py-4">
       <div class="text-center mb-5 animate-fade-up">
-        <h2 class="fw-bold display-5 mb-2">Everything You Need to Get Hired</h2>
-        <p class="text-secondary" style="max-width: 600px; margin: 0 auto;">A complete suite of AI-powered career tools designed for modern tech candidates.</p>
+        <h2 class="fw-extrabold display-5 mb-2 text-white" style="letter-spacing: -1px;">Everything You Need to Get Hired</h2>
+        <p class="text-secondary mx-auto" style="max-width: 620px; font-size: 1.05rem;">A complete suite of AI-powered career tools designed for modern tech candidates.</p>
       </div>
 
       <div class="row g-4">
         <!-- Feature 1 -->
         <div class="col-md-6 col-lg-4">
-          <div class="saas-card h-100 p-4 hover-lift">
-            <div class="feature-icon-box" style="background: rgba(99,102,241,0.15); color: var(--accent-indigo);">
+          <div class="feature-card h-100">
+            <div class="feature-icon-box" style="background: rgba(99, 102, 241, 0.15); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.3);">
               <i class="bi bi-file-earmark-code-fill"></i>
             </div>
             <h5 class="fw-bold text-white mb-2">ATS Resume Analyzer</h5>
-            <p class="text-secondary small mb-0">Parses PDF resumes using pdfplumber, scoring keyword density, quantitative metrics, action verbs, and structural completeness on a 0-100 scale.</p>
+            <p class="text-secondary small mb-0" style="line-height: 1.65;">Parses PDF resumes using pdfplumber, scoring keyword density, quantitative metrics, action verbs, and structural completeness on a 0-100 scale.</p>
           </div>
         </div>
 
         <!-- Feature 2 -->
         <div class="col-md-6 col-lg-4">
-          <div class="saas-card h-100 p-4 hover-lift">
-            <div class="feature-icon-box" style="background: rgba(6,182,212,0.15); color: var(--accent-cyan);">
+          <div class="feature-card h-100">
+            <div class="feature-icon-box" style="background: rgba(6, 182, 212, 0.15); color: #38BDF8; border: 1px solid rgba(6, 182, 212, 0.3);">
               <i class="bi bi-bullseye"></i>
             </div>
             <h5 class="fw-bold text-white mb-2">TF-IDF Job Description Matcher</h5>
-            <p class="text-secondary small mb-0">Uses scikit-learn cosine similarity algorithms to match your resume against target JDs and extract missing skills.</p>
+            <p class="text-secondary small mb-0" style="line-height: 1.65;">Uses scikit-learn cosine similarity algorithms to match your resume against target JDs and extract missing skills.</p>
           </div>
         </div>
 
         <!-- Feature 3 -->
         <div class="col-md-6 col-lg-4">
-          <div class="saas-card h-100 p-4 hover-lift">
-            <div class="feature-icon-box" style="background: rgba(245,158,11,0.15); color: var(--accent-amber);">
+          <div class="feature-card h-100">
+            <div class="feature-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.3);">
               <i class="bi bi-magic"></i>
             </div>
             <h5 class="fw-bold text-white mb-2">AI STAR Bullet Rewriter</h5>
-            <p class="text-secondary small mb-0">Transforms weak resume bullets into high-converting STAR method achievements with quantifiable metrics.</p>
+            <p class="text-secondary small mb-0" style="line-height: 1.65;">Transforms weak resume bullets into high-converting STAR method achievements with quantifiable metrics.</p>
           </div>
         </div>
 
         <!-- Feature 4 -->
         <div class="col-md-6 col-lg-4">
-          <div class="saas-card h-100 p-4 hover-lift">
-            <div class="feature-icon-box" style="background: rgba(16,185,129,0.15); color: var(--accent-emerald);">
+          <div class="feature-card h-100">
+            <div class="feature-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.3);">
               <i class="bi bi-chat-left-quote-fill"></i>
             </div>
             <h5 class="fw-bold text-white mb-2">AI Technical Interview Coach</h5>
-            <p class="text-secondary small mb-0">Generates custom technical, system design, and behavioral questions with real-time answer scoring and constructive feedback.</p>
+            <p class="text-secondary small mb-0" style="line-height: 1.65;">Generates custom technical, system design, and behavioral questions with real-time answer scoring and constructive feedback.</p>
           </div>
         </div>
 
         <!-- Feature 5 -->
         <div class="col-md-6 col-lg-4">
-          <div class="saas-card h-100 p-4 hover-lift">
-            <div class="feature-icon-box" style="background: rgba(139,92,246,0.15); color: var(--accent-violet);">
+          <div class="feature-card h-100">
+            <div class="feature-icon-box" style="background: rgba(139, 92, 246, 0.15); color: #C084FC; border: 1px solid rgba(139, 92, 246, 0.3);">
               <i class="bi bi-radar"></i>
             </div>
             <h5 class="fw-bold text-white mb-2">Placement Readiness Radar</h5>
-            <p class="text-secondary small mb-0">Evaluates candidate readiness across 5 dimensions using Chart.js radar visualization graphs.</p>
+            <p class="text-secondary small mb-0" style="line-height: 1.65;">Evaluates candidate readiness across 5 dimensions using Chart.js radar visualization graphs.</p>
           </div>
         </div>
 
         <!-- Feature 6 -->
         <div class="col-md-6 col-lg-4">
-          <div class="saas-card h-100 p-4 hover-lift">
-            <div class="feature-icon-box" style="background: rgba(244,63,94,0.15); color: var(--accent-rose);">
+          <div class="feature-card h-100">
+            <div class="feature-icon-box" style="background: rgba(244, 63, 94, 0.15); color: #FB7185; border: 1px solid rgba(244, 63, 94, 0.3);">
               <i class="bi bi-kanban-fill"></i>
             </div>
             <h5 class="fw-bold text-white mb-2">Job Application Kanban Tracker</h5>
-            <p class="text-secondary small mb-0">Track your job search across Saved, Applied, Interviewing, Offer, and Rejected pipeline stages.</p>
+            <p class="text-secondary small mb-0" style="line-height: 1.65;">Track your job search across Saved, Applied, Interviewing, Offer, and Rejected pipeline stages.</p>
           </div>
         </div>
       </div>
@@ -281,35 +507,35 @@
   </section>
 
   <!-- How It Works Section -->
-  <section class="py-5" id="how-it-works" style="background: rgba(15, 23, 42, 0.4);">
+  <section class="py-5 position-relative z-1" id="how-it-works">
     <div class="container py-4">
       <div class="text-center mb-5 animate-fade-up">
-        <h2 class="fw-bold display-5 mb-2">How ResumeIQ Works</h2>
-        <p class="text-secondary">3 simple steps to accelerate your hiring success.</p>
+        <h2 class="fw-extrabold display-5 mb-2 text-white" style="letter-spacing: -1px;">How ResumeIQ Works</h2>
+        <p class="text-secondary font-semibold" style="font-size: 1.05rem;">3 simple steps to accelerate your hiring success.</p>
       </div>
 
       <div class="row g-4 text-center">
         <div class="col-md-4 animate-fade-up delay-1">
-          <div class="p-4">
-            <div class="display-4 fw-extrabold text-indigo mb-3">01</div>
-            <h5 class="fw-bold mb-2">Upload Your PDF Resume</h5>
-            <p class="text-secondary small">Our parser extracts technical skills, sections, and metrics to calculate your baseline ATS score.</p>
+          <div class="feature-card h-100 p-4">
+            <div class="step-number-node" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(99, 102, 241, 0.05) 100%); color: #818CF8; border: 1px solid rgba(99, 102, 241, 0.4);">01</div>
+            <h5 class="fw-bold text-white mb-2">Upload Your PDF Resume</h5>
+            <p class="text-secondary small mb-0" style="line-height: 1.65;">Our parser extracts technical skills, sections, and metrics to calculate your baseline ATS score.</p>
           </div>
         </div>
 
         <div class="col-md-4 animate-fade-up delay-2">
-          <div class="p-4">
-            <div class="display-4 fw-extrabold text-cyan mb-3">02</div>
-            <h5 class="fw-bold mb-2">Match Target Job Description</h5>
-            <p class="text-secondary small">Paste any job posting to calculate TF-IDF Cosine Similarity and identify exact missing skill gaps.</p>
+          <div class="feature-card h-100 p-4">
+            <div class="step-number-node" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(6, 182, 212, 0.05) 100%); color: #38BDF8; border: 1px solid rgba(6, 182, 212, 0.4);">02</div>
+            <h5 class="fw-bold text-white mb-2">Match Target Job Description</h5>
+            <p class="text-secondary small mb-0" style="line-height: 1.65;">Paste any job posting to calculate TF-IDF Cosine Similarity and identify exact missing skill gaps.</p>
           </div>
         </div>
 
         <div class="col-md-4 animate-fade-up delay-3">
-          <div class="p-4">
-            <div class="display-4 fw-extrabold text-emerald mb-3">03</div>
-            <h5 class="fw-bold mb-2">Practice & Get Placed</h5>
-            <p class="text-secondary small">Rewrite bullets with AI, complete mock interview sessions, follow your career roadmap, and get hired!</p>
+          <div class="feature-card h-100 p-4">
+            <div class="step-number-node" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.05) 100%); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4);">03</div>
+            <h5 class="fw-bold text-white mb-2">Practice & Get Placed</h5>
+            <p class="text-secondary small mb-0" style="line-height: 1.65;">Rewrite bullets with AI, complete mock interview sessions, follow your career roadmap, and get hired!</p>
           </div>
         </div>
       </div>
@@ -317,11 +543,11 @@
   </section>
 
   <!-- FAQ Section -->
-  <section class="py-5" id="faq">
-    <div class="container py-4" style="max-width: 800px;">
+  <section class="py-5 position-relative z-1" id="faq">
+    <div class="container py-4" style="max-width: 840px;">
       <div class="text-center mb-5 animate-fade-up">
-        <h2 class="fw-bold display-5 mb-2">Frequently Asked Questions</h2>
-        <p class="text-secondary">Everything you need to know about ResumeIQ.</p>
+        <h2 class="fw-extrabold display-5 mb-2 text-white" style="letter-spacing: -1px;">Frequently Asked Questions</h2>
+        <p class="text-secondary" style="font-size: 1.05rem;">Everything you need to know about ResumeIQ.</p>
       </div>
 
       <div class="accordion faq-accordion animate-fade-up delay-1" id="faqAccordion">
@@ -329,7 +555,7 @@
           <div class="accordion-item">
             <h2 class="accordion-header" id="heading{{ faq.id }}">
               <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ faq.id }}">
-                <i class="bi bi-question-circle-fill text-indigo me-3"></i> {{ faq.q }}
+                <i class="bi bi-question-circle-fill me-3" style="color: #818CF8;"></i> {{ faq.q }}
               </button>
             </h2>
             <div id="collapse{{ faq.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#faqAccordion">
@@ -344,25 +570,25 @@
   </section>
 
   <!-- Final CTA Banner -->
-  <section class="py-5 text-center">
+  <section class="py-5 text-center position-relative z-1">
     <div class="container py-4">
-      <div class="saas-card p-5 mx-auto animate-fade-up floating-element" style="max-width: 850px; background: linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(6,182,212,0.15) 100%); border-color: rgba(99,102,241,0.4);">
-        <h2 class="fw-bold display-5 mb-3">Ready to Land Your Next Role?</h2>
-        <p class="text-secondary mb-4 mx-auto" style="max-width: 600px;">Start auditing your resume and practicing interview questions with AI today — 100% free.</p>
+      <div class="cta-banner-card p-5 mx-auto animate-fade-up floating-element" style="max-width: 880px;">
+        <h2 class="fw-extrabold display-5 mb-3 text-white" style="letter-spacing: -1px;">Ready to Land Your Next Role?</h2>
+        <p class="text-secondary mb-4 mx-auto" style="max-width: 620px; font-size: 1.05rem; line-height: 1.6;">Start auditing your resume and practicing interview questions with AI today — 100% free.</p>
         {% if user.is_authenticated %}
-          <a href="{% url 'dashboard' %}" class="btn btn-saas-primary btn-lg px-5 py-3 fs-6">Go to My Dashboard</a>
+          <a href="{% url 'dashboard' %}" class="btn btn-hero-primary btn-lg px-5 py-3 fs-6">Go to My Dashboard</a>
         {% else %}
-          <a href="{% url 'register' %}" class="btn btn-saas-primary btn-lg px-5 py-3 fs-6">Create Free Account Now</a>
+          <a href="{% url 'register' %}" class="btn btn-hero-primary btn-lg px-5 py-3 fs-6">Create Free Account Now</a>
         {% endif %}
       </div>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="py-4 border-top border-secondary text-center text-muted small">
+  <footer class="py-4 border-top text-center text-secondary small position-relative z-1" style="border-color: rgba(255, 255, 255, 0.08) !important;">
     <div class="container">
-      <p class="mb-1">&copy; 2026 ResumeIQ. All rights reserved.</p>
-      <small>Powered by Django, Bootstrap 5, scikit-learn & Google Gemini AI</small>
+      <p class="mb-1 text-slate-300">&copy; 2026 ResumeIQ. All rights reserved.</p>
+      <small class="opacity-75">Powered by Django, Bootstrap 5, scikit-learn & Google Gemini AI</small>
     </div>
   </footer>
 
