@@ -25,18 +25,20 @@
             --hero-glow: rgba(99, 102, 241, 0.08);
             --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
             --input-bg: #F1F5F9;
+            --dot-color: rgba(15, 23, 42, 0.09);
         }
         
         [data-theme="dark"] {
             --pw-dark: #090D16; 
             --pw-text: #F8FAFC; 
-            --feature-bg: rgba(16, 22, 36, 0.75);
+            --feature-bg: rgba(16, 22, 36, 0.85);
             --feature-border: rgba(255, 255, 255, 0.08);
             --nav-link: #94A3B8;
             --nav-link-hover: #F8FAFC;
-            --hero-glow: rgba(99, 102, 241, 0.15);
+            --hero-glow: rgba(99, 102, 241, 0.18);
             --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
             --input-bg: rgba(15, 23, 42, 0.6);
+            --dot-color: rgba(255, 255, 255, 0.12);
         }
         
         html, body {
@@ -58,6 +60,19 @@
 
         .mono-font {
             font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Subtle Dotted Background Matrix Pattern */
+        .saas-dotted-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            background-image: radial-gradient(var(--dot-color) 1.2px, transparent 1.2px);
+            background-size: 24px 24px;
         }
 
         /* Top Spotlight Glow */
@@ -176,7 +191,8 @@
 </head>
 <body>
 
-    <!-- Top Ambient Spotlight Beam -->
+    <!-- Dotted Matrix Background & Ambient Spotlight -->
+    <div class="saas-dotted-pattern"></div>
     <div class="saas-top-spotlight"></div>
 
     <!-- Navbar -->

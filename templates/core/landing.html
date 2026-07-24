@@ -29,6 +29,19 @@
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
+    /* Subtle Dotted Background Matrix Pattern */
+    .saas-dotted-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      background-image: radial-gradient(var(--glass-hover-border, rgba(255, 255, 255, 0.12)) 1.2px, transparent 1.2px);
+      background-size: 24px 24px;
+    }
+
     /* Ambient Soft Spotlight */
     .saas-top-spotlight {
       position: absolute;
@@ -308,7 +321,8 @@
 </head>
 <body>
 
-  <!-- Top Ambient Spotlight -->
+  <!-- Dotted Background Matrix Pattern & Top Spotlight -->
+  <div class="saas-dotted-pattern"></div>
   <div class="saas-top-spotlight"></div>
 
   <!-- Landing Top Navbar -->
