@@ -16,142 +16,312 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <style>
         :root {
-            --pw-dark: #f0f4f8; /* softer, cool-toned light bg */
-            --pw-text: #0f172a; 
-            --feature-bg: rgba(255, 255, 255, 0.65); /* glassmorphism base */
-            --feature-border: rgba(99, 102, 241, 0.15); /* indigo-tinted border */
+            --pw-dark: #F8FAFC; 
+            --pw-text: #0F172A; 
+            --feature-bg: rgba(255, 255, 255, 0.85); 
+            --feature-border: rgba(99, 102, 241, 0.15); 
             --nav-link: #475569;
-            --nav-link-hover: #0f172a;
+            --nav-link-hover: #0F172A;
             --hero-glow: rgba(59, 130, 246, 0.15);
             --hero-glow-end: rgba(240, 244, 248, 0);
-            --card-shadow: rgba(99, 102, 241, 0.1);
+            --card-shadow: rgba(99, 102, 241, 0.08);
+            --blob-opacity: 0.18;
         }
         
         [data-theme="dark"] {
-            --pw-dark: #0f172a; 
-            --pw-text: #f1f5f9; 
+            --pw-dark: #0F172A; 
+            --pw-text: #F8FAFC; 
             --feature-bg: rgba(30, 41, 59, 0.7);
-            --feature-border: rgba(255, 255, 255, 0.05);
-            --nav-link: #94a3b8;
-            --nav-link-hover: #f8fafc;
-            --hero-glow: rgba(59, 130, 246, 0.15);
+            --feature-border: rgba(255, 255, 255, 0.08);
+            --nav-link: #94A3B8;
+            --nav-link-hover: #F8FAFC;
+            --hero-glow: rgba(59, 130, 246, 0.2);
             --hero-glow-end: rgba(15, 23, 42, 0);
             --card-shadow: rgba(0, 0, 0, 0.5);
+            --blob-opacity: 0.28;
         }
         
+        html, body {
+            background-color: var(--pw-dark) !important;
+            color: var(--pw-text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
         .text-dynamic { color: var(--pw-text) !important; }
         .bg-dynamic { 
             background-color: var(--feature-bg) !important; 
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
         .border-dynamic { border-color: var(--feature-border) !important; }
-        body {
-            background-color: var(--pw-dark);
-            color: var(--pw-text);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
 
         .mono-font {
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* Vibrant Gradients inspired by PrepWise */
-        .text-gradient {
-            background: linear-gradient(to right, #3b82f6, #06b6d4); /* blue-500 to cyan-500 */
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* Ambient Background Orbs & Particles */
+        .saas-bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
         }
-        .text-gradient-purple {
-            background: linear-gradient(to right, #a855f7, #8b5cf6); /* purple-500 to violet-500 */
+
+        .ambient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(110px);
+            opacity: var(--blob-opacity);
+            animation: orbPulse 9s ease-in-out infinite alternate;
+        }
+
+        .orb-1 {
+            width: 550px;
+            height: 550px;
+            background: radial-gradient(circle, #3B82F6 0%, #4F46E5 100%);
+            top: -150px;
+            left: -150px;
+        }
+
+        .orb-2 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, #A855F7 0%, #6366F1 100%);
+            top: 40%;
+            right: -180px;
+            animation-delay: -4s;
+        }
+
+        .orb-3 {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, #06B6D4 0%, #3B82F6 100%);
+            bottom: -120px;
+            left: -120px;
+        }
+
+        @keyframes orbPulse {
+            0% { transform: scale(1) translateY(0); opacity: 0.2; }
+            100% { transform: scale(1.15) translateY(-30px); opacity: 0.38; }
+        }
+
+        /* Dynamic Canvas Particles */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(99, 102, 241, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: floatParticle 14s linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            20% { opacity: 0.7; }
+            80% { opacity: 0.7; }
+            100% { transform: translateY(-10vh) scale(1.3); opacity: 0; }
+        }
+
+        .saas-grid-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            background-image: linear-gradient(var(--feature-border) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--feature-border) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.4;
+        }
+
+        /* Vibrant Gradients */
+        .text-gradient {
+            background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .bg-gradient-green { background: linear-gradient(135deg, #22c55e, #059669); } /* green-500 to emerald-600 */
-        .bg-gradient-blue { background: linear-gradient(135deg, #3b82f6, #06b6d4); }
-        .bg-gradient-purple { background: linear-gradient(135deg, #a855f7, #8b5cf6); }
-        .bg-gradient-amber { background: linear-gradient(135deg, #f59e0b, #f97316); } /* amber-500 to orange-500 */
+        .text-gradient-purple {
+            background: linear-gradient(135deg, #A855F7 0%, #8B5CF6 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .bg-gradient-green { background: linear-gradient(135deg, #22C55E 0%, #059669 100%); }
+        .bg-gradient-blue { background: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%); }
+        .bg-gradient-purple { background: linear-gradient(135deg, #A855F7 0%, #8B5CF6 100%); }
+        .bg-gradient-amber { background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%); }
 
         .btn-gradient {
-            background: linear-gradient(135deg, #6366f1, #a855f7);
+            background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%);
             color: white !important;
             border: none;
             font-weight: 600;
-            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px -4px rgba(99, 102, 241, 0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
-            opacity: 0.95;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px -4px rgba(168, 85, 247, 0.6);
+            opacity: 0.98;
         }
 
         .feature-card {
             background-color: var(--feature-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--feature-border);
-            border-radius: 16px;
-            padding: 2rem;
-            transition: all 0.3s ease;
+            border-radius: 20px;
+            padding: 2.2rem 2rem;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             height: 100%;
-            box-shadow: 0 4px 6px -1px var(--card-shadow), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        .feature-card:hover {
-            border-color: rgba(168, 85, 247, 0.4);
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px var(--card-shadow);
-        }
-
-        .icon-box {
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: white;
-            margin-bottom: 1.5rem;
-        }
-        
-        .hero-section {
-            padding: 120px 0 80px;
+            box-shadow: 0 4px 15px var(--card-shadow);
             position: relative;
             overflow: hidden;
         }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #3B82F6 0%, #A855F7 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(168, 85, 247, 0.45);
+            transform: translateY(-7px);
+            box-shadow: 0 20px 35px -5px var(--card-shadow), 0 0 25px rgba(99, 102, 241, 0.15);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .icon-box {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover .icon-box {
+            transform: scale(1.08);
+        }
         
-        .hero-section::before {
+        .hero-section {
+            padding: 110px 0 70px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge-pill {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 30px;
+            padding: 8px 20px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-badge-pill::after {
             content: '';
             position: absolute;
             top: -50%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, var(--hero-glow) 0%, var(--hero-glow-end) 70%);
-            z-index: -1;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+            transform: rotate(30deg);
+            animation: shimmer 4s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            30%, 100% { transform: translateX(100%) rotate(30deg); }
+        }
+
+        /* Mockup Card Preview */
+        .hero-mockup-preview {
+            background: var(--feature-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--feature-border);
+            border-radius: 20px;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4), 0 0 35px rgba(99, 102, 241, 0.15);
+            overflow: hidden;
         }
 
         .nav-link {
             color: var(--nav-link) !important;
-            font-weight: 500;
-            transition: color 0.2s;
+            font-weight: 600;
+            transition: all 0.2s;
         }
         .nav-link:hover { color: var(--nav-link-hover) !important; }
+
+        @keyframes floatSoft {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .floating-element {
+            animation: floatSoft 5s ease-in-out infinite;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Background Orbs & Magic Particles -->
+    <div class="saas-bg-overlay">
+        <div class="ambient-orb orb-1"></div>
+        <div class="ambient-orb orb-2"></div>
+        <div class="ambient-orb orb-3"></div>
+    </div>
+    <div class="particles-container" id="particlesContainer"></div>
+    <div class="saas-grid-pattern"></div>
+
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg py-3 bg-dynamic border-bottom border-dynamic sticky-top">
-        <div class="container">
+    <nav class="navbar navbar-expand-lg py-3 bg-dynamic border-bottom border-dynamic sticky-top" style="z-index: 1000;">
+        <div class="container position-relative z-1">
             <a class="navbar-brand fw-bold d-flex align-items-center gap-2 text-dynamic" href="#">
-                <i class="bi bi-rocket-takeoff-fill text-gradient fs-4"></i>
-                <span class="fs-5 tracking-tight">ResumeIQ</span>
+                <div class="d-flex align-items-center justify-content-center rounded-3 p-2" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%); border: 1px solid rgba(99, 102, 241, 0.3);">
+                    <i class="bi bi-rocket-takeoff-fill text-gradient fs-5"></i>
+                </div>
+                <span class="fs-4 tracking-tight fw-extrabold">ResumeIQ</span>
             </a>
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <i class="bi bi-list text-dynamic fs-1"></i>
@@ -166,7 +336,7 @@
                     
                     <li class="nav-item">
                         <button id="themeToggleBtn" class="btn btn-link nav-link px-2" title="Toggle Theme">
-                            <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                            <i class="bi bi-moon-stars-fill text-warning" id="themeIcon"></i>
                         </button>
                     </li>
                     
@@ -181,21 +351,21 @@
 
     <!-- Hero -->
     <section class="hero-section text-center">
-        <div class="container">
-            <div class="d-inline-block mb-4 px-3 py-1 rounded-pill" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2);">
-                <span class="text-info mono-font text-sm"><i class="bi bi-stars"></i> The Ultimate AI Career & Placement Coach</span>
+        <div class="container position-relative z-1">
+            <div class="hero-badge-pill mb-4">
+                <span class="text-info mono-font text-sm fw-bold"><i class="bi bi-stars me-1 text-warning"></i> The Ultimate AI Career & Placement Coach</span>
             </div>
             
-            <h1 class="display-3 fw-bold mb-4 tracking-tight" style="line-height: 1.1;">
+            <h1 class="display-3 fw-extrabold mb-4 tracking-tight" style="line-height: 1.15; letter-spacing: -1px;">
                 Optimize Your Resume.<br>
                 <span class="text-gradient">Land Your Dream Job.</span>
             </h1>
             
-            <p class="fs-5 text-secondary mx-auto mb-5" style="max-width: 650px;">
+            <p class="fs-5 text-secondary mx-auto mb-5" style="max-width: 660px; line-height: 1.65;">
                 Get real-time AI ATS scoring, rewrite your resume, practice realistic mock interviews, and generate personalized step-by-step career roadmaps.
             </p>
             
-            <div class="d-flex flex-wrap justify-content-center gap-3">
+            <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
                 <a href="{% url 'register' %}" class="btn btn-gradient px-5 py-3 rounded-pill fs-6 shadow-lg">
                     Analyze My Resume Free
                 </a>
@@ -204,14 +374,54 @@
                 </a>
             </div>
             
-            <div class="mt-5 pt-4 text-muted small">
-                <p>Trusted by students mastering <span class="text-dynamic">Software Engineering</span>, <span class="text-dynamic">Data Science</span>, and <span class="text-dynamic">Product Management</span></p>
+            <div class="mt-4 pt-2 text-muted small">
+                <p class="mb-0">Trusted by students mastering <span class="text-dynamic fw-bold">Software Engineering</span>, <span class="text-dynamic fw-bold">Data Science</span>, and <span class="text-dynamic fw-bold">Product Management</span></p>
+            </div>
+
+            <!-- Interactive Visual Preview Card (Magic Addition) -->
+            <div class="hero-mockup-preview mx-auto mt-5 p-4 text-start floating-element" style="max-width: 880px;">
+                <div class="d-flex align-items-center justify-content-between pb-3 border-bottom border-dynamic mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="d-flex gap-1.5 me-2">
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #FF5F56;"></span>
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #FFBD2E;"></span>
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #27C93F;"></span>
+                        </div>
+                        <span class="badge rounded-pill px-3 py-1.5" style="background: rgba(34, 197, 94, 0.15); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.3); font-weight: 700; box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);"><i class="bi bi-check-circle-fill me-1"></i> ATS Score: 94/100</span>
+                        <span class="badge rounded-pill px-3 py-1.5" style="background: rgba(6, 182, 212, 0.15); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3); font-weight: 700;"><i class="bi bi-bullseye me-1"></i> 88% Match to Role</span>
+                    </div>
+                    <span class="text-muted small d-none d-sm-inline"><i class="bi bi-shield-check text-primary me-1"></i> Real-time AI Analysis</span>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-7">
+                        <small class="fw-bold d-block mb-2 text-dynamic" style="font-size: 0.8rem; letter-spacing: 0.5px;">EXTRACTED KEY SKILLS:</small>
+                        <div class="d-flex flex-wrap gap-1.5 mb-3">
+                            <span class="badge px-2.5 py-1 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.25);">Python</span>
+                            <span class="badge px-2.5 py-1 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.25);">Django</span>
+                            <span class="badge px-2.5 py-1 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.25);">React</span>
+                            <span class="badge px-2.5 py-1 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.25);">PostgreSQL</span>
+                            <span class="badge px-2.5 py-1 rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #6366F1; border: 1px solid rgba(99, 102, 241, 0.25);">Docker</span>
+                        </div>
+                        <small class="fw-bold d-block mb-1 text-warning" style="font-size: 0.8rem;"><i class="bi bi-magic me-1"></i> AI STAR Bullet Rewrite:</small>
+                        <div class="p-2.5 rounded-3 small text-secondary" style="background: rgba(0,0,0,0.15); border-left: 3px solid #6366F1; font-size: 0.82rem; line-height: 1.5;">
+                            "Architected backend microservice with Django & Redis, reducing API latency by 42% for 50k+ active users."
+                        </div>
+                    </div>
+                    <div class="col-md-5 d-flex flex-column align-items-center justify-content-center text-center p-3 rounded-3" style="background: rgba(0,0,0,0.1); border: 1px solid var(--feature-border);">
+                        <div class="mb-2" style="width: 80px; height: 80px; border-radius: 50%; background: conic-gradient(#22C55E 94%, rgba(255,255,255,0.08) 0); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);">
+                            <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--pw-dark); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.3rem; color: #22C55E;">94</div>
+                        </div>
+                        <div class="fw-bold text-dynamic small">Placement Readiness</div>
+                        <small class="text-secondary opacity-75" style="font-size: 0.75rem;">High Candidate Match</small>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Features Grid -->
-    <section id="features" class="py-5 mt-4">
+    <section id="features" class="py-5 mt-4 position-relative z-1">
         <div class="container">
             <div class="text-center mb-5 pb-3">
                 <h2 class="fw-bold display-5 mb-3">Comprehensive <span class="text-gradient-purple">Placement Prep</span></h2>
@@ -263,12 +473,10 @@
         </div>
     </section>
 
-
-
     <!-- FAQ -->
-    <section id="faq" class="py-5 mb-5">
+    <section id="faq" class="py-5 mb-5 position-relative z-1">
         <div class="container text-center">
-            <h2 class="fw-bold mb-5">Got Questions?</h2>
+            <h2 class="fw-bold mb-5 display-5 text-dynamic">Got Questions?</h2>
             <div class="row justify-content-center text-start">
                 <div class="col-lg-8">
                     <div class="accordion accordion-flush" id="faqAccordion">
@@ -339,7 +547,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-4 text-center mt-5" style="border-top: 1px solid var(--feature-border);">
+    <footer class="py-4 text-center mt-5 position-relative z-1" style="border-top: 1px solid var(--feature-border);">
         <div class="container text-muted">
             <p class="mb-0"><small>&copy; 2026 ResumeIQ (Inspired by PrepWise). Ace your placements!</small></p>
         </div>
@@ -348,6 +556,22 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Generate dynamic background particles
+            const container = document.getElementById('particlesContainer');
+            if (container) {
+                for (let i = 0; i < 20; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    const size = Math.random() * 4 + 2;
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.left = `${Math.random() * 100}%`;
+                    particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                    particle.style.animationDelay = `${Math.random() * 6}s`;
+                    container.appendChild(particle);
+                }
+            }
+
             const themeToggleBtn = document.getElementById('themeToggleBtn');
             const themeIcon = document.getElementById('themeIcon');
             const htmlElement = document.documentElement;
@@ -357,20 +581,24 @@
             htmlElement.setAttribute('data-theme', savedTheme);
             updateIcon(savedTheme);
 
-            themeToggleBtn.addEventListener('click', () => {
-                const currentTheme = htmlElement.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                
-                htmlElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                updateIcon(newTheme);
-            });
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', () => {
+                    const currentTheme = htmlElement.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    htmlElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    updateIcon(newTheme);
+                });
+            }
 
             function updateIcon(theme) {
-                if (theme === 'dark') {
-                    themeIcon.className = 'bi bi-moon-stars-fill';
-                } else {
-                    themeIcon.className = 'bi bi-brightness-high-fill';
+                if (themeIcon) {
+                    if (theme === 'dark') {
+                        themeIcon.className = 'bi bi-moon-stars-fill text-warning';
+                    } else {
+                        themeIcon.className = 'bi bi-brightness-high-fill text-primary';
+                    }
                 }
             }
         });
@@ -378,7 +606,7 @@
     <style>
         /* Bootstrap Accordion Overrides */
         .accordion-button::after {
-            filter: invert(1);
+            filter: invert(0.5);
         }
     </style>
 </body>
