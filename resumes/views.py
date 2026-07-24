@@ -28,11 +28,10 @@ def resume_upload_view(request):
         )
         
         # Process the resume
-        file_path = resume.file.path
-        
         try:
-            # 1. Extract Text
-            raw_text = extract_text_from_pdf(file_path)
+            raw_text = extract_text_from_pdf(resume.file.path)
+        except Exception:
+            raw_text = extract_text_from_pdf(uploaded_file)
             
             # 2. Parse Sections
             sections = parse_resume_sections(raw_text)

@@ -171,7 +171,10 @@ else:
 
 MEDIA_URL = "/media/"
 
-MEDIA_ROOT = BASE_DIR / "media"
+if os.environ.get("VERCEL") or os.getenv("VERCEL_ENV") or not os.access(BASE_DIR, os.W_OK):
+    MEDIA_ROOT = Path("/tmp/media")
+else:
+    MEDIA_ROOT = BASE_DIR / "media"
 
 # ===========================
 # Default Primary Key

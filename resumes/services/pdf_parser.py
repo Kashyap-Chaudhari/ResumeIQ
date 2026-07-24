@@ -2,26 +2,28 @@ import re
 import pdfplumber
 import PyPDF2
 
-def extract_text_from_pdf(file_path):
+def extract_text_from_pdf(file_input):
     """
-    Extract text from PDF file using pdfplumber with PyPDF2 fallback.
+    Extract text from PDF file or file-like object using pdfplumber with PyPDF2 fallback.
     """
     extracted_text = ""
     try:
-        with pdfplumber.open(file_path) as pdf:
+        with pdfplumber.open(file_input) as pdf:
             for page in pdf.pages:
                 text = page.extract_text()
                 if text:
                     extracted_text += text + "\n"
-    except Exception as e:
+    except Exception:
         # Fallback to PyPDF2
         try:
-            reader = PyPDF2.PdfReader(file_path)
+            if hasattr(file_input, 'seek'):
+                file_input.seek(0)
+            reader = PyPDF2.PdfReader(file_input)
             for page in reader.pages:
                 text = page.extract_text()
                 if text:
                     extracted_text += text + "\n"
-        except Exception as py_err:
+        except Exception:
             extracted_text = ""
 
     return clean_text(extracted_text)
