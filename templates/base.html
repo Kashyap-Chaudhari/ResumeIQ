@@ -118,21 +118,17 @@
         <h1 class="page-title" style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">{% block header_title %}Dashboard{% endblock %}</h1>
       </div>
 
-      <div class="topbar-actions d-flex align-items-center gap-2 gap-md-3">
-        <span class="skill-badge d-none d-md-inline-flex" style="background: rgba(127, 124, 255, 0.15); color: #7F7CFF; border-color: rgba(127, 124, 255, 0.3);">
-          <i class="bi bi-briefcase-fill"></i> {{ user_profile.target_role|default:"Career Explorer" }}
-        </span>
-
-        <button class="btn btn-saas-secondary rounded-circle" style="width: 42px; height: 42px; padding: 0; display: flex; align-items: center; justify-content: center; border-color: rgba(255,255,255,0.1);" id="themeToggleBtn" title="Toggle Theme">
-          <i class="bi bi-sun-fill text-warning"></i>
+      <div class="topbar-actions d-flex align-items-center gap-3">
+        <button class="btn btn-saas-secondary rounded-circle" style="width: 44px; height: 44px; padding: 0; display: flex; align-items: center; justify-content: center; border-color: rgba(255,255,255,0.1);" id="themeToggleBtn" title="Toggle Theme">
+          <i class="bi bi-sun-fill text-warning fs-5"></i>
         </button>
 
         <div class="dropdown">
-          <a href="#" class="d-flex align-items-center gap-2" style="background: rgba(99, 102, 241, 0.15); border-radius: 30px; padding: 6px 16px 6px 6px; text-decoration: none; cursor: pointer; transition: all 0.2s;" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            <div class="d-flex align-items-center justify-content-center bg-white rounded-circle fw-bold shadow-sm" style="width: 32px; height: 32px; font-size: 14px; color: #6366F1;">
+          <a href="#" class="d-flex align-items-center gap-3" style="background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 35px; padding: 8px 24px 8px 8px; text-decoration: none; cursor: pointer; transition: all 0.2s;" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="d-flex align-items-center justify-content-center bg-white rounded-circle fw-bold shadow-sm" style="width: 38px; height: 38px; font-size: 16px; color: #6366F1;">
               {{ user.username.0|upper|default:"U" }}
             </div>
-            <span class="d-none d-md-block fw-bold" style="color: #4b5563; letter-spacing: -0.2px;">{{ user.username|default:"demo_student" }}</span>
+            <span class="d-none d-md-block fw-bold" style="color: var(--text-primary); font-size: 1rem; letter-spacing: -0.2px;">{{ user.username|default:"demo_student" }}</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-end border-0" aria-labelledby="profileDropdown" style="width: 260px; border-radius: 16px; padding: 8px; margin-top: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); font-family: 'Inter', sans-serif; background-color: var(--bg-card);">
             <li class="px-3 py-3 mb-2 d-flex align-items-center gap-3" style="border-bottom: 1px solid var(--border-color);">

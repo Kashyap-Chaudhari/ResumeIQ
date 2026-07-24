@@ -133,7 +133,7 @@
                 <h6 class="fw-bold mb-3" style="color: var(--text-primary);"><i class="bi bi-clock-history text-primary me-2"></i>Previous Sessions</h6>
                 <div class="list-group list-group-flush bg-transparent">
                     {% for rm in roadmaps %}
-                        <button type="button" onclick="loadSavedRoadmap({{ rm.id }})" class="list-group-item bg-transparent text-start border-0 py-2 px-0 d-flex justify-content-between align-items-center" style="border-bottom: 1px solid var(--border-color) !important;">
+                        <button type="button" onclick="loadSavedRoadmap('{{ rm.id }}')" class="list-group-item bg-transparent text-start border-0 py-2 px-0 d-flex justify-content-between align-items-center" style="border-bottom: 1px solid var(--border-color) !important;">
                             <div>
                                 <div class="fw-bold small" style="color: var(--text-primary);">{{ rm.target_role }}</div>
                                 <small class="text-secondary" style="font-size:0.75rem;">{{ rm.created_at|date:"M d, Y" }} • {{ rm.current_level }}</small>
