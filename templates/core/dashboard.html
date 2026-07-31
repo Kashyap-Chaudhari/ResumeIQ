@@ -184,16 +184,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('atsScoreChart').getContext('2d');
     const score = Number("{{ recent_resume.ats_score|default:0 }}");
     const remainder = 100 - score;
-    let color = '#85431E'; // Honey Garlic
-    if (score >= 80) color = '#D39858'; // Whiskey Sour
-    else if (score >= 60) color = '#EACEAA'; // Champagne
+    let color = '#ef4444'; // red
+    if (score >= 80) color = '#22c55e'; // green
+    else if (score >= 60) color = '#eab308'; // yellow
     
     new Chart(ctx, {
         type: 'doughnut',
         data: {
             datasets: [{
                 data: [score, remainder],
-                backgroundColor: [color, 'rgba(234, 206, 170, 0.12)'],
+                backgroundColor: [color, '#334155'],
                 borderWidth: 0,
                 cutout: '80%',
                 borderRadius: 20

@@ -184,9 +184,9 @@
 </div>
 
 <style>
-    /* Full Page SaaS Background */
+    /* Full Page Dark SaaS Background */
     html, body {
-        background-color: var(--bg-main) !important;
+        background-color: #0B1020 !important;
         min-height: 100vh;
         margin: 0;
         padding: 0;
@@ -195,7 +195,7 @@
     
     .auth-wrapper {
         min-height: 100vh;
-        background-color: var(--bg-main);
+        background-color: #0B1020;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -220,14 +220,14 @@
         position: absolute;
         border-radius: 50%;
         filter: blur(95px);
-        opacity: var(--blob-opacity, 0.25);
+        opacity: 0.25;
         animation: orbPulse 8s ease-in-out infinite alternate;
     }
 
     .orb-1 {
         width: 420px;
         height: 420px;
-        background: radial-gradient(circle, var(--accent) 0%, var(--primary) 100%);
+        background: radial-gradient(circle, #3B82F6 0%, #4F46E5 100%);
         top: -100px;
         left: -100px;
     }
@@ -235,7 +235,7 @@
     .orb-2 {
         width: 480px;
         height: 480px;
-        background: radial-gradient(circle, var(--secondary) 0%, var(--primary) 100%);
+        background: radial-gradient(circle, #8B5CF6 0%, #6366F1 100%);
         bottom: -150px;
         right: -100px;
         animation-delay: -4s;
@@ -244,7 +244,7 @@
     .orb-3 {
         width: 280px;
         height: 280px;
-        background: radial-gradient(circle, var(--accent) 0%, var(--primary) 100%);
+        background: radial-gradient(circle, #06B6D4 0%, #3B82F6 100%);
         top: 40%;
         left: 50%;
         transform: translate(-50%, -50%);
@@ -259,7 +259,7 @@
     /* Particles */
     .particle {
         position: absolute;
-        background: rgba(211, 152, 88, 0.25);
+        background: rgba(255, 255, 255, 0.25);
         border-radius: 50%;
         pointer-events: none;
         animation: floatParticle 12s linear infinite;
@@ -283,13 +283,13 @@
     /* Glassmorphism Card */
     .auth-glass-card {
         width: 100%;
-        background: var(--card) !important;
+        background: rgba(15, 23, 42, 0.8);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--border) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 18px;
         padding: 20px 24px 16px 24px;
-        box-shadow: var(--card-shadow) !important;
+        box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.15);
         position: relative;
         overflow: hidden;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -302,7 +302,7 @@
         transform: translateX(-50%);
         width: 240px;
         height: 100px;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+        background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
         filter: blur(45px);
         opacity: 0.35;
         pointer-events: none;
@@ -313,32 +313,32 @@
         width: 44px;
         height: 44px;
         border-radius: 14px;
-        background: var(--btn-primary-bg);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow-glow);
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.2) 100%);
+        border: 1px solid rgba(129, 140, 248, 0.4);
+        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3), inset 0 0 8px rgba(255, 255, 255, 0.15);
     }
 
     .logo-icon {
         font-size: 22px;
-        color: var(--btn-primary-text);
-        filter: drop-shadow(0 0 8px rgba(211, 152, 88, 0.4));
+        color: #818CF8;
+        filter: drop-shadow(0 0 8px rgba(129, 140, 248, 0.6));
     }
 
     .auth-heading {
-        color: var(--heading);
+        color: #F8FAFC;
         font-size: 1.4rem;
         font-weight: 800;
         letter-spacing: -0.5px;
     }
 
     .auth-subtitle {
-        color: var(--text);
+        color: #94A3B8;
         font-size: 0.82rem;
     }
 
     /* Form Fields */
     .saas-field-label {
-        color: var(--heading);
+        color: #CBD5E1;
         font-size: 0.7rem;
         font-weight: 700;
         letter-spacing: 0.8px;
@@ -355,25 +355,25 @@
     .saas-input-wrapper input {
         width: 100%;
         height: 38px;
-        background: var(--surface-secondary) !important;
-        border: 1px solid var(--border) !important;
+        background: rgba(15, 23, 42, 0.75) !important;
+        border: 1px solid rgba(255, 255, 255, 0.14) !important;
         border-radius: 10px !important;
         padding-left: 38px !important;
         padding-right: 38px !important;
-        color: var(--heading) !important;
+        color: #F8FAFC !important;
         font-size: 0.85rem !important;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
     .saas-input-wrapper input::placeholder {
-        color: var(--muted) !important;
+        color: #64748B !important;
         opacity: 1;
     }
 
     .saas-input-wrapper input:focus {
-        background: var(--surface) !important;
-        border-color: var(--primary) !important;
-        box-shadow: 0 0 0 3px rgba(211, 152, 88, 0.25) !important;
+        background: rgba(15, 23, 42, 0.95) !important;
+        border-color: #6366F1 !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25), 0 0 12px rgba(99, 102, 241, 0.2) !important;
         outline: none !important;
     }
 
@@ -382,7 +382,7 @@
         left: 12px;
         top: 50%;
         transform: translateY(-50%);
-        color: var(--muted);
+        color: #64748B;
         font-size: 0.95rem;
         pointer-events: none;
         transition: color 0.25s ease;
@@ -390,7 +390,7 @@
     }
 
     .saas-input-wrapper:focus-within .saas-input-icon {
-        color: var(--primary);
+        color: #818CF8;
     }
 
     .saas-password-toggle {
@@ -398,7 +398,7 @@
         right: 12px;
         top: 50%;
         transform: translateY(-50%);
-        color: var(--muted);
+        color: #64748B;
         font-size: 0.95rem;
         cursor: pointer;
         transition: color 0.2s ease;
@@ -406,18 +406,19 @@
     }
 
     .saas-password-toggle:hover {
-        color: var(--heading);
+        color: #F8FAFC;
     }
 
     .forgot-pass-link {
-        color: var(--primary);
+        color: #818CF8;
         text-decoration: none;
         font-weight: 600;
         transition: all 0.2s ease;
     }
 
     .forgot-pass-link:hover {
-        color: var(--primary-hover);
+        color: #A5B4FC;
+        text-shadow: 0 0 8px rgba(129, 140, 248, 0.4);
     }
 
     /* Password Checklist */
@@ -433,43 +434,44 @@
 
     /* Checkbox Styling */
     .form-check-input {
-        background-color: var(--surface-secondary);
-        border-color: var(--border);
+        background-color: rgba(15, 23, 42, 0.7);
+        border-color: rgba(255, 255, 255, 0.2);
         border-radius: 4px;
         width: 15px;
         height: 15px;
         margin-top: 2px;
     }
     .form-check-input:checked {
-        background-color: var(--primary);
-        border-color: var(--primary);
-        box-shadow: 0 0 8px rgba(211, 152, 88, 0.4);
+        background-color: #6366F1;
+        border-color: #6366F1;
+        box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
     }
 
     /* Primary Submit Button */
     .btn-saas-gradient {
         height: 42px;
         border-radius: 10px;
-        background: var(--btn-primary-bg) !important;
-        color: var(--btn-primary-text) !important;
+        background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+        color: #FFFFFF;
         font-size: 0.9rem;
         font-weight: 700;
         border: none;
-        box-shadow: 0 6px 18px -3px rgba(211, 152, 88, 0.45);
+        box-shadow: 0 6px 18px -3px rgba(59, 130, 246, 0.45);
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
     }
 
     .btn-saas-gradient:hover {
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 10px 24px -3px rgba(211, 152, 88, 0.55);
-        color: var(--btn-primary-text) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px -3px rgba(139, 92, 246, 0.55);
+        color: #FFFFFF;
+        filter: brightness(1.08);
     }
 
     .btn-saas-gradient:active {
         transform: translateY(0);
-        box-shadow: 0 4px 12px rgba(211, 152, 88, 0.4);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
     }
 
     .btn-icon-arrow {
@@ -482,21 +484,22 @@
 
     /* Create Account Button */
     .btn-create-account {
-        color: var(--primary);
+        color: #60A5FA;
         text-decoration: none;
         padding: 5px 12px;
         border-radius: 8px;
-        background: rgba(211, 152, 88, 0.12);
-        border: 1px solid var(--border);
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.25);
         font-size: 0.8rem;
         transition: all 0.25s ease;
     }
 
     .btn-create-account:hover {
-        background: rgba(211, 152, 88, 0.2);
-        border-color: var(--primary);
-        color: var(--primary-hover);
+        background: rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.4);
+        color: #93C5FD;
         transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
     }
 
     /* Error Box */
