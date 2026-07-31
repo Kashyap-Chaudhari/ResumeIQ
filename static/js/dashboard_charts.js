@@ -1,4 +1,4 @@
-/* ResumeIQ Chart.js Dashboard Visualizations */
+/* ResumeIQ Chart.js Dashboard Visualizations - Luxury Cinematic Dark Theme */
 
 function renderATSChart(canvasId, atsHistory) {
   const ctx = document.getElementById(canvasId);
@@ -14,11 +14,11 @@ function renderATSChart(canvasId, atsHistory) {
       datasets: [{
         label: 'ATS Resume Score',
         data: data.length ? data : [65, 72, 80, 88],
-        borderColor: '#6366f1',
-        backgroundColor: 'rgba(99, 102, 241, 0.15)',
+        borderColor: '#D39858',
+        backgroundColor: 'rgba(211, 152, 88, 0.15)',
         fill: true,
         tension: 0.4,
-        pointBackgroundColor: '#06b6d4',
+        pointBackgroundColor: '#EACEAA',
         pointRadius: 5
       }]
     },
@@ -32,12 +32,12 @@ function renderATSChart(canvasId, atsHistory) {
         y: {
           min: 0,
           max: 100,
-          grid: { color: 'rgba(255,255,255,0.05)' },
-          ticks: { color: '#94a3b8' }
+          grid: { color: 'rgba(255, 255, 255, 0.06)' },
+          ticks: { color: '#BFAE9D' }
         },
         x: {
-          grid: { color: 'rgba(255,255,255,0.05)' },
-          ticks: { color: '#94a3b8' }
+          grid: { color: 'rgba(255, 255, 255, 0.06)' },
+          ticks: { color: '#BFAE9D' }
         }
       }
     }
@@ -69,12 +69,12 @@ function renderReadinessRadarChart(canvasId, domainScores) {
           scores.resume_quality || 75,
           scores.interview_prep || 55
         ],
-        backgroundColor: 'rgba(6, 182, 212, 0.25)',
-        borderColor: '#06b6d4',
-        pointBackgroundColor: '#6366f1',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: '#6366f1'
+        backgroundColor: 'rgba(211, 152, 88, 0.20)',
+        borderColor: '#D39858',
+        pointBackgroundColor: '#EACEAA',
+        pointBorderColor: '#0E0E0E',
+        pointHoverBackgroundColor: '#F7F3EE',
+        pointHoverBorderColor: '#D39858'
       }]
     },
     options: {
@@ -84,10 +84,10 @@ function renderReadinessRadarChart(canvasId, domainScores) {
         r: {
           min: 0,
           max: 100,
-          angleLines: { color: 'rgba(255,255,255,0.1)' },
-          grid: { color: 'rgba(255,255,255,0.1)' },
+          angleLines: { color: 'rgba(255, 255, 255, 0.08)' },
+          grid: { color: 'rgba(255, 255, 255, 0.08)' },
           pointLabels: {
-            color: '#f8fafc',
+            color: '#F7F3EE',
             font: { size: 12, weight: '600' }
           },
           ticks: { display: false }
@@ -118,7 +118,7 @@ function renderPipelineDonutChart(canvasId, statusCounts) {
           counts.OFFER || 0,
           counts.REJECTED || 0
         ],
-        backgroundColor: ['#64748b', '#6366f1', '#f59e0b', '#10b981', '#f43f5e'],
+        backgroundColor: ['#8E7E70', '#D39858', '#EACEAA', '#85431E', '#C06C4C'],
         borderWidth: 0
       }]
     },
@@ -129,7 +129,7 @@ function renderPipelineDonutChart(canvasId, statusCounts) {
       plugins: {
         legend: {
           position: 'bottom',
-          labels: { color: '#94a3b8', padding: 15 }
+          labels: { color: '#BFAE9D', padding: 15 }
         }
       }
     }

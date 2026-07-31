@@ -46,23 +46,23 @@
     <nav class="sidebar-nav">
       <div class="nav-section-label">Main Platform</div>
       <a href="{% url 'dashboard' %}" class="nav-item-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(99, 102, 241, 0.15); color: #818cf8;"><i class="bi bi-grid-1x2-fill"></i></div>
+        <div class="nav-icon-box"><i class="bi bi-grid-1x2-fill"></i></div>
         <span>Dashboard</span>
       </a>
 
       <div class="nav-section-label">Resume Intelligence</div>
       <a href="{% url 'resumes:upload' %}" class="nav-item-link {% if request.resolver_match.url_name == 'upload' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;"><i class="bi bi-cloud-arrow-up-fill"></i></div>
+        <div class="nav-icon-box"><i class="bi bi-cloud-arrow-up-fill"></i></div>
         <span>Upload Resume</span>
       </a>
       <a href="{% url 'resumes:ai_rewrite_feature' %}" class="nav-item-link {% if request.resolver_match.url_name == 'ai_rewrite_feature' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;"><i class="bi bi-stars"></i></div>
+        <div class="nav-icon-box"><i class="bi bi-stars"></i></div>
         <span>AI Resume Rewrite</span>
       </a>
       {% with latest_resume=user.resumes.first %}
       {% if latest_resume %}
       <a href="{% url 'resumes:detail' latest_resume.id %}" class="nav-item-link {% if request.resolver_match.app_name == 'resumes' and request.resolver_match.url_name == 'detail' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #34d399;"><i class="bi bi-graph-up-arrow"></i></div>
+        <div class="nav-icon-box"><i class="bi bi-graph-up-arrow"></i></div>
         <span>View Analysis</span>
       </a>
       {% endif %}
@@ -70,29 +70,29 @@
 
       <div class="nav-section-label">Job Matching</div>
       <a href="{% url 'jobs:match' %}" class="nav-item-link {% if request.resolver_match.app_name == 'jobs' and request.resolver_match.url_name in 'match match_detail' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;"><i class="bi bi-crosshair2"></i></div>
+        <div class="nav-icon-box"><i class="bi bi-crosshair2"></i></div>
         <span>Job Matcher (TF-IDF)</span>
       </a>
       <a href="{% url 'jobs:tracker' %}" class="nav-item-link {% if request.resolver_match.url_name == 'tracker' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(236, 72, 153, 0.15); color: #f472b6;"><i class="bi bi-kanban-fill"></i></div>
+        <div class="nav-icon-box"><i class="bi bi-kanban-fill"></i></div>
         <span>Application Tracker</span>
       </a>
       <a href="{% url 'jobs:resources' %}" class="nav-item-link {% if request.resolver_match.url_name == 'resources' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(14, 165, 233, 0.15); color: #38bdf8;"><i class="bi bi-journal-bookmark-fill"></i></div>
+        <div class="nav-icon-box"><i class="bi bi-journal-bookmark-fill"></i></div>
         <span>Learning Hub</span>
       </a>
 
       <div class="nav-section-label">Placement & Prep</div>
       <a href="{% url 'coaching:interview' %}" class="nav-item-link {% if request.resolver_match.url_name == 'interview' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(99, 102, 241, 0.15); color: #818cf8;"><i class="bi bi-chat-quote-fill"></i></div>
+        <div class="nav-icon-box"><i class="bi bi-chat-quote-fill"></i></div>
         <span>AI Interview Coach</span>
       </a>
       <a href="{% url 'coaching:readiness' %}" class="nav-item-link {% if request.resolver_match.url_name == 'readiness' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #34d399;"><i class="bi bi-rocket-takeoff-fill"></i></div>
+        <div class="nav-icon-box"><i class="bi bi-rocket-takeoff-fill"></i></div>
         <span>Placement Readiness</span>
       </a>
       <a href="{% url 'coaching:roadmap' %}" class="nav-item-link {% if request.resolver_match.url_name == 'roadmap' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;"><i class="bi bi-map-fill"></i></div>
+        <div class="nav-icon-box"><i class="bi bi-map-fill"></i></div>
         <span>Learning Roadmap</span>
       </a>
     </nav>
