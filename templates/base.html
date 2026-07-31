@@ -46,23 +46,23 @@
     <nav class="sidebar-nav">
       <div class="nav-section-label">Main Platform</div>
       <a href="{% url 'dashboard' %}" class="nav-item-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(99, 102, 241, 0.15); color: #818cf8;"><i class="bi bi-grid-1x2-fill"></i></div>
+        <div class="nav-icon-box" style="background: rgba(211, 152, 88, 0.15); color: var(--primary);"><i class="bi bi-grid-1x2-fill"></i></div>
         <span>Dashboard</span>
       </a>
 
       <div class="nav-section-label">Resume Intelligence</div>
       <a href="{% url 'resumes:upload' %}" class="nav-item-link {% if request.resolver_match.url_name == 'upload' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;"><i class="bi bi-cloud-arrow-up-fill"></i></div>
+        <div class="nav-icon-box" style="background: rgba(234, 206, 170, 0.2); color: var(--primary);"><i class="bi bi-cloud-arrow-up-fill"></i></div>
         <span>Upload Resume</span>
       </a>
       <a href="{% url 'resumes:ai_rewrite_feature' %}" class="nav-item-link {% if request.resolver_match.url_name == 'ai_rewrite_feature' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;"><i class="bi bi-stars"></i></div>
+        <div class="nav-icon-box" style="background: rgba(133, 67, 30, 0.18); color: var(--accent);"><i class="bi bi-stars"></i></div>
         <span>AI Resume Rewrite</span>
       </a>
       {% with latest_resume=user.resumes.first %}
       {% if latest_resume %}
       <a href="{% url 'resumes:detail' latest_resume.id %}" class="nav-item-link {% if request.resolver_match.app_name == 'resumes' and request.resolver_match.url_name == 'detail' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #34d399;"><i class="bi bi-graph-up-arrow"></i></div>
+        <div class="nav-icon-box" style="background: rgba(91, 140, 90, 0.15); color: var(--success);"><i class="bi bi-graph-up-arrow"></i></div>
         <span>View Analysis</span>
       </a>
       {% endif %}
@@ -70,29 +70,29 @@
 
       <div class="nav-section-label">Job Matching</div>
       <a href="{% url 'jobs:match' %}" class="nav-item-link {% if request.resolver_match.app_name == 'jobs' and request.resolver_match.url_name in 'match match_detail' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;"><i class="bi bi-crosshair2"></i></div>
+        <div class="nav-icon-box" style="background: rgba(211, 152, 88, 0.15); color: var(--primary);"><i class="bi bi-crosshair2"></i></div>
         <span>Job Matcher (TF-IDF)</span>
       </a>
       <a href="{% url 'jobs:tracker' %}" class="nav-item-link {% if request.resolver_match.url_name == 'tracker' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(236, 72, 153, 0.15); color: #f472b6;"><i class="bi bi-kanban-fill"></i></div>
+        <div class="nav-icon-box" style="background: rgba(234, 206, 170, 0.2); color: var(--accent);"><i class="bi bi-kanban-fill"></i></div>
         <span>Application Tracker</span>
       </a>
       <a href="{% url 'jobs:resources' %}" class="nav-item-link {% if request.resolver_match.url_name == 'resources' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(14, 165, 233, 0.15); color: #38bdf8;"><i class="bi bi-journal-bookmark-fill"></i></div>
+        <div class="nav-icon-box" style="background: rgba(165, 101, 50, 0.18); color: var(--primary);"><i class="bi bi-journal-bookmark-fill"></i></div>
         <span>Learning Hub</span>
       </a>
 
       <div class="nav-section-label">Placement & Prep</div>
       <a href="{% url 'coaching:interview' %}" class="nav-item-link {% if request.resolver_match.url_name == 'interview' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(99, 102, 241, 0.15); color: #818cf8;"><i class="bi bi-chat-quote-fill"></i></div>
+        <div class="nav-icon-box" style="background: rgba(211, 152, 88, 0.15); color: var(--primary);"><i class="bi bi-chat-quote-fill"></i></div>
         <span>AI Interview Coach</span>
       </a>
       <a href="{% url 'coaching:readiness' %}" class="nav-item-link {% if request.resolver_match.url_name == 'readiness' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #34d399;"><i class="bi bi-rocket-takeoff-fill"></i></div>
+        <div class="nav-icon-box" style="background: rgba(91, 140, 90, 0.15); color: var(--success);"><i class="bi bi-rocket-takeoff-fill"></i></div>
         <span>Placement Readiness</span>
       </a>
       <a href="{% url 'coaching:roadmap' %}" class="nav-item-link {% if request.resolver_match.url_name == 'roadmap' %}active{% endif %}">
-        <div class="nav-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;"><i class="bi bi-map-fill"></i></div>
+        <div class="nav-icon-box" style="background: rgba(234, 206, 170, 0.2); color: var(--accent);"><i class="bi bi-map-fill"></i></div>
         <span>Learning Roadmap</span>
       </a>
     </nav>
@@ -100,11 +100,11 @@
     <div class="sidebar-footer">
       <div class="sidebar-user-card" style="padding: 12px 16px;">
         <div class="d-flex align-items-center gap-3">
-          <div class="avatar-squircle" style="width: 40px; height: 40px; border-radius: 10px; background: #6366F1; display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);">
+          <div class="avatar-squircle" style="width: 40px; height: 40px; border-radius: 10px; background: var(--btn-primary-bg); display: flex; align-items: center; justify-content: center; color: var(--btn-primary-text); font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(211, 152, 88, 0.3);">
             {{ user.first_name.0|default:user.username.0|upper }}{{ user.last_name.0|default:""|upper }}
           </div>
           <div>
-            <div style="font-size: 0.95rem; font-weight: 700; line-height: 1.2; color: var(--text-primary);">{{ user.username }}</div>
+            <div style="font-size: 0.95rem; font-weight: 700; line-height: 1.2; color: var(--heading);">{{ user.username }}</div>
             <small class="text-secondary" style="font-size: 0.8rem;">{{ user_profile.target_role|default:"User" }}</small>
           </div>
         </div>
@@ -119,59 +119,59 @@
     <header class="app-topbar">
       <div class="d-flex align-items-center gap-3">
         <button class="btn text-secondary d-lg-none p-0" id="sidebarToggleBtn"><i class="bi bi-list fs-2"></i></button>
-        <h1 class="page-title" style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">{% block header_title %}Dashboard{% endblock %}</h1>
+        <h1 class="page-title" style="background: var(--btn-primary-bg); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">{% block header_title %}Dashboard{% endblock %}</h1>
       </div>
 
       <div class="topbar-actions d-flex align-items-center gap-3">
-        <button class="btn btn-saas-secondary rounded-circle" style="width: 44px; height: 44px; padding: 0; display: flex; align-items: center; justify-content: center; border-color: rgba(255,255,255,0.1);" id="themeToggleBtn" title="Toggle Theme">
+        <button class="btn btn-saas-secondary rounded-circle" style="width: 44px; height: 44px; padding: 0; display: flex; align-items: center; justify-content: center; border-color: var(--border);" id="themeToggleBtn" title="Toggle Theme">
           <i class="bi bi-sun-fill text-warning fs-5"></i>
         </button>
 
         <div class="dropdown">
-          <a href="#" class="d-flex align-items-center gap-3" style="background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 35px; padding: 8px 24px 8px 8px; text-decoration: none; cursor: pointer; transition: all 0.2s;" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            <div class="d-flex align-items-center justify-content-center bg-white rounded-circle fw-bold shadow-sm" style="width: 38px; height: 38px; font-size: 16px; color: #6366F1;">
+          <a href="#" class="d-flex align-items-center gap-3" style="background: rgba(211, 152, 88, 0.12); border: 1px solid var(--border); border-radius: 35px; padding: 8px 24px 8px 8px; text-decoration: none; cursor: pointer; transition: all 0.2s;" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="d-flex align-items-center justify-content-center rounded-circle fw-bold shadow-sm" style="width: 38px; height: 38px; font-size: 16px; background: var(--btn-primary-bg); color: var(--btn-primary-text);">
               {{ user.username.0|upper|default:"U" }}
             </div>
-            <span class="d-none d-md-block fw-bold" style="color: var(--text-primary); font-size: 1rem; letter-spacing: -0.2px;">{{ user.username|default:"demo_student" }}</span>
+            <span class="d-none d-md-block fw-bold" style="color: var(--heading); font-size: 1rem; letter-spacing: -0.2px;">{{ user.username|default:"demo_student" }}</span>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end border-0" aria-labelledby="profileDropdown" style="width: 260px; border-radius: 16px; padding: 8px; margin-top: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); font-family: 'Inter', sans-serif; background-color: var(--bg-card);">
-            <li class="px-3 py-3 mb-2 d-flex align-items-center gap-3" style="border-bottom: 1px solid var(--border-color);">
-              <div class="avatar-squircle" style="width: 42px; height: 42px; min-width: 42px; border-radius: 10px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);">
+          <ul class="dropdown-menu dropdown-menu-end border-0" aria-labelledby="profileDropdown" style="width: 260px; border-radius: 16px; padding: 8px; margin-top: 12px; box-shadow: 0 10px 40px rgba(52, 21, 15, 0.15); font-family: 'Inter', sans-serif; background-color: var(--surface);">
+            <li class="px-3 py-3 mb-2 d-flex align-items-center gap-3" style="border-bottom: 1px solid var(--border);">
+              <div class="avatar-squircle" style="width: 42px; height: 42px; min-width: 42px; border-radius: 10px; background: var(--btn-primary-bg); display: flex; align-items: center; justify-content: center; color: var(--btn-primary-text); font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(211, 152, 88, 0.2);">
                 {{ user.first_name.0|default:user.username.0|upper }}{{ user.last_name.0|default:""|upper }}
               </div>
               <div style="overflow: hidden;">
-                <div class="fw-bold text-truncate" style="color: var(--text-primary); font-size: 0.95rem; letter-spacing: -0.01em;">{{ user.username|default:"demo_student" }}</div>
-                <div class="small text-truncate" style="color: var(--text-secondary); font-size: 0.8rem;">{{ user.email|default:"demo@student.com" }}</div>
+                <div class="fw-bold text-truncate" style="color: var(--heading); font-size: 0.95rem; letter-spacing: -0.01em;">{{ user.username|default:"demo_student" }}</div>
+                <div class="small text-truncate" style="color: var(--text); font-size: 0.8rem;">{{ user.email|default:"demo@student.com" }}</div>
               </div>
             </li>
             <li>
-              <a class="dropdown-item py-2 px-3 mb-1 d-flex align-items-center gap-3 rounded" href="{% url 'dashboard' %}" style="color: var(--text-primary); font-weight: 500; transition: all 0.2s;">
-                <div class="d-flex align-items-center justify-content-center rounded" style="width: 32px; height: 32px; background: rgba(59, 130, 246, 0.1); color: #3B82F6;">
+              <a class="dropdown-item py-2 px-3 mb-1 d-flex align-items-center gap-3 rounded" href="{% url 'dashboard' %}" style="color: var(--heading); font-weight: 500; transition: all 0.2s;">
+                <div class="d-flex align-items-center justify-content-center rounded" style="width: 32px; height: 32px; background: rgba(211, 152, 88, 0.15); color: var(--primary);">
                   <i class="bi bi-grid-fill"></i>
                 </div>
                 Dashboard
               </a>
             </li>
             <li>
-              <a class="dropdown-item py-2 px-3 mb-1 d-flex align-items-center gap-3 rounded" href="{% url 'profile' %}" style="color: var(--text-primary); font-weight: 500; transition: all 0.2s;">
-                <div class="d-flex align-items-center justify-content-center rounded" style="width: 32px; height: 32px; background: rgba(139, 92, 246, 0.1); color: #8B5CF6;">
+              <a class="dropdown-item py-2 px-3 mb-1 d-flex align-items-center gap-3 rounded" href="{% url 'profile' %}" style="color: var(--heading); font-weight: 500; transition: all 0.2s;">
+                <div class="d-flex align-items-center justify-content-center rounded" style="width: 32px; height: 32px; background: rgba(234, 206, 170, 0.2); color: var(--accent);">
                   <i class="bi bi-person-fill"></i>
                 </div>
                 Profile Setup
               </a>
             </li>
             <li>
-              <a class="dropdown-item py-2 px-3 mb-1 d-flex align-items-center gap-3 rounded" href="{% url 'analytics' %}" style="color: var(--text-primary); font-weight: 500; transition: all 0.2s;">
-                <div class="d-flex align-items-center justify-content-center rounded" style="width: 32px; height: 32px; background: rgba(16, 185, 129, 0.1); color: #10B981;">
+              <a class="dropdown-item py-2 px-3 mb-1 d-flex align-items-center gap-3 rounded" href="{% url 'analytics' %}" style="color: var(--heading); font-weight: 500; transition: all 0.2s;">
+                <div class="d-flex align-items-center justify-content-center rounded" style="width: 32px; height: 32px; background: rgba(91, 140, 90, 0.15); color: var(--success);">
                   <i class="bi bi-bar-chart-fill"></i>
                 </div>
                 Analytics
               </a>
             </li>
-            <li><hr class="dropdown-divider my-2" style="border-color: var(--border-color); opacity: 0.5;"></li>
+            <li><hr class="dropdown-divider my-2" style="border-color: var(--border); opacity: 0.5;"></li>
             <li>
               <a class="dropdown-item py-2 px-3 d-flex align-items-center gap-3 rounded text-danger" href="{% url 'logout' %}" style="font-weight: 500; transition: all 0.2s;">
-                <div class="d-flex align-items-center justify-content-center rounded" style="width: 32px; height: 32px; background: rgba(239, 68, 68, 0.1); color: #EF4444;">
+                <div class="d-flex align-items-center justify-content-center rounded" style="width: 32px; height: 32px; background: rgba(184, 74, 57, 0.15); color: var(--error);">
                   <i class="bi bi-box-arrow-right"></i>
                 </div>
                 Logout
